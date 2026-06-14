@@ -21,6 +21,7 @@ model User {
 }
 
 enum Role {
+  ADMIN
   DOSEN
   MAHASISWA
 }
@@ -34,6 +35,7 @@ model Dosen {
   user      User     @relation(fields: [userId], references: [id])
   
   kelas     Kelas[]
+  approvalRequests ExamApprovalRequest[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -129,9 +131,27 @@ model Exam {
 
   questions       Question[]
   attempts        ExamAttempt[]
+  approvalRequests ExamApprovalRequest[]
 
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+}
+
+model ExamApprovalRequest {
+  id          Int      @id @default(autoincrement())
+  
+  examId      Int
+  exam        Exam     @relation(fields: [examId], references: [id], onDelete: Cascade)
+  
+  dosenId     Int
+  dosen       Dosen    @relation(fields: [dosenId], references: [id])
+  
+  requestType String   // "EDIT" or "DELETE"
+  reason      String?
+  status      String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 enum ExamCategory {

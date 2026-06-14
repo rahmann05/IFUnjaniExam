@@ -191,4 +191,85 @@ async function getAttemptDetail(req, res) {
   }
 }
 
-module.exports = { getExams, getExamQuestions, submitExam, createExam, getExamResults, getAttemptDetail };
+async function deleteExam(req, res) {
+  const examId = parseInt(req.params.id);
+  
+  try {
+    const exam = await prisma.exam.findUnique({
+      where: { id: examId },
+      include: { attempts: true }
+    });
+
+    if (!exam) return res.status(404).json({ success: false, message: 'Ujian tidak ditemukan' });
+
+    if (exam.attempts.length > 0) {
+      // Check if there is an approved delete request
+      const approvedRequest = await prisma.examApprovalRequest.findFirst({
+        where: { examId, requestType: 'DELETE', status: 'APPROVED' }
+      });
+
+      if (!approvedRequest) {
+        return res.status(403).json({ success: false, message: 'Ujian sudah dikerjakan mahasiswa. Perlu persetujuan Admin untuk menghapus.', requiresApproval: true });
+      }
+    }
+
+    // Delete questions, options, etc. Cascade handles most if configured, but let's do it manually if needed, or rely on prisma onDelete: Cascade. 
+    // Wait, prisma schema doesn't have onDelete Cascade for questions -> exam. 
+    // We should delete manually.
+    await prisma.answerOption.deleteMany({
+      where: { question: { examId } }
+    });
+    
+    await prisma.attemptAnswer.deleteMany({
+      where: { question: { examId } }
+    });
+    
+    await prisma.examAttempt.deleteMany({
+      where: { examId }
+    });
+
+    await prisma.question.deleteMany({
+      where: { examId }
+    });
+    
+    await prisma.examApprovalRequest.deleteMany({
+      where: { examId }
+    });
+
+    await prisma.exam.delete({
+      where: { id: examId }
+    });
+
+    return res.status(200).json({ success: true, message: 'Ujian berhasil dihapus' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: 'Gagal menghapus ujian' });
+  }
+}
+
+async function requestApproval(req, res) {
+  const examId = parseInt(req.params.id);
+  const { requestType, reason } = req.body; // "EDIT" or "DELETE"
+  
+  try {
+    if (req.user.role !== 'DOSEN') {
+      return res.status(403).json({ success: false, message: 'Hanya Dosen yang bisa meminta persetujuan' });
+    }
+
+    const request = await prisma.examApprovalRequest.create({
+      data: {
+        examId,
+        dosenId: req.user.profileId,
+        requestType,
+        reason
+      }
+    });
+
+    return res.status(201).json({ success: true, message: 'Permintaan persetujuan berhasil dikirim ke Admin', data: request });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: 'Gagal mengirim permintaan persetujuan' });
+  }
+}
+
+module.exports = { getExams, getExamQuestions, submitExam, createExam, getExamResults, getAttemptDetail, deleteExam, requestApproval };

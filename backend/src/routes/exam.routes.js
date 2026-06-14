@@ -12,5 +12,7 @@ router.post('/:id/submit', requireRole('MAHASISWA'), examController.submitExam);
 
 router.get('/:id/results', requireRole('DOSEN'), examController.getExamResults);
 router.get('/attempts/:id', requireRole('DOSEN'), examController.getAttemptDetail);
+router.delete('/:id', requireRole('DOSEN'), examController.deleteExam);
+router.post('/:id/request-approval', requireRole('DOSEN'), examController.requestApproval);
 
 module.exports = router;
