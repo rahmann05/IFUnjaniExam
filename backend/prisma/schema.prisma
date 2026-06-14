@@ -134,6 +134,7 @@ model Exam {
 model Question {
   id        Int      @id @default(autoincrement())
   text      String
+  imageUrl  String?  // Gambar soal dari Uploadcare
   marks     Int      @default(1)
   
   examId    Int

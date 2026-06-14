@@ -13,15 +13,22 @@ public class LoginActivity extends AppCompatActivity {
 
     private TextInputEditText etUsername, etPassword;
     private Button btnLogin;
+    private android.widget.ImageView ivLogo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        ivLogo = findViewById(R.id.ivLogo);
         etUsername = findViewById(R.id.etUsername);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
+
+        // Load Logo Unjani dari Uploadcare menggunakan Glide
+        com.bumptech.glide.Glide.with(this)
+                .load("https://ucarecdn.com/ada08a9e-b241-4f5c-87f3-f0e6bbf4c272/Logo_Unjani.png")
+                .into(ivLogo);
 
         btnLogin.setOnClickListener(v -> {
             String username = etUsername.getText() != null ? etUsername.getText().toString() : "";
