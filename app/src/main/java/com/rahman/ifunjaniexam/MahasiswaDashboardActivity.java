@@ -47,7 +47,7 @@ public class MahasiswaDashboardActivity extends AppCompatActivity {
         String name = prefs.getString("name", "Mahasiswa");
         
         tvNimHeader.setText(username);
-        tvWelcome.setText("Selamat Datang,\n" + name);
+        tvWelcome.setText(name);
 
         android.widget.ImageView ivPerson = findViewById(R.id.ivPerson);
         ivPerson.setOnClickListener(v -> showProfileMenu(v));
@@ -64,64 +64,55 @@ public class MahasiswaDashboardActivity extends AppCompatActivity {
     private void loadClasses() {
         progressBar.setVisibility(View.VISIBLE);
         tvEmptyClasses.setVisibility(View.GONE);
-        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/kelas";
 
-        SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
-        String token = prefs.getString("jwt_token", "");
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
-                response -> {
-                    progressBar.setVisibility(View.GONE);
-                    try {
-                        if (response.getBoolean("success")) {
-                            JSONArray data = response.getJSONArray("data");
-                            if (data.length() == 0) {
-                                tvEmptyClasses.setVisibility(View.VISIBLE);
-                                rvKelas.setVisibility(View.GONE);
-                            } else {
-                                tvEmptyClasses.setVisibility(View.GONE);
-                                rvKelas.setVisibility(View.VISIBLE);
-
-                                KelasAdapter adapter = new KelasAdapter(data, kelasObj -> {
-                                    try {
-                                        Intent intent = new Intent(MahasiswaDashboardActivity.this, MahasiswaClassDetailActivity.class);
-                                        intent.putExtra("classId", kelasObj.getInt("id"));
-                                        startActivity(intent);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                });
-                                rvKelas.setAdapter(adapter);
-                            }
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Toast.makeText(this, "Format data salah", Toast.LENGTH_SHORT).show();
-                    }
-                },
-                error -> {
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(this, "Gagal memuat daftar kelas", Toast.LENGTH_SHORT).show();
-                }) {
+        com.rahman.ifunjaniexam.network.ClassApiService.getClasses(this, new com.rahman.ifunjaniexam.network.ClassApiService.ApiCallback() {
             @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token);
-                return headers;
-            }
-        };
+            public void onSuccess(JSONObject response) {
+                progressBar.setVisibility(View.GONE);
+                try {
+                    if (response.getBoolean("success")) {
+                        JSONArray data = response.getJSONArray("data");
+                        if (data.length() == 0) {
+                            tvEmptyClasses.setVisibility(View.VISIBLE);
+                            rvKelas.setVisibility(View.GONE);
+                        } else {
+                            tvEmptyClasses.setVisibility(View.GONE);
+                            rvKelas.setVisibility(View.VISIBLE);
 
-        Volley.newRequestQueue(this).add(request);
+                            KelasAdapter adapter = new KelasAdapter(data, kelasObj -> {
+                                try {
+                                    Intent intent = new Intent(MahasiswaDashboardActivity.this, MahasiswaClassDetailActivity.class);
+                                    intent.putExtra("classId", kelasObj.getInt("id"));
+                                    startActivity(intent);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            });
+                            rvKelas.setAdapter(adapter);
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(MahasiswaDashboardActivity.this, "Format data salah", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onError(Exception error, com.android.volley.VolleyError volleyError) {
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(MahasiswaDashboardActivity.this, "Gagal memuat daftar kelas", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void showJoinClassDialog() {
         android.widget.EditText input = new android.widget.EditText(this);
-        input.setHint("Masukkan ID Kelas (e.g. IF-331)");
+        input.setHint("Masukkan Kode Kelas (e.g. IF-331)");
         input.setInputType(android.text.InputType.TYPE_CLASS_TEXT);
 
         new android.app.AlertDialog.Builder(this)
             .setTitle("Gabung Kelas")
-            .setMessage("Silakan masukkan ID kelas untuk bergabung.")
+            .setMessage("Silakan masukkan kode kelas untuk bergabung.")
             .setView(input)
             .setPositiveButton("Gabung", (dialog, which) -> {
                 String val = input.getText().toString();
@@ -132,51 +123,41 @@ public class MahasiswaDashboardActivity extends AppCompatActivity {
     }
 
     private void joinClass(String classCode) {
-        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/kelas/join";
-        SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
-        String token = prefs.getString("jwt_token", "");
-
         try {
-            org.json.JSONObject body = new org.json.JSONObject();
-            body.put("classCode", classCode);
+            org.json.JSONObject payload = new org.json.JSONObject();
+            payload.put("classCode", classCode);
 
-            com.android.volley.toolbox.JsonObjectRequest request = new com.android.volley.toolbox.JsonObjectRequest(
-                    com.android.volley.Request.Method.POST, url, body,
-                    response -> {
-                        try {
-                            if (response.getBoolean("success")) {
-                                Toast.makeText(this, "Berhasil bergabung ke kelas", Toast.LENGTH_SHORT).show();
-                                loadClasses(); // Reload classes
-                            } else {
-                                Toast.makeText(this, response.getString("message"), Toast.LENGTH_SHORT).show();
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    },
-                    error -> {
-                        if (error.networkResponse != null && error.networkResponse.data != null) {
-                            try {
-                                String res = new String(error.networkResponse.data, "utf-8");
-                                org.json.JSONObject json = new org.json.JSONObject(res);
-                                String msg = json.optString("message", "Gagal bergabung ke kelas");
-                                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-                            } catch (Exception e) {
-                                Toast.makeText(this, "Gagal bergabung ke kelas", Toast.LENGTH_SHORT).show();
-                            }
-                        } else {
-                            Toast.makeText(this, "Gagal bergabung (ID Kelas salah / sudah bergabung)", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-            ) {
+            com.rahman.ifunjaniexam.network.ClassApiService.joinClass(this, payload, new com.rahman.ifunjaniexam.network.ClassApiService.ApiCallback() {
                 @Override
-                public java.util.Map<String, String> getHeaders() {
-                    java.util.Map<String, String> headers = new java.util.HashMap<>();
-                    headers.put("Authorization", "Bearer " + token);
-                    return headers;
+                public void onSuccess(JSONObject response) {
+                    try {
+                        if (response.getBoolean("success")) {
+                            Toast.makeText(MahasiswaDashboardActivity.this, "Berhasil bergabung ke kelas", Toast.LENGTH_SHORT).show();
+                            loadClasses(); // Reload classes
+                        } else {
+                            Toast.makeText(MahasiswaDashboardActivity.this, response.getString("message"), Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-            };
-            com.android.volley.toolbox.Volley.newRequestQueue(this).add(request);
+
+                @Override
+                public void onError(Exception error, com.android.volley.VolleyError volleyError) {
+                    if (volleyError != null && volleyError.networkResponse != null && volleyError.networkResponse.data != null) {
+                        try {
+                            String res = new String(volleyError.networkResponse.data, "utf-8");
+                            org.json.JSONObject json = new org.json.JSONObject(res);
+                            String msg = json.optString("message", "Gagal bergabung ke kelas");
+                            Toast.makeText(MahasiswaDashboardActivity.this, msg, Toast.LENGTH_SHORT).show();
+                        } catch (Exception e) {
+                            Toast.makeText(MahasiswaDashboardActivity.this, "Gagal bergabung ke kelas", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(MahasiswaDashboardActivity.this, "Gagal bergabung (ID Kelas salah / sudah bergabung)", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -232,28 +213,16 @@ public class MahasiswaDashboardActivity extends AppCompatActivity {
     }
 
     private void changePassword(String oldPass, String newPass) {
-        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/auth/change-password";
-        SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
-        String token = prefs.getString("jwt_token", "");
+        com.rahman.ifunjaniexam.network.AuthApiService.changePassword(this, oldPass, newPass, new com.rahman.ifunjaniexam.network.AuthApiService.AuthCallback() {
+            @Override
+            public void onSuccess(JSONObject response) {
+                Toast.makeText(MahasiswaDashboardActivity.this, "Password berhasil diubah", Toast.LENGTH_SHORT).show();
+            }
 
-        try {
-            org.json.JSONObject body = new org.json.JSONObject();
-            body.put("oldPassword", oldPass);
-            body.put("newPassword", newPass);
-
-            com.android.volley.toolbox.JsonObjectRequest request = new com.android.volley.toolbox.JsonObjectRequest(
-                    com.android.volley.Request.Method.PUT, url, body,
-                    response -> Toast.makeText(this, "Password berhasil diubah", Toast.LENGTH_SHORT).show(),
-                    error -> Toast.makeText(this, "Gagal mengubah password", Toast.LENGTH_SHORT).show()
-            ) {
-                @Override
-                public java.util.Map<String, String> getHeaders() {
-                    java.util.Map<String, String> headers = new java.util.HashMap<>();
-                    headers.put("Authorization", "Bearer " + token);
-                    return headers;
-                }
-            };
-            com.android.volley.toolbox.Volley.newRequestQueue(this).add(request);
-        } catch (Exception e) { e.printStackTrace(); }
+            @Override
+            public void onError(Exception error, com.android.volley.VolleyError volleyError) {
+                Toast.makeText(MahasiswaDashboardActivity.this, "Gagal mengubah password", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

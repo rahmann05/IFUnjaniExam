@@ -1,136 +1,151 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#f8f9fc"
+    android:background="#ffffff"
     tools:context=".MahasiswaDashboardActivity">
 
-    <!-- Top Bar -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/topBar"
+    <!-- Scrollable content -->
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="#27ae60"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/tvNimHeader"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:text="20230001"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/ivPerson"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/ic_person"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tvNimHeader"
-            app:layout_constraintTop_toTopOf="parent"
-            android:contentDescription="Profile" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- Welcome & Action Area inside a Card -->
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardWelcome"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="4dp"
-        app:cardBackgroundColor="@android:color/white"
-        app:layout_constraintTop_toBottomOf="@+id/topBar">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tvWelcome"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Selamat Datang,\nMahasiswa"
-                android:textColor="#2c3e50"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnGabungKelas"
+            <!-- Hero Header -->
+            <LinearLayout
+                android:id="@+id/heroHeader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Gabung Kelas Baru"
-                android:textColor="@android:color/white"
-                android:backgroundTint="#27ae60"
-                app:icon="@android:drawable/ic_input_add"
-                app:iconTint="@android:color/white"
-                app:cornerRadius="8dp" />
+                android:background="#27ae60"
+                android:orientation="vertical"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="48dp"
+                android:paddingBottom="28dp">
+
+                <!-- Top row: greeting + avatar -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Selamat Datang,"
+                            android:textColor="#c8f5dc"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/tvWelcome"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Mahasiswa"
+                            android:textColor="#ffffff"
+                            android:textSize="22sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <!-- Avatar / profile icon -->
+                    <ImageView
+                        android:id="@+id/ivPerson"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:background="@drawable/ic_person"
+                        android:contentDescription="Profile" />
+
+                    <TextView
+                        android:id="@+id/tvNimHeader"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:textColor="#c8f5dc"
+                        android:textSize="13sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- White content area -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="16dp"
+                android:paddingTop="20dp"
+                android:paddingBottom="80dp">
+
+                <!-- Section header + Join button -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Kelas Saya"
+                        android:textColor="#1a2e1a"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnGabungKelas"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="#1abc9c"
+                        android:text="+ Gabung Kelas"
+                        android:textColor="#ffffff"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        app:cornerRadius="20dp" />
+                </LinearLayout>
+
+                <!-- Class list -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvKelas"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false" />
+
+                <!-- Empty state -->
+                <TextView
+                    android:id="@+id/tvEmptyClasses"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:paddingVertical="48dp"
+                    android:text="Belum ada kelas yang diikuti.\nTekan tombol + Gabung Kelas."
+                    android:textColor="#718096"
+                    android:textSize="15sp"
+                    android:textAlignment="center"
+                    android:visibility="gone" />
+
+                <!-- Loading -->
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
+
+            </LinearLayout>
         </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+    </androidx.core.widget.NestedScrollView>
 
-    <!-- Header Section for Enrolled Classes -->
-    <TextView
-        android:id="@+id/tvSectionHeader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="16dp"
-        android:text="Kelas Tergabung"
-        android:textColor="#2c3e50"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardWelcome" />
-
-    <!-- RecyclerView for Classes -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvKelas"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginHorizontal="12dp"
-        android:layout_marginTop="8dp"
-        android:clipToPadding="false"
-        android:paddingBottom="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvSectionHeader" />
-
-    <!-- Empty State TextView -->
-    <TextView
-        android:id="@+id/tvEmptyClasses"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="32dp"
-        android:gravity="center"
-        android:text="Anda belum bergabung di kelas mana pun.\nSilakan klik tombol Gabung Kelas Baru di atas."
-        android:textColor="#7f8c8d"
-        android:textSize="15sp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvSectionHeader" />
-
-    <!-- ProgressBar -->
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvSectionHeader" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -108,6 +108,12 @@ public class TakeExamActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        Toast.makeText(this, "Tidak diperbolehkan kembali selama ujian berlangsung!", Toast.LENGTH_SHORT).show();
+        // Do not call super.onBackPressed()
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         if (!isSubmitted && !isFinishing()) {
@@ -470,7 +476,23 @@ public class TakeExamActivity extends AppCompatActivity {
                 },
                 error -> {
                     progressBar.setVisibility(View.GONE);
-                    com.rahman.ifunjaniexam.utils.FeedbackUtils.showToast(this, "Gagal mengirim jawaban");
+                    // HTTP 409 = already submitted sebelumnya → tetap anggap sukses
+                    if (error.networkResponse != null && error.networkResponse.statusCode == 409) {
+                        try {
+                            String body = new String(error.networkResponse.data, "utf-8");
+                            org.json.JSONObject json = new org.json.JSONObject(body);
+                            double prevScore = json.optJSONObject("data") != null
+                                    ? json.optJSONObject("data").optDouble("score", score)
+                                    : score;
+                            com.rahman.ifunjaniexam.utils.FeedbackUtils.showToast(this,
+                                    "Ujian sudah dikumpulkan sebelumnya. Skor: " + String.format("%.2f", prevScore));
+                        } catch (Exception ignored) {
+                            com.rahman.ifunjaniexam.utils.FeedbackUtils.showToast(this, "Ujian sudah dikumpulkan sebelumnya.");
+                        }
+                        finish();
+                        return;
+                    }
+                    com.rahman.ifunjaniexam.utils.FeedbackUtils.showToast(this, "Gagal mengirim jawaban. Coba lagi.");
                     isSubmitted = false;
                 }) {
             @Override
@@ -480,6 +502,11 @@ public class TakeExamActivity extends AppCompatActivity {
                 return headers;
             }
         };
+
+        request.setRetryPolicy(new com.android.volley.DefaultRetryPolicy(
+                15000, // 15 seconds timeout
+                1,     // 1 retry
+                com.android.volley.DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         Volley.newRequestQueue(this).add(request);
     }

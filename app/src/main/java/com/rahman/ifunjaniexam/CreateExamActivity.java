@@ -260,6 +260,7 @@ public class CreateExamActivity extends AppCompatActivity {
             }
             payload.put("questions", questionsArray);
 
+            findViewById(R.id.btnSaveExam).setEnabled(false);
             com.rahman.ifunjaniexam.network.ExamApiService.createExam(this, payload, new com.rahman.ifunjaniexam.network.ExamApiService.ApiCallback() {
                 @Override
                 public void onSuccess(JSONObject response) {
@@ -270,6 +271,7 @@ public class CreateExamActivity extends AppCompatActivity {
                 @Override
                 public void onError(Exception error) {
                     Toast.makeText(CreateExamActivity.this, "Gagal menyimpan ujian", Toast.LENGTH_SHORT).show();
+                    findViewById(R.id.btnSaveExam).setEnabled(true);
                 }
             });
 

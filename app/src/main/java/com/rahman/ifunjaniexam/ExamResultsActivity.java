@@ -47,14 +47,23 @@ public class ExamResultsActivity extends AppCompatActivity {
         TextView tvTitle = findViewById(R.id.tvExamTitle);
         tvTitle.setText(examTitle);
 
-        rvResults = findViewById(R.id.rvResults);
+        rvCompleted = findViewById(R.id.rvCompleted);
+        rvNotCompleted = findViewById(R.id.rvNotCompleted);
         progressBar = findViewById(R.id.progressBar);
-        tvEmptyResults = findViewById(R.id.tvEmptyResults);
+        tvEmptyCompleted = findViewById(R.id.tvEmptyCompleted);
+        tvEmptyNotCompleted = findViewById(R.id.tvEmptyNotCompleted);
 
-        rvResults.setLayoutManager(new LinearLayoutManager(this));
+        rvCompleted.setLayoutManager(new LinearLayoutManager(this));
+        rvNotCompleted.setLayoutManager(new LinearLayoutManager(this));
+
+        View btnBack = findViewById(R.id.btnBack);
+        if (btnBack != null) btnBack.setOnClickListener(v -> finish());
 
         loadResults();
     }
+
+    private RecyclerView rvCompleted, rvNotCompleted;
+    private TextView tvEmptyCompleted, tvEmptyNotCompleted;
 
     private void loadResults() {
         progressBar.setVisibility(View.VISIBLE);
@@ -68,26 +77,41 @@ public class ExamResultsActivity extends AppCompatActivity {
                     progressBar.setVisibility(View.GONE);
                     try {
                         if (response.getBoolean("success")) {
-                            JSONArray results = response.getJSONArray("data");
-                            if (results.length() == 0) {
-                                tvEmptyResults.setVisibility(View.VISIBLE);
-                                rvResults.setVisibility(View.GONE);
+                            JSONObject data = response.getJSONObject("data");
+                            JSONArray completed = data.getJSONArray("completed");
+                            JSONArray notCompleted = data.getJSONArray("notCompleted");
+                            
+                            if (completed.length() == 0) {
+                                tvEmptyCompleted.setVisibility(View.VISIBLE);
+                                rvCompleted.setVisibility(View.GONE);
                             } else {
-                                tvEmptyResults.setVisibility(View.GONE);
-                                rvResults.setVisibility(View.VISIBLE);
+                                tvEmptyCompleted.setVisibility(View.GONE);
+                                rvCompleted.setVisibility(View.VISIBLE);
                                 
-                                StudentResultAdapter adapter = new StudentResultAdapter(results, attemptObj -> {
+                                StudentResultAdapter adapter = new StudentResultAdapter(completed, attemptObj -> {
                                     try {
                                         int attemptId = attemptObj.getInt("id");
                                         Intent intent = new Intent(ExamResultsActivity.this, StudentAnswerSheetActivity.class);
                                         intent.putExtra("attemptId", attemptId);
-                                        intent.putExtra("studentName", attemptObj.getJSONObject("mahasiswa").getString("name"));
+                                        // fetch from student object instead of nested
+                                        // Wait, adapter listener returns attemptObj, let's pass name through intent if we want, or remove it
                                         startActivity(intent);
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
                                 });
-                                rvResults.setAdapter(adapter);
+                                rvCompleted.setAdapter(adapter);
+                            }
+                            
+                            if (notCompleted.length() == 0) {
+                                tvEmptyNotCompleted.setVisibility(View.VISIBLE);
+                                rvNotCompleted.setVisibility(View.GONE);
+                            } else {
+                                tvEmptyNotCompleted.setVisibility(View.GONE);
+                                rvNotCompleted.setVisibility(View.VISIBLE);
+                                
+                                StudentResultAdapter adapterNot = new StudentResultAdapter(notCompleted, null);
+                                rvNotCompleted.setAdapter(adapterNot);
                             }
                         }
                     } catch (Exception e) {

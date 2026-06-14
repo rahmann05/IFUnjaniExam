@@ -3,57 +3,85 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
+    android:layout_marginBottom="10dp"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
-    app:cardBackgroundColor="@android:color/white"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="2dp">
+    app:cardBackgroundColor="#ffffff"
+    app:cardCornerRadius="14dp"
+    app:cardElevation="2dp"
+    app:strokeColor="#e0f2f1"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/tvExamTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Ujian Tengah Semester"
-            android:textColor="#2c3e50"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tvExamDesc"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="Deskripsi singkat mengenai ujian ini."
-            android:textColor="#7f8c8d"
-            android:textSize="14sp" />
+        <!-- Left accent strip (teal for variety) -->
+        <View
+            android:layout_width="5dp"
+            android:layout_height="match_parent"
+            android:background="#1abc9c" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginTop="12dp">
+            android:orientation="vertical"
+            android:padding="14dp">
 
+            <!-- Title row + status badge -->
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvExamTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Ujian Tengah Semester"
+                    android:textColor="#1a2e1a"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvStatusBadge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/badge_green"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="3dp"
+                    android:text="Aktif"
+                    android:textColor="#ffffff"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvExamDesc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Deskripsi singkat mengenai ujian ini."
+                android:textColor="#718096"
+                android:textSize="13sp" />
+
+            <!-- Meta row: duration + time -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
                     android:src="@drawable/ic_assignment"
-                    app:tint="#e67e22" />
+                    app:tint="#27ae60" />
 
                 <TextView
                     android:id="@+id/tvDuration"
@@ -61,8 +89,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
                     android:text="90 Menit"
-                    android:textColor="#e67e22"
-                    android:textSize="14sp"
+                    android:textColor="#27ae60"
+                    android:textSize="13sp"
                     android:textStyle="bold" />
 
                 <View
@@ -70,52 +98,46 @@
                     android:layout_height="1dp" />
 
                 <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
                     android:src="@drawable/ic_history"
-                    app:tint="#3498db" />
+                    app:tint="#1abc9c" />
 
                 <TextView
                     android:id="@+id/tvTime"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:layout_marginStart="4dp"
                     android:text="2026-06-14 10:00"
-                    android:textColor="#3498db"
+                    android:textColor="#1abc9c"
                     android:textSize="12sp" />
+
+                <!-- Options button (dosen only) -->
+                <ImageView
+                    android:id="@+id/btnOptions"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:padding="4dp"
+                    android:src="@android:drawable/ic_menu_more"
+                    android:visibility="gone"
+                    app:tint="#718096" />
             </LinearLayout>
-        </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginTop="12dp">
-
+            <!-- Action button (mulai/lihat hasil) -->
             <Button
                 android:id="@+id/btnStatus"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="34dp"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="#27ae60"
                 android:text="Mulai Ujian"
+                android:textColor="#ffffff"
                 android:textSize="12sp"
+                android:textStyle="bold"
                 android:visibility="gone"
                 app:cornerRadius="8dp" />
 
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
-            <ImageView
-                android:id="@+id/btnOptions"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:padding="4dp"
-                android:src="@android:drawable/ic_menu_more"
-                android:visibility="gone"
-                app:tint="#7f8c8d" />
         </LinearLayout>
-
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

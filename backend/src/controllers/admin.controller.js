@@ -121,13 +121,19 @@ async function getClasses(req, res) {
 
 async function createClass(req, res) {
   try {
-    const { name, courseId, semesterId, dosenId } = req.body;
+    const { name, code, courseId, semesterId, dosenId } = req.body;
+    if (!name || !code || !courseId || !semesterId || !dosenId) {
+      return res.status(400).json({ success: false, message: 'Field name, code, courseId, semesterId, dan dosenId wajib diisi.' });
+    }
     const kelas = await prisma.kelas.create({
-      data: { name, courseId, semesterId, dosenId },
+      data: { name, code, courseId: parseInt(courseId), semesterId: parseInt(semesterId), dosenId: parseInt(dosenId) },
       include: { course: true, semester: true, dosen: true }
     });
     res.status(201).json({ success: true, message: 'Kelas berhasil dibuat', data: kelas });
   } catch (error) {
+    if (error.code === 'P2002') {
+      return res.status(409).json({ success: false, message: 'Kode kelas sudah digunakan. Gunakan kode yang berbeda.' });
+    }
     res.status(500).json({ success: false, message: 'Gagal membuat kelas' });
   }
 }

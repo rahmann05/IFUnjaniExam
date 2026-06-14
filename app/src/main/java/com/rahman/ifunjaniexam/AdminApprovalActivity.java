@@ -42,85 +42,70 @@ public class AdminApprovalActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
         token = prefs.getString("jwt_token", "");
 
+        View btnBack = findViewById(R.id.btnBack);
+        if (btnBack != null) btnBack.setOnClickListener(v -> finish());
+
         loadRequests();
     }
 
     private void loadRequests() {
         progressBar.setVisibility(View.VISIBLE);
-        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/admin/requests";
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
-                response -> {
-                    progressBar.setVisibility(View.GONE);
-                    try {
-                        if (response.getBoolean("success")) {
-                            JSONArray data = response.getJSONArray("data");
-                            if (data.length() == 0) {
-                                tvEmptyApprovals.setVisibility(View.VISIBLE);
-                                rvApprovals.setVisibility(View.GONE);
-                            } else {
-                                tvEmptyApprovals.setVisibility(View.GONE);
-                                rvApprovals.setVisibility(View.VISIBLE);
-
-                                AdminApprovalAdapter adapter = new AdminApprovalAdapter(data, (reqObj, action) -> {
-                                    try {
-                                        processApproval(reqObj.getInt("id"), action);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                });
-                                rvApprovals.setAdapter(adapter);
-                            }
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                },
-                error -> {
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(this, "Gagal memuat permintaan", Toast.LENGTH_SHORT).show();
-                }) {
+        com.rahman.ifunjaniexam.network.AdminApiService.getApprovalRequests(this, new com.rahman.ifunjaniexam.network.AdminApiService.ApiCallback() {
             @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token);
-                return headers;
-            }
-        };
+            public void onSuccess(JSONObject response) {
+                progressBar.setVisibility(View.GONE);
+                try {
+                    if (response.getBoolean("success")) {
+                        JSONArray data = response.getJSONArray("data");
+                        if (data.length() == 0) {
+                            tvEmptyApprovals.setVisibility(View.VISIBLE);
+                            rvApprovals.setVisibility(View.GONE);
+                        } else {
+                            tvEmptyApprovals.setVisibility(View.GONE);
+                            rvApprovals.setVisibility(View.VISIBLE);
 
-        Volley.newRequestQueue(this).add(request);
+                            AdminApprovalAdapter adapter = new AdminApprovalAdapter(data, (reqObj, action) -> {
+                                try {
+                                    processApproval(reqObj.getInt("id"), action);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            });
+                            rvApprovals.setAdapter(adapter);
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Exception error, com.android.volley.VolleyError volleyError) {
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(AdminApprovalActivity.this, "Gagal memuat permintaan", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void processApproval(int reqId, String action) {
-        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/admin/requests/" + reqId;
-        try {
-            JSONObject body = new JSONObject();
-            body.put("action", action);
-
-            JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, body,
-                    response -> {
-                        try {
-                            if (response.getBoolean("success")) {
-                                Toast.makeText(this, "Aksi berhasil", Toast.LENGTH_SHORT).show();
-                                loadRequests();
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    },
-                    error -> {
-                        Toast.makeText(this, "Gagal memproses aksi", Toast.LENGTH_SHORT).show();
-                    }) {
-                @Override
-                public Map<String, String> getHeaders() {
-                    Map<String, String> headers = new HashMap<>();
-                    headers.put("Authorization", "Bearer " + token);
-                    return headers;
+        com.rahman.ifunjaniexam.network.AdminApiService.processApproval(this, reqId, action, new com.rahman.ifunjaniexam.network.AdminApiService.ApiCallback() {
+            @Override
+            public void onSuccess(JSONObject response) {
+                try {
+                    if (response.getBoolean("success")) {
+                        Toast.makeText(AdminApprovalActivity.this, "Aksi berhasil", Toast.LENGTH_SHORT).show();
+                        loadRequests();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            };
-            Volley.newRequestQueue(this).add(request);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            }
+
+            @Override
+            public void onError(Exception error, com.android.volley.VolleyError volleyError) {
+                Toast.makeText(AdminApprovalActivity.this, "Gagal memproses aksi", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

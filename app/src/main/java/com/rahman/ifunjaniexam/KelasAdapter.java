@@ -40,8 +40,15 @@ public class KelasAdapter extends RecyclerView.Adapter<KelasAdapter.KelasViewHol
             JSONObject semester = kelasObj.getJSONObject("semester");
 
             holder.tvCourseName.setText(course.getString("name"));
-            holder.tvClassName.setText("Kelas: " + kelasObj.getString("name") + " (" + kelasObj.optString("code", "-") + ")");
+            holder.tvClassName.setText("Kelas: " + kelasObj.getString("name"));
             holder.tvSemester.setText("Semester: " + semester.getString("name"));
+            String code = kelasObj.optString("code", "");
+            if (!code.isEmpty()) {
+                holder.tvClassCode.setVisibility(View.VISIBLE);
+                holder.tvClassCode.setText(code);
+            } else {
+                holder.tvClassCode.setVisibility(View.GONE);
+            }
 
             holder.itemView.setOnClickListener(v -> listener.onItemClick(kelasObj));
         } catch (Exception e) {
@@ -55,13 +62,14 @@ public class KelasAdapter extends RecyclerView.Adapter<KelasAdapter.KelasViewHol
     }
 
     static class KelasViewHolder extends RecyclerView.ViewHolder {
-        TextView tvCourseName, tvClassName, tvSemester;
+        TextView tvCourseName, tvClassName, tvSemester, tvClassCode;
 
         public KelasViewHolder(@NonNull View itemView) {
             super(itemView);
             tvCourseName = itemView.findViewById(R.id.tvCourseName);
-            tvClassName = itemView.findViewById(R.id.tvClassName);
-            tvSemester = itemView.findViewById(R.id.tvSemester);
+            tvClassName  = itemView.findViewById(R.id.tvClassName);
+            tvSemester   = itemView.findViewById(R.id.tvSemester);
+            tvClassCode  = itemView.findViewById(R.id.tvClassCode);
         }
     }
 }

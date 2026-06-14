@@ -35,18 +35,26 @@ public class StudentResultAdapter extends RecyclerView.Adapter<StudentResultAdap
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         try {
-            JSONObject attempt = attempts.getJSONObject(position);
-            JSONObject mhs = attempt.getJSONObject("mahasiswa");
+            JSONObject studentObj = attempts.getJSONObject(position);
 
-            holder.tvStudentName.setText(mhs.getString("name"));
-            holder.tvNim.setText(mhs.getString("nim"));
+            holder.tvStudentName.setText(studentObj.getString("name"));
+            holder.tvNim.setText(studentObj.getString("nim"));
             
-            double score = attempt.getDouble("score");
-            holder.tvScore.setText(String.format("%.1f", score));
+            if (studentObj.has("attempt") && !studentObj.isNull("attempt")) {
+                JSONObject attempt = studentObj.getJSONObject("attempt");
+                double score = attempt.optDouble("score", 0.0);
+                holder.tvScore.setText(String.format("%.1f", score));
+                holder.tvScore.setVisibility(View.VISIBLE);
 
-            holder.itemView.setOnClickListener(v -> {
-                if (listener != null) listener.onItemClick(attempt);
-            });
+                holder.itemView.setOnClickListener(v -> {
+                    if (listener != null) listener.onItemClick(attempt);
+                });
+                holder.itemView.setClickable(true);
+            } else {
+                holder.tvScore.setVisibility(View.GONE);
+                holder.itemView.setOnClickListener(null);
+                holder.itemView.setClickable(false);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -43,7 +43,7 @@ public class DosenDashboardActivity extends AppCompatActivity {
         String name = prefs.getString("name", "Dosen");
         
         tvNipHeader.setText(username);
-        tvWelcome.setText("Selamat Datang,\n" + name);
+        tvWelcome.setText(name);
 
         android.widget.ImageView ivPerson = findViewById(R.id.ivPerson);
         ivPerson.setOnClickListener(v -> showProfileMenu(v));
@@ -60,53 +60,44 @@ public class DosenDashboardActivity extends AppCompatActivity {
     private void loadClasses() {
         progressBar.setVisibility(View.VISIBLE);
         tvEmptyClasses.setVisibility(View.GONE);
-        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/kelas";
 
-        SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
-        String token = prefs.getString("jwt_token", "");
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
-                response -> {
-                    progressBar.setVisibility(View.GONE);
-                    try {
-                        if (response.getBoolean("success")) {
-                            JSONArray data = response.getJSONArray("data");
-                            if (data.length() == 0) {
-                                tvEmptyClasses.setVisibility(View.VISIBLE);
-                                rvKelas.setVisibility(View.GONE);
-                            } else {
-                                tvEmptyClasses.setVisibility(View.GONE);
-                                rvKelas.setVisibility(View.VISIBLE);
-                                KelasAdapter adapter = new KelasAdapter(data, kelasObj -> {
-                                    try {
-                                        Intent intent = new Intent(DosenDashboardActivity.this, DosenClassDetailActivity.class);
-                                        intent.putExtra("classId", kelasObj.getInt("id"));
-                                        startActivity(intent);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                });
-                                rvKelas.setAdapter(adapter);
-                            }
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Toast.makeText(this, "Format data salah", Toast.LENGTH_SHORT).show();
-                    }
-                },
-                error -> {
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(this, "Gagal memuat daftar kelas", Toast.LENGTH_SHORT).show();
-                }) {
+        com.rahman.ifunjaniexam.network.ClassApiService.getClasses(this, new com.rahman.ifunjaniexam.network.ClassApiService.ApiCallback() {
             @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token);
-                return headers;
+            public void onSuccess(JSONObject response) {
+                progressBar.setVisibility(View.GONE);
+                try {
+                    if (response.getBoolean("success")) {
+                        JSONArray data = response.getJSONArray("data");
+                        if (data.length() == 0) {
+                            tvEmptyClasses.setVisibility(View.VISIBLE);
+                            rvKelas.setVisibility(View.GONE);
+                        } else {
+                            tvEmptyClasses.setVisibility(View.GONE);
+                            rvKelas.setVisibility(View.VISIBLE);
+                            KelasAdapter adapter = new KelasAdapter(data, kelasObj -> {
+                                try {
+                                    Intent intent = new Intent(DosenDashboardActivity.this, DosenClassDetailActivity.class);
+                                    intent.putExtra("classId", kelasObj.getInt("id"));
+                                    startActivity(intent);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            });
+                            rvKelas.setAdapter(adapter);
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(DosenDashboardActivity.this, "Format data salah", Toast.LENGTH_SHORT).show();
+                }
             }
-        };
 
-        Volley.newRequestQueue(this).add(request);
+            @Override
+            public void onError(Exception error, com.android.volley.VolleyError volleyError) {
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(DosenDashboardActivity.this, "Gagal memuat daftar kelas", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void showProfileMenu(View v) {
@@ -159,28 +150,16 @@ public class DosenDashboardActivity extends AppCompatActivity {
     }
 
     private void changePassword(String oldPass, String newPass) {
-        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/auth/change-password";
-        SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
-        String token = prefs.getString("jwt_token", "");
+        com.rahman.ifunjaniexam.network.AuthApiService.changePassword(this, oldPass, newPass, new com.rahman.ifunjaniexam.network.AuthApiService.AuthCallback() {
+            @Override
+            public void onSuccess(org.json.JSONObject response) {
+                Toast.makeText(DosenDashboardActivity.this, "Password berhasil diubah", Toast.LENGTH_SHORT).show();
+            }
 
-        try {
-            org.json.JSONObject body = new org.json.JSONObject();
-            body.put("oldPassword", oldPass);
-            body.put("newPassword", newPass);
-
-            com.android.volley.toolbox.JsonObjectRequest request = new com.android.volley.toolbox.JsonObjectRequest(
-                    com.android.volley.Request.Method.PUT, url, body,
-                    response -> Toast.makeText(this, "Password berhasil diubah", Toast.LENGTH_SHORT).show(),
-                    error -> Toast.makeText(this, "Gagal mengubah password", Toast.LENGTH_SHORT).show()
-            ) {
-                @Override
-                public java.util.Map<String, String> getHeaders() {
-                    java.util.Map<String, String> headers = new java.util.HashMap<>();
-                    headers.put("Authorization", "Bearer " + token);
-                    return headers;
-                }
-            };
-            com.android.volley.toolbox.Volley.newRequestQueue(this).add(request);
-        } catch (Exception e) { e.printStackTrace(); }
+            @Override
+            public void onError(Exception error, com.android.volley.VolleyError volleyError) {
+                Toast.makeText(DosenDashboardActivity.this, "Gagal mengubah password", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

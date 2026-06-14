@@ -37,4 +37,35 @@ public class AuthApiService {
 
         Volley.newRequestQueue(context).add(request);
     }
+
+    public static void changePassword(Context context, String oldPassword, String newPassword, AuthCallback callback) {
+        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/auth/change-password";
+        SharedPreferences prefs = context.getSharedPreferences("AUTH_PREF", Context.MODE_PRIVATE);
+        String token = prefs.getString("jwt_token", "");
+
+        JSONObject postData = new JSONObject();
+        try {
+            postData.put("oldPassword", oldPassword);
+            postData.put("newPassword", newPassword);
+        } catch (org.json.JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.PUT,
+                url,
+                postData,
+                response -> callback.onSuccess(response),
+                error -> callback.onError(error, error)
+        ) {
+            @Override
+            public java.util.Map<String, String> getHeaders() {
+                java.util.Map<String, String> headers = new java.util.HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+        };
+
+        Volley.newRequestQueue(context).add(request);
+    }
 }

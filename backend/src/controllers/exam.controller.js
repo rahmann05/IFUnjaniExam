@@ -58,11 +58,27 @@ async function submitExam(req, res) {
   const { answers, score } = req.body; 
   const mahasiswaId = req.user.profileId;
 
+  if (!mahasiswaId) {
+    return res.status(401).json({ success: false, message: 'Profil mahasiswa tidak ditemukan di token. Silakan login ulang.' });
+  }
+
   if (!answers || !Array.isArray(answers) || score === undefined) {
     return res.status(400).json({ success: false, message: 'Format jawaban atau score tidak valid' });
   }
 
   try {
+    // Cek apakah mahasiswa sudah pernah submit ujian ini (anti-duplicate)
+    const existingAttempt = await prisma.examAttempt.findUnique({
+      where: { examId_mahasiswaId: { examId, mahasiswaId } }
+    });
+    if (existingAttempt) {
+      return res.status(409).json({
+        success: false,
+        message: 'Ujian sudah pernah dikumpulkan sebelumnya.',
+        data: { score: existingAttempt.score, attemptId: existingAttempt.id }
+      });
+    }
+
     const attemptAnswers = answers.map(a => ({
       questionId: a.questionId,
       selectedOptionId: a.selectedOptionId || null,
@@ -89,6 +105,10 @@ async function submitExam(req, res) {
 
   } catch (error) {
     console.error(error);
+    // Tangani error constraint unique secara spesifik
+    if (error.code === 'P2002') {
+      return res.status(409).json({ success: false, message: 'Ujian sudah pernah dikumpulkan.' });
+    }
     return res.status(500).json({ success: false, message: 'Gagal memproses pengumpulan ujian' });
   }
 }
@@ -141,19 +161,63 @@ async function createExam(req, res) {
 
 async function getExamResults(req, res) {
   const examId = parseInt(req.params.id);
+  const dosenId = req.user.profileId;
   
   try {
-    const results = await prisma.examAttempt.findMany({
-      where: { examId },
+    const exam = await prisma.exam.findUnique({
+      where: { id: examId },
       include: {
-        mahasiswa: true
-      },
-      orderBy: {
-        score: 'desc'
+        kelas: {
+          include: {
+            mahasiswa: {
+              include: {
+                mahasiswa: true
+              }
+            }
+          }
+        },
+        attempts: {
+          include: {
+            mahasiswa: true
+          }
+        }
       }
     });
 
-    return res.status(200).json({ success: true, data: results });
+    if (!exam) return res.status(404).json({ success: false, message: 'Ujian tidak ditemukan' });
+
+    // Pastikan dosen yang request adalah pemilik kelas ujian ini
+    if (exam.kelas.dosenId !== dosenId) {
+      return res.status(403).json({ success: false, message: 'Akses ditolak. Anda bukan pengampu kelas ini.' });
+    }
+
+    const enrolledStudents = exam.kelas.mahasiswa.map(km => km.mahasiswa);
+    const attempts = exam.attempts;
+
+    const completed = [];
+    const notCompleted = [];
+
+    enrolledStudents.forEach(student => {
+      const attempt = attempts.find(a => a.mahasiswaId === student.id);
+      if (attempt) {
+        completed.push({
+          ...student,
+          attempt: attempt
+        });
+      } else {
+        notCompleted.push(student);
+      }
+    });
+
+    completed.sort((a, b) => (b.attempt.score || 0) - (a.attempt.score || 0));
+
+    return res.status(200).json({ 
+      success: true, 
+      data: {
+        completed,
+        notCompleted
+      }
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ success: false, message: 'Gagal mengambil hasil ujian' });

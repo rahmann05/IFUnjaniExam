@@ -24,8 +24,8 @@ import java.util.Map;
 
 public class DosenClassDetailActivity extends AppCompatActivity {
 
-    private TextView tvClassName, tvCourseName, tvSemester, tvStudentCount, tvEmptyExams;
-    private RecyclerView rvExams;
+    private TextView tvClassName, tvCourseName, tvSemester, tvStudentCount, tvEmptyExams, tvEmptyStudents;
+    private RecyclerView rvExams, rvStudents;
     private ProgressBar progressBar;
     private int classId;
 
@@ -46,16 +46,24 @@ public class DosenClassDetailActivity extends AppCompatActivity {
         tvSemester = findViewById(R.id.tvSemester);
         tvStudentCount = findViewById(R.id.tvStudentCount);
         tvEmptyExams = findViewById(R.id.tvEmptyExams);
+        tvEmptyStudents = findViewById(R.id.tvEmptyStudents);
         rvExams = findViewById(R.id.rvExams);
+        rvStudents = findViewById(R.id.rvStudents);
         progressBar = findViewById(R.id.progressBar);
 
         rvExams.setLayoutManager(new LinearLayoutManager(this));
+        rvStudents.setLayoutManager(new LinearLayoutManager(this));
 
         findViewById(R.id.btnCreateExam).setOnClickListener(v -> {
             Intent intent = new Intent(this, CreateExamActivity.class);
             intent.putExtra("classId", classId);
             startActivity(intent);
         });
+
+        View btnBack = findViewById(R.id.btnBack);
+        if (btnBack != null) {
+            btnBack.setOnClickListener(v -> finish());
+        }
     }
 
     @Override
@@ -121,6 +129,14 @@ public class DosenClassDetailActivity extends AppCompatActivity {
                                 });
                                 rvExams.setAdapter(adapter);
                             }
+                            if (mahasiswa.length() == 0) {
+                                tvEmptyStudents.setVisibility(View.VISIBLE);
+                                rvStudents.setVisibility(View.GONE);
+                            } else {
+                                tvEmptyStudents.setVisibility(View.GONE);
+                                rvStudents.setVisibility(View.VISIBLE);
+                                rvStudents.setAdapter(new StudentClassAdapter(mahasiswa));
+                            }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -140,6 +156,43 @@ public class DosenClassDetailActivity extends AppCompatActivity {
         };
 
         Volley.newRequestQueue(this).add(request);
+    }
+    
+    // ── Inner Adapter: Student list ───────────────────────────────────────────
+    private static class StudentClassAdapter extends RecyclerView.Adapter<StudentClassAdapter.VH> {
+        private final JSONArray data;
+        StudentClassAdapter(JSONArray data) { this.data = data; }
+
+        @androidx.annotation.NonNull
+        @Override
+        public VH onCreateViewHolder(@androidx.annotation.NonNull android.view.ViewGroup parent, int viewType) {
+            View v = android.view.LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_student_class, parent, false);
+            return new VH(v);
+        }
+
+        @Override
+        public void onBindViewHolder(@androidx.annotation.NonNull VH holder, int position) {
+            try {
+                JSONObject entry = data.getJSONObject(position);
+                JSONObject mhs = entry.optJSONObject("mahasiswa");
+                if (mhs != null) {
+                    holder.tvName.setText(mhs.optString("name", "-"));
+                    holder.tvNim.setText("NIM: " + mhs.optString("nim", "-"));
+                }
+            } catch (Exception e) { e.printStackTrace(); }
+        }
+
+        @Override public int getItemCount() { return data != null ? data.length() : 0; }
+
+        static class VH extends RecyclerView.ViewHolder {
+            TextView tvName, tvNim;
+            VH(View v) {
+                super(v);
+                tvName = v.findViewById(R.id.tvStudentName);
+                tvNim  = v.findViewById(R.id.tvStudentNim);
+            }
+        }
     }
     
     private void showConfirmDialog(JSONObject exam, String action) {
