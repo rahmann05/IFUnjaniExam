@@ -26,7 +26,7 @@ public class UploadcareService {
                 byte[] fileBytes = getBytes(inputStream);
                 String boundary = "----WebKitFormBoundary7MA4YWxkTrZu0gW";
                 
-                URL url = new URL("https://upload.uploadcare.com/base/");
+                java.net.URL url = new java.net.URI("https://upload.uploadcare.com/base/").toURL();
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setDoOutput(true);
                 conn.setRequestMethod("POST");
