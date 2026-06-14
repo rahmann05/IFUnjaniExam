@@ -27,6 +27,12 @@
             android:name=".DosenClassDetailActivity"
             android:exported="false" />
         <activity
+            android:name=".ExamResultsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".StudentAnswerSheetActivity"
+            android:exported="false" />
+        <activity
             android:name=".ExamListActivity"
             android:exported="false" />
         <activity

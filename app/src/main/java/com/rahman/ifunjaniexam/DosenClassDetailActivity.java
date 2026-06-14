@@ -95,7 +95,14 @@ public class DosenClassDetailActivity extends AppCompatActivity {
                                 rvExams.setVisibility(View.VISIBLE);
                                 
                                 ExamListAdapter adapter = new ExamListAdapter(exams, examObj -> {
-                                    Toast.makeText(this, "Fitur Lihat Hasil Ujian sedang dibangun", Toast.LENGTH_SHORT).show();
+                                    try {
+                                        Intent intent = new Intent(DosenClassDetailActivity.this, ExamResultsActivity.class);
+                                        intent.putExtra("examId", examObj.getInt("id"));
+                                        intent.putExtra("examTitle", examObj.getString("title"));
+                                        startActivity(intent);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                 });
                                 rvExams.setAdapter(adapter);
                             }
