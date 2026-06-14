@@ -2,7 +2,10 @@ const prisma = require('../config/db');
 
 async function getExams(req, res) {
   try {
+    const { classId } = req.query;
+    const whereClause = classId ? { classId: parseInt(classId) } : {};
     const exams = await prisma.exam.findMany({
+      where: whereClause,
       include: {
         kelas: {
           include: {
