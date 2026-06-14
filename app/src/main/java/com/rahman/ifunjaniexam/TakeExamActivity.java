@@ -141,7 +141,7 @@ public class TakeExamActivity extends AppCompatActivity {
 
     private void loadQuestions() {
         progressBar.setVisibility(View.VISIBLE);
-        String url = "https://if-unjani-exam-api.vercel.app/api/exams/" + examId + "/questions";
+        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/exams/" + examId + "/questions";
 
         SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
         String token = prefs.getString("jwt_token", "");
@@ -238,7 +238,7 @@ public class TakeExamActivity extends AppCompatActivity {
     }
     
     private void checkExamStatus() {
-        String url = "https://if-unjani-exam-api.vercel.app/api/exams/" + examId + "/status";
+        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/exams/" + examId + "/status";
         SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
         String token = prefs.getString("jwt_token", "");
 
@@ -449,7 +449,7 @@ public class TakeExamActivity extends AppCompatActivity {
 
     private void sendResultsToServer(double score, JSONArray answers) {
         progressBar.setVisibility(View.VISIBLE);
-        String url = "https://if-unjani-exam-api.vercel.app/api/exams/" + examId + "/submit";
+        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/exams/" + examId + "/submit";
 
         SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
         String token = prefs.getString("jwt_token", "");

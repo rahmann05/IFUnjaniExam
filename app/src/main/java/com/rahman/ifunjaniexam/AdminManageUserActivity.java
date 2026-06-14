@@ -72,7 +72,7 @@ public class AdminManageUserActivity extends AppCompatActivity {
 
     private void loadUsers() {
         progressBar.setVisibility(View.VISIBLE);
-        String url = "https://if-unjani-exam-api.vercel.app/api/admin/users?role=" + currentRole;
+        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/admin/users?role=" + currentRole;
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
@@ -120,7 +120,7 @@ public class AdminManageUserActivity extends AppCompatActivity {
     }
 
     private void deleteUser(int userId) {
-        String url = "https://if-unjani-exam-api.vercel.app/api/admin/users/" + userId;
+        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/admin/users/" + userId;
         StringRequest request = new StringRequest(Request.Method.DELETE, url,
                 responseStr -> {
                     try {
@@ -180,7 +180,7 @@ public class AdminManageUserActivity extends AppCompatActivity {
             return;
         }
 
-        String url = "https://if-unjani-exam-api.vercel.app/api/admin/users";
+        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/admin/users";
         try {
             JSONObject body = new JSONObject();
             body.put("username", username);

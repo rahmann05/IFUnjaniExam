@@ -62,7 +62,7 @@ public class StudentAnswerSheetActivity extends AppCompatActivity {
 
     private void loadAttemptDetail() {
         progressBar.setVisibility(View.VISIBLE);
-        String url = "https://if-unjani-exam-api.vercel.app/api/exams/attempts/" + attemptId;
+        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/exams/attempts/" + attemptId;
 
         SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
         String token = prefs.getString("jwt_token", "");
@@ -122,7 +122,7 @@ public class StudentAnswerSheetActivity extends AppCompatActivity {
     }
 
     private void updateScore(double newScore) {
-        String url = "https://if-unjani-exam-api.vercel.app/api/exams/attempts/" + attemptId + "/grade";
+        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/exams/attempts/" + attemptId + "/grade";
         SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
         String token = prefs.getString("jwt_token", "");
 

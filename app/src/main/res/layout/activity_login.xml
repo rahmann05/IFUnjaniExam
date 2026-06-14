@@ -69,7 +69,7 @@
                     android:id="@+id/etUsername"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="2350081149"
+                    android:hint="20230001"
                     android:padding="16dp"
                     android:textColorHint="#95a5a6"
                     android:inputType="text" />

@@ -60,7 +60,7 @@ public class MahasiswaClassDetailActivity extends AppCompatActivity {
 
     private void loadClassDetails() {
         progressBar.setVisibility(View.VISIBLE);
-        String url = "https://if-unjani-exam-api.vercel.app/api/kelas/" + classId;
+        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/kelas/" + classId;
 
         SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
         String token = prefs.getString("jwt_token", "");

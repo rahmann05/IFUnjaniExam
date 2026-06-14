@@ -53,7 +53,7 @@ public class ExamListActivity extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
         tvEmptyState.setVisibility(View.GONE);
 
-        String url = "https://if-unjani-exam-api.vercel.app/api/exams?classId=" + classId;
+        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/exams?classId=" + classId;
         SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
         String token = prefs.getString("jwt_token", "");
 

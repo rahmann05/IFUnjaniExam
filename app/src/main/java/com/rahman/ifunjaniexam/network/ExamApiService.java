@@ -17,7 +17,7 @@ public class ExamApiService {
     }
 
     public static void createExam(Context context, JSONObject payload, ApiCallback callback) {
-        String url = "https://if-unjani-exam-api.vercel.app/api/exams/create";
+        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/exams/create";
         SharedPreferences prefs = context.getSharedPreferences("AUTH_PREF", Context.MODE_PRIVATE);
         String token = prefs.getString("jwt_token", "");
 

@@ -52,7 +52,7 @@ public class AdminManageClassActivity extends AppCompatActivity {
 
     private void loadClasses() {
         progressBar.setVisibility(View.VISIBLE);
-        String url = "https://if-unjani-exam-api.vercel.app/api/admin/classes";
+        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/admin/classes";
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
@@ -130,7 +130,7 @@ public class AdminManageClassActivity extends AppCompatActivity {
     }
 
     private void updateClassMembers(int classId, String type, String memberId) {
-        String url = "https://if-unjani-exam-api.vercel.app/api/admin/classes/" + classId + "/" + type;
+        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/admin/classes/" + classId + "/" + type;
         int method = type.equals("mahasiswa") ? Request.Method.POST : Request.Method.PUT;
         try {
             JSONObject body = new JSONObject();
@@ -177,7 +177,7 @@ public class AdminManageClassActivity extends AppCompatActivity {
     }
 
     private void deleteClass(int classId) {
-        String url = "https://if-unjani-exam-api.vercel.app/api/admin/classes/" + classId;
+        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/admin/classes/" + classId;
         StringRequest request = new StringRequest(Request.Method.DELETE, url,
                 responseStr -> {
                     try {
@@ -234,7 +234,7 @@ public class AdminManageClassActivity extends AppCompatActivity {
             return;
         }
 
-        String url = "https://if-unjani-exam-api.vercel.app/api/admin/classes";
+        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/admin/classes";
         try {
             JSONObject body = new JSONObject();
             body.put("name", name);

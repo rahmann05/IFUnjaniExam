@@ -47,7 +47,7 @@ public class AdminApprovalActivity extends AppCompatActivity {
 
     private void loadRequests() {
         progressBar.setVisibility(View.VISIBLE);
-        String url = "https://if-unjani-exam-api.vercel.app/api/admin/requests";
+        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/admin/requests";
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
@@ -92,7 +92,7 @@ public class AdminApprovalActivity extends AppCompatActivity {
     }
 
     private void processApproval(int reqId, String action) {
-        String url = "https://if-unjani-exam-api.vercel.app/api/admin/requests/" + reqId;
+        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/admin/requests/" + reqId;
         try {
             JSONObject body = new JSONObject();
             body.put("action", action);

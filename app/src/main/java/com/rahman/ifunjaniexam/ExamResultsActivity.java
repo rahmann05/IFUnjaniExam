@@ -58,7 +58,7 @@ public class ExamResultsActivity extends AppCompatActivity {
 
     private void loadResults() {
         progressBar.setVisibility(View.VISIBLE);
-        String url = "https://if-unjani-exam-api.vercel.app/api/exams/" + examId + "/results";
+        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/exams/" + examId + "/results";
 
         SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
         String token = prefs.getString("jwt_token", "");

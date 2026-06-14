@@ -17,7 +17,7 @@ public class AuthApiService {
     }
 
     public static void login(Context context, String username, String password, AuthCallback callback) {
-        String url = "https://if-unjani-exam-api.vercel.app/api/auth/login";
+        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/auth/login";
 
         JSONObject postData = new JSONObject();
         try {

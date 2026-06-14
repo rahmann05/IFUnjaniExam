@@ -66,7 +66,7 @@ public class DosenClassDetailActivity extends AppCompatActivity {
 
     private void loadClassDetails() {
         progressBar.setVisibility(View.VISIBLE);
-        String url = "https://if-unjani-exam-api.vercel.app/api/kelas/" + classId;
+        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/kelas/" + classId;
 
         SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
         String token = prefs.getString("jwt_token", "");
@@ -168,7 +168,7 @@ public class DosenClassDetailActivity extends AppCompatActivity {
     }
 
     private void performDelete(int examId, String examTitle) {
-        String url = "https://if-unjani-exam-api.vercel.app/api/exams/" + examId;
+        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/exams/" + examId;
         SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
         String token = prefs.getString("jwt_token", "");
 
@@ -225,7 +225,7 @@ public class DosenClassDetailActivity extends AppCompatActivity {
     }
 
     private void sendApprovalRequest(int examId, String requestType) {
-        String url = "https://if-unjani-exam-api.vercel.app/api/exams/" + examId + "/request-approval";
+        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/exams/" + examId + "/request-approval";
         SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
         String token = prefs.getString("jwt_token", "");
 
@@ -261,7 +261,7 @@ public class DosenClassDetailActivity extends AppCompatActivity {
     private void updateExamStatus(JSONObject exam, String newStatus) {
         try {
             int examId = exam.getInt("id");
-            String url = "https://if-unjani-exam-api.vercel.app/api/exams/" + examId + "/status";
+            String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/exams/" + examId + "/status";
             SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
             String token = prefs.getString("jwt_token", "");
 

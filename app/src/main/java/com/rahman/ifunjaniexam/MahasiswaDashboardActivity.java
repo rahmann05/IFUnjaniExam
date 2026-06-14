@@ -56,7 +56,7 @@ public class MahasiswaDashboardActivity extends AppCompatActivity {
     }
 
     private void joinClass(String classId) {
-        String url = "https://if-unjani-exam-api.vercel.app/api/kelas/join";
+        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/kelas/join";
         SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
         String token = prefs.getString("jwt_token", "");
 
@@ -142,7 +142,7 @@ public class MahasiswaDashboardActivity extends AppCompatActivity {
     }
 
     private void changePassword(String oldPass, String newPass) {
-        String url = "https://if-unjani-exam-api.vercel.app/api/auth/change-password";
+        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/auth/change-password";
         SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
         String token = prefs.getString("jwt_token", "");
 
