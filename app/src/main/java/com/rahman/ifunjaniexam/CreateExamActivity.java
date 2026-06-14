@@ -166,7 +166,11 @@ public class CreateExamActivity extends AppCompatActivity {
         String end = ((EditText) findViewById(R.id.etEndTime)).getText().toString();
         String durationStr = ((EditText) findViewById(R.id.etDuration)).getText().toString();
 
-        if (title.isEmpty() || start.isEmpty() || end.isEmpty() || durationStr.isEmpty()) {
+        Spinner spCategory = findViewById(R.id.spCategory);
+        String category = spCategory.getSelectedItem().toString();
+        String weightStr = ((EditText) findViewById(R.id.etExamWeight)).getText().toString();
+
+        if (title.isEmpty() || start.isEmpty() || end.isEmpty() || durationStr.isEmpty() || weightStr.isEmpty()) {
             Toast.makeText(this, "Harap lengkapi detail ujian", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -176,6 +180,8 @@ public class CreateExamActivity extends AppCompatActivity {
             payload.put("title", title);
             payload.put("description", desc);
             payload.put("classId", classId);
+            payload.put("category", category);
+            payload.put("weight", Double.parseDouble(weightStr));
             payload.put("startTime", start.replace(" ", "T") + ":00Z");
             payload.put("endTime", end.replace(" ", "T") + ":00Z");
             payload.put("durationMinutes", Integer.parseInt(durationStr));
@@ -184,6 +190,9 @@ public class CreateExamActivity extends AppCompatActivity {
             for (View qView : questionViews) {
                 JSONObject qObj = new JSONObject();
                 String qText = ((EditText) qView.findViewById(R.id.etQuestionText)).getText().toString();
+                String marksStr = ((EditText) qView.findViewById(R.id.etQuestionMarks)).getText().toString();
+                int marks = marksStr.isEmpty() ? 10 : Integer.parseInt(marksStr);
+                
                 String imageUrl = (String) qView.getTag();
                 Spinner spinner = qView.findViewById(R.id.spinnerType);
                 boolean isEssay = spinner.getSelectedItemPosition() == 1;
@@ -192,7 +201,7 @@ public class CreateExamActivity extends AppCompatActivity {
                 if (imageUrl != null && !imageUrl.isEmpty()) {
                     qObj.put("imageUrl", imageUrl);
                 }
-                qObj.put("marks", 10);
+                qObj.put("marks", marks);
                 qObj.put("type", isEssay ? "ESSAY" : "MULTIPLE_CHOICE");
 
                 if (isEssay) {

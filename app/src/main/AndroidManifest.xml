@@ -24,6 +24,9 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".DosenClassDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".ExamListActivity"
             android:exported="false" />
         <activity

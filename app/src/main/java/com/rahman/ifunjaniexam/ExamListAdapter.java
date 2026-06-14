@@ -37,7 +37,12 @@ public class ExamListAdapter extends RecyclerView.Adapter<ExamListAdapter.ExamVi
         try {
             JSONObject examObj = examList.getJSONObject(position);
             holder.tvExamTitle.setText(examObj.getString("title"));
-            holder.tvExamDesc.setText(examObj.optString("description", "Tidak ada deskripsi"));
+            
+            String category = examObj.optString("category", "OTHER");
+            String weight = examObj.optString("weight", "100");
+            String desc = examObj.optString("description", "Tidak ada deskripsi");
+            
+            holder.tvExamDesc.setText("[" + category + " - Bobot: " + weight + "%]\n" + desc);
             holder.tvDuration.setText(examObj.getString("durationMinutes") + " Menit");
             
             String startTime = examObj.getString("startTime").replace("T", " ").replace("Z", "");

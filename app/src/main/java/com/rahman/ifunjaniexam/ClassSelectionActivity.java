@@ -58,7 +58,7 @@ public class ClassSelectionActivity extends AppCompatActivity {
                                     
                                     android.content.Intent intent;
                                     if ("DOSEN".equals(role)) {
-                                        intent = new android.content.Intent(this, CreateExamActivity.class);
+                                        intent = new android.content.Intent(this, DosenClassDetailActivity.class);
                                     } else {
                                         intent = new android.content.Intent(this, ExamListActivity.class);
                                     }

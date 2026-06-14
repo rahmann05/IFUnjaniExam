@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="exam_categories">
+        <item>POST_TEST</item>
+        <item>QUIZ</item>
+        <item>UTS</item>
+        <item>UAS</item>
+        <item>OTHER</item>
+    </string-array>
+</resources>
