@@ -10,4 +10,7 @@ router.get('/:id/questions', examController.getExamQuestions);
 router.post('/create', requireRole('DOSEN'), examController.createExam);
 router.post('/:id/submit', requireRole('MAHASISWA'), examController.submitExam);
 
+router.get('/:id/results', requireRole('DOSEN'), examController.getExamResults);
+router.get('/attempts/:id', requireRole('DOSEN'), examController.getAttemptDetail);
+
 module.exports = router;

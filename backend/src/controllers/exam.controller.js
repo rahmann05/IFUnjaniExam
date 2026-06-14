@@ -139,4 +139,56 @@ async function createExam(req, res) {
   }
 }
 
-module.exports = { getExams, getExamQuestions, submitExam, createExam };
+async function getExamResults(req, res) {
+  const examId = parseInt(req.params.id);
+  
+  try {
+    const results = await prisma.examAttempt.findMany({
+      where: { examId },
+      include: {
+        mahasiswa: true
+      },
+      orderBy: {
+        score: 'desc'
+      }
+    });
+
+    return res.status(200).json({ success: true, data: results });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: 'Gagal mengambil hasil ujian' });
+  }
+}
+
+async function getAttemptDetail(req, res) {
+  const attemptId = parseInt(req.params.id);
+  
+  try {
+    const attempt = await prisma.examAttempt.findUnique({
+      where: { id: attemptId },
+      include: {
+        mahasiswa: true,
+        exam: true,
+        answers: {
+          include: {
+            question: {
+              include: {
+                options: true
+              }
+            },
+            selectedOption: true
+          }
+        }
+      }
+    });
+
+    if (!attempt) return res.status(404).json({ success: false, message: 'Data attempt tidak ditemukan' });
+
+    return res.status(200).json({ success: true, data: attempt });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: 'Gagal mengambil detail lembar jawaban' });
+  }
+}
+
+module.exports = { getExams, getExamQuestions, submitExam, createExam, getExamResults, getAttemptDetail };
