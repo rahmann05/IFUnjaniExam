@@ -124,11 +124,22 @@ model Exam {
   endTime         DateTime
   durationMinutes Int
 
+  category        ExamCategory @default(OTHER)
+  weight          Float        @default(100.0) // Bobot Ujian (percentage)
+
   questions       Question[]
   attempts        ExamAttempt[]
 
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+}
+
+enum ExamCategory {
+  QUIZ
+  POST_TEST
+  UTS
+  UAS
+  OTHER
 }
 
 enum QuestionType {

@@ -33,3 +33,31 @@ exports.getMyClasses = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.getClassDetail = async (req, res, next) => {
+  try {
+    const classId = parseInt(req.params.id);
+    const kelas = await prisma.kelas.findUnique({
+      where: { id: classId },
+      include: {
+        course: true,
+        semester: true,
+        dosen: true,
+        exams: true,
+        mahasiswa: {
+          include: {
+            mahasiswa: true
+          }
+        }
+      }
+    });
+
+    if (!kelas) {
+      return res.status(404).json({ success: false, message: 'Kelas tidak ditemukan' });
+    }
+
+    res.json({ success: true, data: kelas });
+  } catch (error) {
+    next(error);
+  }
+};

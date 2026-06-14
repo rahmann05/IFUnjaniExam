@@ -99,13 +99,15 @@ async function createExam(req, res) {
       return res.status(403).json({ success: false, message: 'Hanya Dosen yang bisa membuat ujian' });
     }
 
-    const { title, description, classId, startTime, endTime, durationMinutes, questions } = req.body;
+    const { title, description, classId, startTime, endTime, durationMinutes, category, weight, questions } = req.body;
 
     const exam = await prisma.exam.create({
       data: {
         title,
         description,
         classId,
+        category: category || 'OTHER',
+        weight: weight !== undefined ? parseFloat(weight) : 100.0,
         startTime: new Date(startTime),
         endTime: new Date(endTime),
         durationMinutes,
