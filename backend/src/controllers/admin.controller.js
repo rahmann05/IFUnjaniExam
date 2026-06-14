@@ -146,17 +146,15 @@ async function addMahasiswaToClass(req, res) {
     const classId = parseInt(req.params.id);
     const { mahasiswaId } = req.body;
     
-    await prisma.kelas.update({
-      where: { id: classId },
+    await prisma.kelasMahasiswa.create({
       data: {
-        mahasiswa: {
-          connect: { id: parseInt(mahasiswaId) }
-        }
+        classId: classId,
+        mahasiswaId: parseInt(mahasiswaId)
       }
     });
     res.json({ success: true, message: 'Mahasiswa berhasil ditambahkan ke kelas' });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Gagal menambahkan mahasiswa ke kelas' });
+    res.status(500).json({ success: false, message: 'Gagal menambahkan mahasiswa ke kelas (Mungkin sudah terdaftar)' });
   }
 }
 

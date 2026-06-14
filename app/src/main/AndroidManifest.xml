@@ -39,6 +39,9 @@
             android:name=".AdminManageClassActivity"
             android:exported="false" />
         <activity
+            android:name=".MahasiswaClassDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".ExamResultsActivity"
             android:exported="false" />
         <activity
