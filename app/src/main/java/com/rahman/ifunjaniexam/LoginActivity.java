@@ -61,6 +61,7 @@ public class LoginActivity extends AppCompatActivity {
                             String token = response.getString("token");
                             org.json.JSONObject data = response.getJSONObject("data");
                             String role = data.getString("role");
+                            int profileId = data.optInt("profileId", -1);
 
                             // Simpan token, role, dan username ke SharedPreferences
                             getSharedPreferences("AUTH_PREF", MODE_PRIVATE)
@@ -68,6 +69,7 @@ public class LoginActivity extends AppCompatActivity {
                                     .putString("jwt_token", token)
                                     .putString("role", role)
                                     .putString("username", username)
+                                    .putInt("profileId", profileId)
                                     .apply();
 
                             Toast.makeText(this, "Login Berhasil", Toast.LENGTH_SHORT).show();
@@ -76,6 +78,8 @@ public class LoginActivity extends AppCompatActivity {
                             Intent intent;
                             if ("DOSEN".equals(role)) {
                                 intent = new Intent(LoginActivity.this, DosenDashboardActivity.class);
+                            } else if ("ADMIN".equals(role)) {
+                                intent = new Intent(LoginActivity.this, AdminDashboardActivity.class);
                             } else {
                                 intent = new Intent(LoginActivity.this, MahasiswaDashboardActivity.class);
                             }

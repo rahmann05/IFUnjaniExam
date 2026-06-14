@@ -66,16 +66,16 @@ public class ExamListActivity extends AppCompatActivity {
                             if (data.length() == 0) {
                                 tvEmptyState.setVisibility(View.VISIBLE);
                             } else {
-                                ExamListAdapter adapter = new ExamListAdapter(data, examObj -> {
+                                ExamListAdapter adapter = new ExamListAdapter(data, false, examObj -> {
                                     try {
-                                        Intent intent = new Intent(this, TakeExamActivity.class);
+                                        Intent intent = new Intent(ExamListActivity.this, TakeExamActivity.class);
                                         intent.putExtra("examId", examObj.getInt("id"));
                                         intent.putExtra("examTitle", examObj.getString("title"));
                                         startActivity(intent);
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
-                                });
+                                }, null);
                                 rvExams.setAdapter(adapter);
                             }
                         }

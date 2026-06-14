@@ -27,6 +27,9 @@
             android:name=".DosenClassDetailActivity"
             android:exported="false" />
         <activity
+            android:name=".AdminDashboardActivity"
+            android:exported="false" />
+        <activity
             android:name=".ExamResultsActivity"
             android:exported="false" />
         <activity

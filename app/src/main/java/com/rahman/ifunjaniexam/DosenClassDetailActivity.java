@@ -94,7 +94,7 @@ public class DosenClassDetailActivity extends AppCompatActivity {
                                 tvEmptyExams.setVisibility(View.GONE);
                                 rvExams.setVisibility(View.VISIBLE);
                                 
-                                ExamListAdapter adapter = new ExamListAdapter(exams, examObj -> {
+                                ExamListAdapter adapter = new ExamListAdapter(exams, true, examObj -> {
                                     try {
                                         Intent intent = new Intent(DosenClassDetailActivity.this, ExamResultsActivity.class);
                                         intent.putExtra("examId", examObj.getInt("id"));
@@ -102,6 +102,16 @@ public class DosenClassDetailActivity extends AppCompatActivity {
                                         startActivity(intent);
                                     } catch (Exception e) {
                                         e.printStackTrace();
+                                    }
+                                }, new ExamListAdapter.OnOptionClickListener() {
+                                    @Override
+                                    public void onEditClick(JSONObject exam) {
+                                        showConfirmDialog(exam, "EDIT");
+                                    }
+
+                                    @Override
+                                    public void onDeleteClick(JSONObject exam) {
+                                        showConfirmDialog(exam, "DELETE");
                                     }
                                 });
                                 rvExams.setAdapter(adapter);
@@ -125,5 +135,121 @@ public class DosenClassDetailActivity extends AppCompatActivity {
         };
 
         Volley.newRequestQueue(this).add(request);
+    }
+    
+    private void showConfirmDialog(JSONObject exam, String action) {
+        try {
+            int examId = exam.getInt("id");
+            String title = exam.getString("title");
+            String message = action.equals("DELETE") 
+                ? "Apakah Anda yakin ingin menghapus ujian '" + title + "'?"
+                : "Apakah Anda yakin ingin mengedit ujian '" + title + "'?";
+
+            new android.app.AlertDialog.Builder(this)
+                .setTitle("Konfirmasi")
+                .setMessage(message)
+                .setPositiveButton("Ya", (dialog, which) -> {
+                    if (action.equals("DELETE")) {
+                        performDelete(examId, title);
+                    } else {
+                        Toast.makeText(this, "Fitur edit masih dikembangkan", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Batal", null)
+                .show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void performDelete(int examId, String examTitle) {
+        String url = "https://if-unjani-exam-api.vercel.app/api/exams/" + examId;
+        SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
+        String token = prefs.getString("jwt_token", "");
+
+        com.android.volley.toolbox.StringRequest request = new com.android.volley.toolbox.StringRequest(Request.Method.DELETE, url,
+                responseStr -> {
+                    try {
+                        JSONObject response = new JSONObject(responseStr);
+                        if (response.getBoolean("success")) {
+                            Toast.makeText(this, "Ujian berhasil dihapus", Toast.LENGTH_SHORT).show();
+                            loadClassDetails(); // Reload
+                        } else {
+                            Toast.makeText(this, response.getString("message"), Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                },
+                error -> {
+                    if (error.networkResponse != null && error.networkResponse.statusCode == 403) {
+                        try {
+                            String res = new String(error.networkResponse.data, "utf-8");
+                            JSONObject json = new JSONObject(res);
+                            if (json.optBoolean("requiresApproval", false)) {
+                                showRequestApprovalDialog(examId, examTitle, "DELETE");
+                            } else {
+                                Toast.makeText(this, "Gagal: " + json.getString("message"), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        Toast.makeText(this, "Gagal menghapus ujian", Toast.LENGTH_SHORT).show();
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+        };
+        Volley.newRequestQueue(this).add(request);
+    }
+
+    private void showRequestApprovalDialog(int examId, String examTitle, String requestType) {
+        new android.app.AlertDialog.Builder(this)
+            .setTitle("Persetujuan Dibutuhkan")
+            .setMessage("Ujian '" + examTitle + "' sudah dikerjakan oleh mahasiswa. Anda perlu meminta persetujuan Admin untuk melanjutkan tindakan ini. Kirim permintaan?")
+            .setPositiveButton("Kirim", (dialog, which) -> {
+                sendApprovalRequest(examId, requestType);
+            })
+            .setNegativeButton("Batal", null)
+            .show();
+    }
+
+    private void sendApprovalRequest(int examId, String requestType) {
+        String url = "https://if-unjani-exam-api.vercel.app/api/exams/" + examId + "/request-approval";
+        SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
+        String token = prefs.getString("jwt_token", "");
+
+        try {
+            JSONObject body = new JSONObject();
+            body.put("requestType", requestType);
+            body.put("reason", "Meminta izin dari sistem");
+
+            JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, body,
+                    response -> {
+                        try {
+                            if (response.getBoolean("success")) {
+                                Toast.makeText(this, "Permintaan berhasil dikirim ke Admin", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (Exception e) {}
+                    },
+                    error -> {
+                        Toast.makeText(this, "Gagal mengirim permintaan", Toast.LENGTH_SHORT).show();
+                    }) {
+                @Override
+                public Map<String, String> getHeaders() {
+                    Map<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", "Bearer " + token);
+                    return headers;
+                }
+            };
+            Volley.newRequestQueue(this).add(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
