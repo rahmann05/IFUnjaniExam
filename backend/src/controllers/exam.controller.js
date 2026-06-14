@@ -272,4 +272,25 @@ async function requestApproval(req, res) {
   }
 }
 
-module.exports = { getExams, getExamQuestions, submitExam, createExam, getExamResults, getAttemptDetail, deleteExam, requestApproval };
+async function gradeAttempt(req, res) {
+  const attemptId = parseInt(req.params.id);
+  const { newScore } = req.body;
+  
+  try {
+    if (req.user.role !== 'DOSEN') {
+      return res.status(403).json({ success: false, message: 'Hanya Dosen yang bisa memberi nilai manual' });
+    }
+
+    const attempt = await prisma.examAttempt.update({
+      where: { id: attemptId },
+      data: { score: parseFloat(newScore) }
+    });
+
+    return res.status(200).json({ success: true, message: 'Nilai berhasil diperbarui', data: attempt });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: 'Gagal memperbarui nilai' });
+  }
+}
+
+module.exports = { getExams, getExamQuestions, submitExam, createExam, getExamResults, getAttemptDetail, deleteExam, requestApproval, gradeAttempt };

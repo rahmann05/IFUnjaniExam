@@ -3,69 +3,127 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#f0f3f7">
+    android:background="#f5f6fa">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/topBar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="#27ae60"
+        android:background="#3498db"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/tvExamTitleHeader"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="Mengerjakan Ujian"
+            android:layout_marginEnd="8dp"
+            android:text="Ujian"
             android:textColor="@android:color/white"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textStyle="bold"
+            android:maxLines="1"
+            android:ellipsize="end"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tvTimer"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvTimer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="00:00:00"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <HorizontalScrollView
+        android:id="@+id/hsvGrid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:padding="8dp"
+        android:elevation="4dp"
+        app:layout_constraintTop_toBottomOf="@id/topBar">
+        
+        <LinearLayout
+            android:id="@+id/llGridNav"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" />
+    </HorizontalScrollView>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/topBar"
-        app:layout_constraintBottom_toTopOf="@id/bottomBar">
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@id/bottomBar"
+        app:layout_constraintTop_toBottomOf="@id/hsvGrid">
 
-        <LinearLayout
-            android:id="@+id/llQuestionsContainer"
+        <FrameLayout
+            android:id="@+id/flQuestionContainer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp" />
+            android:layout_height="wrap_content" />
+
     </ScrollView>
 
     <LinearLayout
         android:id="@+id/bottomBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
         android:background="@android:color/white"
         android:elevation="8dp"
-        android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnSubmitExam"
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/btnPrev"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Kumpulkan Jawaban"
-            android:backgroundTint="#27ae60"
-            app:cornerRadius="8dp" />
+            android:layout_weight="1"
+            android:text="Sebelumnya"
+            android:backgroundTint="#95a5a6" />
+
+        <Space
+            android:layout_width="16dp"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btnNext"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Selanjutnya"
+            android:backgroundTint="#3498db" />
+
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btnSubmitExam"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="8dp"
+        android:text="Kumpulkan Ujian"
+        android:backgroundTint="#e74c3c"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/bottomBar" />
 
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

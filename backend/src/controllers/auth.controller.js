@@ -52,4 +52,28 @@ async function login(req, res) {
   }
 }
 
-module.exports = { login };
+async function changePassword(req, res) {
+  try {
+    const { oldPassword, newPassword } = req.body;
+    const userId = req.user.userId;
+
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) return res.status(404).json({ success: false, message: 'User tidak ditemukan' });
+
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isMatch) return res.status(400).json({ success: false, message: 'Password lama salah' });
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await prisma.user.update({
+      where: { id: userId },
+      data: { password: hashedPassword }
+    });
+
+    return res.status(200).json({ success: true, message: 'Password berhasil diubah' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: 'Terjadi kesalahan saat mengubah password' });
+  }
+}
+
+module.exports = { login, changePassword };
