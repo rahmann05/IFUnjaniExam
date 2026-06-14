@@ -26,11 +26,13 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.btnLogin);
 
         btnLogin.setOnClickListener(v -> {
+            com.rahman.ifunjaniexam.utils.FeedbackUtils.clickAnim(v);
             String username = etUsername.getText() != null ? etUsername.getText().toString() : "";
             String password = etPassword.getText() != null ? etPassword.getText().toString() : "";
 
             if (username.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Silakan isi username dan password!", Toast.LENGTH_SHORT).show();
+                com.rahman.ifunjaniexam.utils.FeedbackUtils.shakeView(btnLogin);
+                com.rahman.ifunjaniexam.utils.FeedbackUtils.showSnackbar(v, "Silakan isi username dan password!");
             } else {
                 // REST API Login using Volley
                 loginUser(username, password);
@@ -72,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
                                     .putInt("profileId", profileId)
                                     .apply();
 
-                            Toast.makeText(this, "Login Berhasil", Toast.LENGTH_SHORT).show();
+                            com.rahman.ifunjaniexam.utils.FeedbackUtils.showToast(this, "Login Berhasil");
 
                             // Pindah ke Dashboard Sesuai Role
                             Intent intent;
@@ -87,11 +89,12 @@ public class LoginActivity extends AppCompatActivity {
                             finish();
                         } else {
                             String message = response.optString("message", "Login Gagal");
-                            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                            com.rahman.ifunjaniexam.utils.FeedbackUtils.shakeView(btnLogin);
+                            com.rahman.ifunjaniexam.utils.FeedbackUtils.showSnackbar(btnLogin, message);
                         }
                     } catch (org.json.JSONException e) {
                         e.printStackTrace();
-                        Toast.makeText(this, "Format respon server tidak valid", Toast.LENGTH_SHORT).show();
+                        com.rahman.ifunjaniexam.utils.FeedbackUtils.showSnackbar(btnLogin, "Format respon server tidak valid");
                     }
                 },
                 error -> {
@@ -105,7 +108,8 @@ public class LoginActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     }
-                    Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show();
+                    com.rahman.ifunjaniexam.utils.FeedbackUtils.shakeView(btnLogin);
+                    com.rahman.ifunjaniexam.utils.FeedbackUtils.showSnackbar(btnLogin, errorMsg);
                 }
         );
 

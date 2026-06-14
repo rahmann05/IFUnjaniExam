@@ -61,8 +61,14 @@ public class CreateExamActivity extends AppCompatActivity {
         }
 
         llQuestionsContainer = findViewById(R.id.llQuestionsContainer);
-        findViewById(R.id.btnAddQuestion).setOnClickListener(v -> addQuestionView());
-        findViewById(R.id.btnSaveExam).setOnClickListener(v -> saveExam());
+        findViewById(R.id.btnAddQuestion).setOnClickListener(v -> {
+            com.rahman.ifunjaniexam.utils.FeedbackUtils.clickAnim(v);
+            addQuestionView();
+        });
+        findViewById(R.id.btnSaveExam).setOnClickListener(v -> {
+            com.rahman.ifunjaniexam.utils.FeedbackUtils.clickAnim(v);
+            saveExam();
+        });
 
         android.widget.CheckBox cbManualStart = findViewById(R.id.cbManualStart);
         LinearLayout llTimePicker = findViewById(R.id.llTimePicker);

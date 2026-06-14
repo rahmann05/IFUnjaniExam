@@ -90,10 +90,19 @@ public class TakeExamActivity extends AppCompatActivity {
             tvExamTitleHeader.setText(examTitle);
         }
 
-        btnPrev.setOnClickListener(v -> navigateToQuestion(currentQuestionIndex - 1));
-        btnNext.setOnClickListener(v -> navigateToQuestion(currentQuestionIndex + 1));
+        btnPrev.setOnClickListener(v -> {
+            com.rahman.ifunjaniexam.utils.FeedbackUtils.clickAnim(v);
+            navigateToQuestion(currentQuestionIndex - 1);
+        });
+        btnNext.setOnClickListener(v -> {
+            com.rahman.ifunjaniexam.utils.FeedbackUtils.clickAnim(v);
+            navigateToQuestion(currentQuestionIndex + 1);
+        });
         
-        btnSubmitExam.setOnClickListener(v -> showSubmitDialog());
+        btnSubmitExam.setOnClickListener(v -> {
+            com.rahman.ifunjaniexam.utils.FeedbackUtils.clickAnim(v);
+            showSubmitDialog();
+        });
 
         loadQuestions();
     }
@@ -322,7 +331,10 @@ public class TakeExamActivity extends AppCompatActivity {
         gridBtn.setLayoutParams(lp);
         gridBtn.setBackgroundColor(Color.parseColor("#bdc3c7")); // Default grey
         gridBtn.setTextColor(Color.WHITE);
-        gridBtn.setOnClickListener(v -> navigateToQuestion(index));
+        gridBtn.setOnClickListener(v -> {
+            com.rahman.ifunjaniexam.utils.FeedbackUtils.clickAnim(v);
+            navigateToQuestion(index);
+        });
         
         llGridNav.addView(gridBtn);
         gridButtons.add(gridBtn);
@@ -453,12 +465,12 @@ public class TakeExamActivity extends AppCompatActivity {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload,
                 response -> {
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(this, "Ujian selesai! Skor Anda: " + String.format("%.2f", score), Toast.LENGTH_LONG).show();
+                    com.rahman.ifunjaniexam.utils.FeedbackUtils.showToast(this, "Ujian selesai! Skor Anda: " + String.format("%.2f", score));
                     finish();
                 },
                 error -> {
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(this, "Gagal mengirim jawaban", Toast.LENGTH_SHORT).show();
+                    com.rahman.ifunjaniexam.utils.FeedbackUtils.showToast(this, "Gagal mengirim jawaban");
                     isSubmitted = false;
                 }) {
             @Override
