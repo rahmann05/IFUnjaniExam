@@ -90,6 +90,28 @@ public class MahasiswaClassDetailActivity extends AppCompatActivity {
                                 
                                 ExamListAdapter adapter = new ExamListAdapter(exams, false, examObj -> {
                                     try {
+                                        String status = examObj.optString("status", "PUBLISHED");
+                                        if ("PUBLISHED".equals(status)) {
+                                            String startStr = examObj.optString("startTime", "null");
+                                            if (!"null".equals(startStr) && !startStr.isEmpty()) {
+                                                try {
+                                                    java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                                                    sdf.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+                                                    java.util.Date startDate = sdf.parse(startStr);
+                                                    if (new java.util.Date().before(startDate)) {
+                                                        Toast.makeText(MahasiswaClassDetailActivity.this, "Ujian belum dimulai (Terjadwal)", Toast.LENGTH_SHORT).show();
+                                                        return;
+                                                    }
+                                                } catch (Exception e) {}
+                                            } else {
+                                                Toast.makeText(MahasiswaClassDetailActivity.this, "Ujian belum dimulai", Toast.LENGTH_SHORT).show();
+                                                return;
+                                            }
+                                        } else if ("FINISHED".equals(status)) {
+                                            Toast.makeText(MahasiswaClassDetailActivity.this, "Ujian sudah selesai", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+
                                         Intent intent = new Intent(MahasiswaClassDetailActivity.this, TakeExamActivity.class);
                                         intent.putExtra("examId", examObj.getInt("id"));
                                         intent.putExtra("examTitle", examObj.getString("title"));

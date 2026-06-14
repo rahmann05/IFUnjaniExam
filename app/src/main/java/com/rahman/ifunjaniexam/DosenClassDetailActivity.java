@@ -113,6 +113,11 @@ public class DosenClassDetailActivity extends AppCompatActivity {
                                     public void onDeleteClick(JSONObject exam) {
                                         showConfirmDialog(exam, "DELETE");
                                     }
+
+                                    @Override
+                                    public void onUpdateStatusClick(JSONObject exam, String newStatus) {
+                                        updateExamStatus(exam, newStatus);
+                                    }
                                 });
                                 rvExams.setAdapter(adapter);
                             }
@@ -239,6 +244,43 @@ public class DosenClassDetailActivity extends AppCompatActivity {
                     },
                     error -> {
                         Toast.makeText(this, "Gagal mengirim permintaan", Toast.LENGTH_SHORT).show();
+                    }) {
+                @Override
+                public Map<String, String> getHeaders() {
+                    Map<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", "Bearer " + token);
+                    return headers;
+                }
+            };
+            Volley.newRequestQueue(this).add(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateExamStatus(JSONObject exam, String newStatus) {
+        try {
+            int examId = exam.getInt("id");
+            String url = "https://if-unjani-exam-api.vercel.app/api/exams/" + examId + "/status";
+            SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
+            String token = prefs.getString("jwt_token", "");
+
+            JSONObject body = new JSONObject();
+            body.put("status", newStatus);
+
+            JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, url, body,
+                    response -> {
+                        try {
+                            if (response.getBoolean("success")) {
+                                Toast.makeText(this, "Status ujian diperbarui menjadi " + newStatus, Toast.LENGTH_SHORT).show();
+                                loadClassDetails(); // Reload
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    },
+                    error -> {
+                        Toast.makeText(this, "Gagal memperbarui status ujian", Toast.LENGTH_SHORT).show();
                     }) {
                 @Override
                 public Map<String, String> getHeaders() {

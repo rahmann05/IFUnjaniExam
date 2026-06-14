@@ -15,5 +15,6 @@ router.get('/attempts/:id', requireRole('DOSEN'), examController.getAttemptDetai
 router.put('/attempts/:id/grade', requireRole('DOSEN'), examController.gradeAttempt);
 router.delete('/:id', requireRole('DOSEN'), examController.deleteExam);
 router.post('/:id/request-approval', requireRole('DOSEN'), examController.requestApproval);
+router.put('/:id/status', requireRole('DOSEN'), examController.updateExamStatus);
 
 module.exports = router;

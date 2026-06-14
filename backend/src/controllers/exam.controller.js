@@ -108,8 +108,8 @@ async function createExam(req, res) {
         classId,
         category: category || 'OTHER',
         weight: weight !== undefined ? parseFloat(weight) : 100.0,
-        startTime: new Date(startTime),
-        endTime: new Date(endTime),
+        startTime: startTime ? new Date(startTime) : null,
+        endTime: endTime ? new Date(endTime) : null,
         durationMinutes,
         questions: {
           create: questions.map(q => {
@@ -293,4 +293,42 @@ async function gradeAttempt(req, res) {
   }
 }
 
-module.exports = { getExams, getExamQuestions, submitExam, createExam, getExamResults, getAttemptDetail, deleteExam, requestApproval, gradeAttempt };
+async function updateExamStatus(req, res) {
+  const examId = parseInt(req.params.id);
+  const { status } = req.body;
+  
+  try {
+    if (req.user.role !== 'DOSEN') {
+      return res.status(403).json({ success: false, message: 'Hanya Dosen yang bisa mengubah status' });
+    }
+
+    const validStatuses = ['PUBLISHED', 'ONGOING', 'FINISHED'];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ success: false, message: 'Status tidak valid' });
+    }
+
+    const dataToUpdate = { status };
+    if (status === 'ONGOING') {
+      const now = new Date();
+      dataToUpdate.startTime = now;
+      const examObj = await prisma.exam.findUnique({ where: { id: examId } });
+      if (examObj) {
+        dataToUpdate.endTime = new Date(now.getTime() + examObj.durationMinutes * 60000);
+      }
+    } else if (status === 'FINISHED') {
+      dataToUpdate.endTime = new Date();
+    }
+
+    const exam = await prisma.exam.update({
+      where: { id: examId },
+      data: dataToUpdate
+    });
+
+    return res.status(200).json({ success: true, message: `Status ujian menjadi ${status}`, data: exam });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: 'Gagal mengubah status ujian' });
+  }
+}
+
+module.exports = { getExams, getExamQuestions, submitExam, createExam, getExamResults, getAttemptDetail, deleteExam, requestApproval, gradeAttempt, updateExamStatus };

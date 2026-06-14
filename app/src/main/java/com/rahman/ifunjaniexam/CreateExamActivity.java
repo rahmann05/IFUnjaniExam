@@ -64,6 +64,16 @@ public class CreateExamActivity extends AppCompatActivity {
         findViewById(R.id.btnAddQuestion).setOnClickListener(v -> addQuestionView());
         findViewById(R.id.btnSaveExam).setOnClickListener(v -> saveExam());
 
+        android.widget.CheckBox cbManualStart = findViewById(R.id.cbManualStart);
+        LinearLayout llTimePicker = findViewById(R.id.llTimePicker);
+        cbManualStart.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                llTimePicker.setVisibility(View.GONE);
+            } else {
+                llTimePicker.setVisibility(View.VISIBLE);
+            }
+        });
+
         imagePickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -162,6 +172,10 @@ public class CreateExamActivity extends AppCompatActivity {
     private void saveExam() {
         String title = ((EditText) findViewById(R.id.etExamTitle)).getText().toString();
         String desc = ((EditText) findViewById(R.id.etExamDesc)).getText().toString();
+        
+        android.widget.CheckBox cbManualStart = findViewById(R.id.cbManualStart);
+        boolean isManual = cbManualStart.isChecked();
+        
         String start = ((EditText) findViewById(R.id.etStartTime)).getText().toString();
         String end = ((EditText) findViewById(R.id.etEndTime)).getText().toString();
         String durationStr = ((EditText) findViewById(R.id.etDuration)).getText().toString();
@@ -170,8 +184,13 @@ public class CreateExamActivity extends AppCompatActivity {
         String category = spCategory.getSelectedItem().toString();
         String weightStr = ((EditText) findViewById(R.id.etExamWeight)).getText().toString();
 
-        if (title.isEmpty() || start.isEmpty() || end.isEmpty() || durationStr.isEmpty() || weightStr.isEmpty()) {
+        if (title.isEmpty() || durationStr.isEmpty() || weightStr.isEmpty()) {
             Toast.makeText(this, "Harap lengkapi detail ujian", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!isManual && (start.isEmpty() || end.isEmpty())) {
+            Toast.makeText(this, "Harap isi jadwal waktu ujian", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -182,8 +201,10 @@ public class CreateExamActivity extends AppCompatActivity {
             payload.put("classId", classId);
             payload.put("category", category);
             payload.put("weight", Double.parseDouble(weightStr));
-            payload.put("startTime", start.replace(" ", "T") + ":00Z");
-            payload.put("endTime", end.replace(" ", "T") + ":00Z");
+            if (!isManual) {
+                payload.put("startTime", start.replace(" ", "T") + ":00Z");
+                payload.put("endTime", end.replace(" ", "T") + ":00Z");
+            }
             payload.put("durationMinutes", Integer.parseInt(durationStr));
 
             JSONArray questionsArray = new JSONArray();

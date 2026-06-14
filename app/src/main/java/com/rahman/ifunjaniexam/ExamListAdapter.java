@@ -25,6 +25,7 @@ public class ExamListAdapter extends RecyclerView.Adapter<ExamListAdapter.ViewHo
     public interface OnOptionClickListener {
         void onEditClick(JSONObject exam);
         void onDeleteClick(JSONObject exam);
+        void onUpdateStatusClick(JSONObject exam, String newStatus);
     }
 
     public ExamListAdapter(JSONArray examList, boolean isDosen, OnItemClickListener listener, OnOptionClickListener optionListener) {
@@ -54,11 +55,34 @@ public class ExamListAdapter extends RecyclerView.Adapter<ExamListAdapter.ViewHo
             holder.tvExamDesc.setText("[" + category + " - Bobot: " + weight + "%]\n" + desc);
             holder.tvDuration.setText(examObj.getString("durationMinutes") + " Menit");
             
-            String startTime = examObj.getString("startTime").replace("T", " ").replace("Z", "");
-            holder.tvTime.setText(startTime);
+            String startTime = examObj.optString("startTime", "Manual / Belum Diset").replace("T", " ").replace("Z", "");
+            holder.tvTime.setText(startTime.equals("null") ? "Manual / Belum Diset" : startTime);
 
             if (isDosen) {
                 holder.btnOptions.setVisibility(View.VISIBLE);
+                holder.btnStatus.setVisibility(View.VISIBLE);
+                
+                String status = examObj.optString("status", "PUBLISHED");
+                if ("PUBLISHED".equals(status)) {
+                    holder.btnStatus.setText("Mulai Ujian");
+                    holder.btnStatus.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#2ecc71"))); // Green
+                    holder.btnStatus.setEnabled(true);
+                    holder.btnStatus.setOnClickListener(v -> {
+                        if (optionListener != null) optionListener.onUpdateStatusClick(examObj, "ONGOING");
+                    });
+                } else if ("ONGOING".equals(status)) {
+                    holder.btnStatus.setText("Hentikan Ujian");
+                    holder.btnStatus.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#e74c3c"))); // Red
+                    holder.btnStatus.setEnabled(true);
+                    holder.btnStatus.setOnClickListener(v -> {
+                        if (optionListener != null) optionListener.onUpdateStatusClick(examObj, "FINISHED");
+                    });
+                } else {
+                    holder.btnStatus.setText("Selesai");
+                    holder.btnStatus.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#95a5a6"))); // Grey
+                    holder.btnStatus.setEnabled(false);
+                }
+
                 holder.btnOptions.setOnClickListener(v -> {
                     android.widget.PopupMenu popup = new android.widget.PopupMenu(v.getContext(), holder.btnOptions);
                     popup.getMenu().add("Edit");
@@ -75,6 +99,19 @@ public class ExamListAdapter extends RecyclerView.Adapter<ExamListAdapter.ViewHo
                 });
             } else {
                 holder.btnOptions.setVisibility(View.GONE);
+                holder.btnStatus.setVisibility(View.VISIBLE);
+                String status = examObj.optString("status", "PUBLISHED");
+                if ("PUBLISHED".equals(status)) {
+                    holder.btnStatus.setText("Belum Mulai");
+                    holder.btnStatus.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#f1c40f")));
+                } else if ("ONGOING".equals(status)) {
+                    holder.btnStatus.setText("Sedang Berlangsung");
+                    holder.btnStatus.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#2ecc71")));
+                } else {
+                    holder.btnStatus.setText("Selesai");
+                    holder.btnStatus.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#95a5a6")));
+                }
+                holder.btnStatus.setEnabled(false);
             }
 
             holder.itemView.setOnClickListener(v -> {
@@ -93,6 +130,7 @@ public class ExamListAdapter extends RecyclerView.Adapter<ExamListAdapter.ViewHo
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvExamTitle, tvExamDesc, tvDuration, tvTime;
         android.widget.ImageView btnOptions;
+        android.widget.Button btnStatus;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -101,6 +139,7 @@ public class ExamListAdapter extends RecyclerView.Adapter<ExamListAdapter.ViewHo
             tvDuration = itemView.findViewById(R.id.tvDuration);
             tvTime = itemView.findViewById(R.id.tvTime);
             btnOptions = itemView.findViewById(R.id.btnOptions);
+            btnStatus = itemView.findViewById(R.id.btnStatus);
         }
     }
 }

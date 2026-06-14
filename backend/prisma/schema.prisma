@@ -122,10 +122,11 @@ model Exam {
   classId         Int
   kelas           Kelas    @relation(fields: [classId], references: [id])
 
-  startTime       DateTime
-  endTime         DateTime
+  startTime       DateTime?
+  endTime         DateTime?
   durationMinutes Int
 
+  status          String       @default("PUBLISHED") // PUBLISHED, ONGOING, FINISHED
   category        ExamCategory @default(OTHER)
   weight          Float        @default(100.0) // Bobot Ujian (percentage)
 
