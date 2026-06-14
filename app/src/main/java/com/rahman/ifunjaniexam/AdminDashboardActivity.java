@@ -21,11 +21,18 @@ public class AdminDashboardActivity extends AppCompatActivity {
         Button btnPersetujuan = findViewById(R.id.btnPersetujuan);
         Button btnLogout = findViewById(R.id.btnLogout);
 
-        // Placeholder for Admin CRUD Actions since building full native forms takes immense boilerplate
-        btnDosen.setOnClickListener(v -> showToast("API Kelola Dosen tersedia. Fitur UI sedang dikembangkan."));
-        btnMahasiswa.setOnClickListener(v -> showToast("API Kelola Mahasiswa tersedia. Fitur UI sedang dikembangkan."));
-        btnKelas.setOnClickListener(v -> showToast("API Kelola Kelas tersedia. Fitur UI sedang dikembangkan."));
-        btnPersetujuan.setOnClickListener(v -> showToast("API Persetujuan Ujian tersedia. Fitur UI sedang dikembangkan."));
+        btnDosen.setOnClickListener(v -> {
+            startActivity(new Intent(AdminDashboardActivity.this, AdminManageUserActivity.class));
+        });
+        btnMahasiswa.setOnClickListener(v -> {
+            startActivity(new Intent(AdminDashboardActivity.this, AdminManageUserActivity.class));
+        });
+        btnKelas.setOnClickListener(v -> {
+            startActivity(new Intent(AdminDashboardActivity.this, AdminManageClassActivity.class));
+        });
+        btnPersetujuan.setOnClickListener(v -> {
+            startActivity(new Intent(AdminDashboardActivity.this, AdminApprovalActivity.class));
+        });
 
         btnLogout.setOnClickListener(v -> {
             SharedPreferences.Editor editor = getSharedPreferences("AUTH_PREF", MODE_PRIVATE).edit();

@@ -30,6 +30,15 @@
             android:name=".AdminDashboardActivity"
             android:exported="false" />
         <activity
+            android:name=".AdminApprovalActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminManageUserActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminManageClassActivity"
+            android:exported="false" />
+        <activity
             android:name=".ExamResultsActivity"
             android:exported="false" />
         <activity

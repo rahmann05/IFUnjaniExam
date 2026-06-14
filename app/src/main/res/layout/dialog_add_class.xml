@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <EditText
+        android:id="@+id/etClassName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nama Kelas (e.g. IF-A)"
+        android:layout_marginBottom="8dp"/>
+
+    <EditText
+        android:id="@+id/etCourseId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="ID Mata Kuliah (misal 1)"
+        android:inputType="number"
+        android:layout_marginBottom="8dp"/>
+
+    <EditText
+        android:id="@+id/etSemesterId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="ID Semester (misal 1)"
+        android:inputType="number"
+        android:layout_marginBottom="8dp"/>
+
+    <EditText
+        android:id="@+id/etDosenId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="ID Dosen (misal 1)"
+        android:inputType="number" />
+</LinearLayout>
