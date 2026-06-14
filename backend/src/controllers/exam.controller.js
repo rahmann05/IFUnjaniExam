@@ -331,4 +331,23 @@ async function updateExamStatus(req, res) {
   }
 }
 
-module.exports = { getExams, getExamQuestions, submitExam, createExam, getExamResults, getAttemptDetail, deleteExam, requestApproval, gradeAttempt, updateExamStatus };
+const getExamStatus = async (req, res) => {
+  try {
+    const examId = parseInt(req.params.id);
+    const exam = await prisma.exam.findUnique({
+      where: { id: examId },
+      select: { status: true }
+    });
+
+    if (!exam) {
+      return res.status(404).json({ success: false, message: 'Ujian tidak ditemukan' });
+    }
+
+    return res.status(200).json({ success: true, data: { status: exam.status } });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: 'Gagal mengambil status ujian' });
+  }
+}
+
+module.exports = { getExams, getExamQuestions, submitExam, createExam, getExamResults, getAttemptDetail, deleteExam, requestApproval, gradeAttempt, updateExamStatus, getExamStatus };

@@ -58,6 +58,9 @@ public class TakeExamActivity extends AppCompatActivity {
     private int warningCount = 0;
     private boolean isSubmitted = false;
     private CountDownTimer countDownTimer;
+    
+    private android.os.Handler statusCheckHandler = new android.os.Handler();
+    private Runnable statusCheckRunnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +116,9 @@ public class TakeExamActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if (countDownTimer != null) countDownTimer.cancel();
+        if (statusCheckHandler != null && statusCheckRunnable != null) {
+            statusCheckHandler.removeCallbacks(statusCheckRunnable);
+        }
     }
 
     private void showSubmitDialog() {
@@ -151,6 +157,8 @@ public class TakeExamActivity extends AppCompatActivity {
                             if (questions.length() > 0) {
                                 navigateToQuestion(0);
                             }
+                            
+                            startStatusChecker();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -206,6 +214,47 @@ public class TakeExamActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void startStatusChecker() {
+        statusCheckRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (isSubmitted) return;
+                checkExamStatus();
+                statusCheckHandler.postDelayed(this, 15000); // Check every 15 seconds
+            }
+        };
+        statusCheckHandler.postDelayed(statusCheckRunnable, 15000);
+    }
+    
+    private void checkExamStatus() {
+        String url = "https://if-unjani-exam-api.vercel.app/api/exams/" + examId + "/status";
+        SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
+        String token = prefs.getString("jwt_token", "");
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        if (response.getBoolean("success")) {
+                            JSONObject data = response.getJSONObject("data");
+                            String status = data.optString("status", "PUBLISHED");
+                            if ("FINISHED".equals(status)) {
+                                Toast.makeText(TakeExamActivity.this, "Dosen telah menghentikan ujian ini. Mengumpulkan otomatis...", Toast.LENGTH_LONG).show();
+                                submitExam();
+                            }
+                        }
+                    } catch (Exception e) {}
+                },
+                error -> {}) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+        };
+        Volley.newRequestQueue(this).add(request);
     }
 
     private void addQuestionToUI(JSONObject qObj, int index) throws Exception {
