@@ -60,8 +60,14 @@ public class AdminManageClassActivity extends AppCompatActivity {
                     try {
                         if (response.getBoolean("success")) {
                             JSONArray data = response.getJSONArray("data");
-                            AdminClassAdapter adapter = new AdminClassAdapter(data, classObj -> {
-                                showDeleteDialog(classObj);
+                            AdminClassAdapter adapter = new AdminClassAdapter(data, (classObj, action) -> {
+                                if (action.equals("Hapus Kelas")) {
+                                    showDeleteDialog(classObj);
+                                } else if (action.equals("Tambah Mahasiswa")) {
+                                    showAddMahasiswaDialog(classObj);
+                                } else if (action.equals("Ubah Dosen")) {
+                                    showUpdateDosenDialog(classObj);
+                                }
                             });
                             rvClasses.setAdapter(adapter);
                         }
@@ -81,6 +87,77 @@ public class AdminManageClassActivity extends AppCompatActivity {
             }
         };
         Volley.newRequestQueue(this).add(request);
+    }
+
+    private void showAddMahasiswaDialog(JSONObject classObj) {
+        try {
+            int classId = classObj.getInt("id");
+            EditText input = new EditText(this);
+            input.setHint("ID Mahasiswa");
+            input.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+
+            new AlertDialog.Builder(this)
+                .setTitle("Tambah Mahasiswa")
+                .setMessage("Masukkan ID Mahasiswa yang akan ditambahkan ke kelas " + classObj.getString("name"))
+                .setView(input)
+                .setPositiveButton("Tambah", (dialog, which) -> {
+                    String val = input.getText().toString();
+                    if (!val.isEmpty()) updateClassMembers(classId, "mahasiswa", val);
+                })
+                .setNegativeButton("Batal", null)
+                .show();
+        } catch (Exception e) { e.printStackTrace(); }
+    }
+
+    private void showUpdateDosenDialog(JSONObject classObj) {
+        try {
+            int classId = classObj.getInt("id");
+            EditText input = new EditText(this);
+            input.setHint("ID Dosen");
+            input.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+
+            new AlertDialog.Builder(this)
+                .setTitle("Ubah Dosen")
+                .setMessage("Masukkan ID Dosen pengampu baru untuk kelas " + classObj.getString("name"))
+                .setView(input)
+                .setPositiveButton("Ubah", (dialog, which) -> {
+                    String val = input.getText().toString();
+                    if (!val.isEmpty()) updateClassMembers(classId, "dosen", val);
+                })
+                .setNegativeButton("Batal", null)
+                .show();
+        } catch (Exception e) { e.printStackTrace(); }
+    }
+
+    private void updateClassMembers(int classId, String type, String memberId) {
+        String url = "https://if-unjani-exam-api.vercel.app/api/admin/classes/" + classId + "/" + type;
+        int method = type.equals("mahasiswa") ? Request.Method.POST : Request.Method.PUT;
+        try {
+            JSONObject body = new JSONObject();
+            if (type.equals("mahasiswa")) body.put("mahasiswaId", Integer.parseInt(memberId));
+            else body.put("dosenId", Integer.parseInt(memberId));
+
+            JsonObjectRequest request = new JsonObjectRequest(method, url, body,
+                    response -> {
+                        try {
+                            if (response.getBoolean("success")) {
+                                Toast.makeText(this, "Berhasil diperbarui", Toast.LENGTH_SHORT).show();
+                                loadClasses();
+                            } else {
+                                Toast.makeText(this, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (Exception e) { e.printStackTrace(); }
+                    },
+                    error -> Toast.makeText(this, "Gagal memperbarui", Toast.LENGTH_SHORT).show()) {
+                @Override
+                public Map<String, String> getHeaders() {
+                    Map<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", "Bearer " + token);
+                    return headers;
+                }
+            };
+            Volley.newRequestQueue(this).add(request);
+        } catch (Exception e) { e.printStackTrace(); }
     }
 
     private void showDeleteDialog(JSONObject classObj) {

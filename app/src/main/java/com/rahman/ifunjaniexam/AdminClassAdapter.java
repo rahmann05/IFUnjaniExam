@@ -15,13 +15,13 @@ import org.json.JSONObject;
 public class AdminClassAdapter extends RecyclerView.Adapter<AdminClassAdapter.ViewHolder> {
 
     private JSONArray classes;
-    private OnClassDeleteListener listener;
+    private OnClassActionListener listener;
 
-    public interface OnClassDeleteListener {
-        void onDeleteClick(JSONObject classObj);
+    public interface OnClassActionListener {
+        void onActionClick(JSONObject classObj, String action);
     }
 
-    public AdminClassAdapter(JSONArray classes, OnClassDeleteListener listener) {
+    public AdminClassAdapter(JSONArray classes, OnClassActionListener listener) {
         this.classes = classes;
         this.listener = listener;
     }
@@ -44,8 +44,18 @@ public class AdminClassAdapter extends RecyclerView.Adapter<AdminClassAdapter.Vi
             holder.tvCourseName.setText(course.getString("name"));
             holder.tvDosenName.setText("Dosen: " + dosen.getString("name"));
 
+            holder.btnDelete.setImageResource(android.R.drawable.ic_menu_more);
+            holder.btnDelete.setColorFilter(android.graphics.Color.parseColor("#7f8c8d"));
             holder.btnDelete.setOnClickListener(v -> {
-                if (listener != null) listener.onDeleteClick(classObj);
+                android.widget.PopupMenu popup = new android.widget.PopupMenu(v.getContext(), holder.btnDelete);
+                popup.getMenu().add("Hapus Kelas");
+                popup.getMenu().add("Tambah Mahasiswa");
+                popup.getMenu().add("Ubah Dosen");
+                popup.setOnMenuItemClickListener(item -> {
+                    if (listener != null) listener.onActionClick(classObj, item.getTitle().toString());
+                    return true;
+                });
+                popup.show();
             });
         } catch (Exception e) {
             e.printStackTrace();

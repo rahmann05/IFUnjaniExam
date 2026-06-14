@@ -141,8 +141,42 @@ async function deleteClass(req, res) {
   }
 }
 
+async function addMahasiswaToClass(req, res) {
+  try {
+    const classId = parseInt(req.params.id);
+    const { mahasiswaId } = req.body;
+    
+    await prisma.kelas.update({
+      where: { id: classId },
+      data: {
+        mahasiswa: {
+          connect: { id: parseInt(mahasiswaId) }
+        }
+      }
+    });
+    res.json({ success: true, message: 'Mahasiswa berhasil ditambahkan ke kelas' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Gagal menambahkan mahasiswa ke kelas' });
+  }
+}
+
+async function updateClassDosen(req, res) {
+  try {
+    const classId = parseInt(req.params.id);
+    const { dosenId } = req.body;
+    
+    await prisma.kelas.update({
+      where: { id: classId },
+      data: { dosenId: parseInt(dosenId) }
+    });
+    res.json({ success: true, message: 'Dosen berhasil diubah' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Gagal mengubah dosen kelas' });
+  }
+}
+
 module.exports = { 
   getDashboardStats, getApprovalRequests, handleApproval,
   getUsers, createUser, deleteUser,
-  getClasses, createClass, deleteClass
+  getClasses, createClass, deleteClass, addMahasiswaToClass, updateClassDosen
 };
