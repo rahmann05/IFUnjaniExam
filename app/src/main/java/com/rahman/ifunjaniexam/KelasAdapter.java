@@ -40,7 +40,7 @@ public class KelasAdapter extends RecyclerView.Adapter<KelasAdapter.KelasViewHol
             JSONObject semester = kelasObj.getJSONObject("semester");
 
             holder.tvCourseName.setText(course.getString("name"));
-            holder.tvClassName.setText("Kelas: " + kelasObj.getString("name"));
+            holder.tvClassName.setText("Kelas: " + kelasObj.getString("name") + " (" + kelasObj.optString("code", "-") + ")");
             holder.tvSemester.setText("Semester: " + semester.getString("name"));
 
             holder.itemView.setOnClickListener(v -> listener.onItemClick(kelasObj));

@@ -1,14 +1,28 @@
 package com.rahman.ifunjaniexam;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import com.android.volley.Request;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DosenDashboardActivity extends AppCompatActivity {
 
-    private TextView tvNipHeader, tvWelcome;
+    private TextView tvNipHeader, tvWelcome, tvEmptyClasses;
+    private RecyclerView rvKelas;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,26 +31,82 @@ public class DosenDashboardActivity extends AppCompatActivity {
 
         tvNipHeader = findViewById(R.id.tvNipHeader);
         tvWelcome = findViewById(R.id.tvWelcome);
-        View cardBuatSoal = findViewById(R.id.cardBuatSoal);
-        View cardKelolaUjian = findViewById(R.id.cardKelolaUjian);
+        tvEmptyClasses = findViewById(R.id.tvEmptyClasses);
+        rvKelas = findViewById(R.id.rvKelas);
+        progressBar = findViewById(R.id.progressBar);
+
+        rvKelas.setLayoutManager(new LinearLayoutManager(this));
 
         // Fetch name/nip from SharedPreferences
         SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
-        String username = prefs.getString("username", "Dosen");
+        String username = prefs.getString("username", "");
+        String name = prefs.getString("name", "Dosen");
         
         tvNipHeader.setText(username);
-        tvWelcome.setText("Selamat Datang,\n" + username);
+        tvWelcome.setText("Selamat Datang,\n" + name);
 
         android.widget.ImageView ivPerson = findViewById(R.id.ivPerson);
         ivPerson.setOnClickListener(v -> showProfileMenu(v));
 
-        View.OnClickListener goToClassSelection = v -> {
-            android.content.Intent intent = new android.content.Intent(DosenDashboardActivity.this, ClassSelectionActivity.class);
-            startActivity(intent);
+        loadClasses();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadClasses();
+    }
+
+    private void loadClasses() {
+        progressBar.setVisibility(View.VISIBLE);
+        tvEmptyClasses.setVisibility(View.GONE);
+        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/kelas";
+
+        SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
+        String token = prefs.getString("jwt_token", "");
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    progressBar.setVisibility(View.GONE);
+                    try {
+                        if (response.getBoolean("success")) {
+                            JSONArray data = response.getJSONArray("data");
+                            if (data.length() == 0) {
+                                tvEmptyClasses.setVisibility(View.VISIBLE);
+                                rvKelas.setVisibility(View.GONE);
+                            } else {
+                                tvEmptyClasses.setVisibility(View.GONE);
+                                rvKelas.setVisibility(View.VISIBLE);
+                                KelasAdapter adapter = new KelasAdapter(data, kelasObj -> {
+                                    try {
+                                        Intent intent = new Intent(DosenDashboardActivity.this, DosenClassDetailActivity.class);
+                                        intent.putExtra("classId", kelasObj.getInt("id"));
+                                        startActivity(intent);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                });
+                                rvKelas.setAdapter(adapter);
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "Format data salah", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(this, "Gagal memuat daftar kelas", Toast.LENGTH_SHORT).show();
+                }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
         };
 
-        cardBuatSoal.setOnClickListener(goToClassSelection);
-        cardKelolaUjian.setOnClickListener(goToClassSelection);
+        Volley.newRequestQueue(this).add(request);
     }
 
     private void showProfileMenu(View v) {
@@ -49,8 +119,8 @@ public class DosenDashboardActivity extends AppCompatActivity {
                 return true;
             } else if (item.getItemId() == 2) {
                 getSharedPreferences("AUTH_PREF", MODE_PRIVATE).edit().clear().apply();
-                android.content.Intent intent = new android.content.Intent(this, LoginActivity.class);
-                intent.setFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                Intent intent = new Intent(this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
                 return true;
             }
@@ -100,8 +170,8 @@ public class DosenDashboardActivity extends AppCompatActivity {
 
             com.android.volley.toolbox.JsonObjectRequest request = new com.android.volley.toolbox.JsonObjectRequest(
                     com.android.volley.Request.Method.PUT, url, body,
-                    response -> android.widget.Toast.makeText(this, "Password berhasil diubah", android.widget.Toast.LENGTH_SHORT).show(),
-                    error -> android.widget.Toast.makeText(this, "Gagal mengubah password", android.widget.Toast.LENGTH_SHORT).show()
+                    response -> Toast.makeText(this, "Password berhasil diubah", Toast.LENGTH_SHORT).show(),
+                    error -> Toast.makeText(this, "Gagal mengubah password", Toast.LENGTH_SHORT).show()
             ) {
                 @Override
                 public java.util.Map<String, String> getHeaders() {

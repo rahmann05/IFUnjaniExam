@@ -11,7 +11,7 @@ router.post('/create', requireRole('DOSEN'), examController.createExam);
 router.post('/:id/submit', requireRole('MAHASISWA'), examController.submitExam);
 
 router.get('/:id/results', requireRole('DOSEN'), examController.getExamResults);
-router.get('/attempts/:id', requireRole('DOSEN'), examController.getAttemptDetail);
+router.get('/attempts/:id', examController.getAttemptDetail);
 router.put('/attempts/:id/grade', requireRole('DOSEN'), examController.gradeAttempt);
 router.delete('/:id', requireRole('DOSEN'), examController.deleteExam);
 router.post('/:id/request-approval', requireRole('DOSEN'), examController.requestApproval);

@@ -50,7 +50,13 @@ public class LoginActivity extends AppCompatActivity {
                         String token = response.getString("token");
                         org.json.JSONObject data = response.getJSONObject("data");
                         String role = data.getString("role");
-                        int profileId = data.optInt("profileId", -1);
+                        int profileId = -1;
+                        String name = username;
+                        if (data.has("profile") && !data.isNull("profile")) {
+                            org.json.JSONObject profile = data.getJSONObject("profile");
+                            profileId = profile.optInt("id", -1);
+                            name = profile.optString("name", username);
+                        }
 
                         // Simpan token, role, dan username ke SharedPreferences
                         getSharedPreferences("AUTH_PREF", MODE_PRIVATE)
@@ -58,6 +64,7 @@ public class LoginActivity extends AppCompatActivity {
                                 .putString("jwt_token", token)
                                 .putString("role", role)
                                 .putString("username", username)
+                                .putString("name", name)
                                 .putInt("profileId", profileId)
                                 .apply();
 

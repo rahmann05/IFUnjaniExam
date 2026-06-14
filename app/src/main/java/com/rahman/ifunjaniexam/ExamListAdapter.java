@@ -51,8 +51,23 @@ public class ExamListAdapter extends RecyclerView.Adapter<ExamListAdapter.ViewHo
             String category = examObj.optString("category", "OTHER");
             String weight = examObj.optString("weight", "100");
             String desc = examObj.optString("description", "Tidak ada deskripsi");
-            
-            holder.tvExamDesc.setText("[" + category + " - Bobot: " + weight + "%]\n" + desc);
+
+            JSONArray attempts = examObj.optJSONArray("attempts");
+            boolean hasAttempt = (attempts != null && attempts.length() > 0);
+
+            if (hasAttempt) {
+                try {
+                    JSONObject attempt = attempts.getJSONObject(0);
+                    double score = attempt.optDouble("score", -1.0);
+                    String scoreStr = (score >= 0) ? String.format("%.2f", score) : "Belum Dinilai";
+                    holder.tvExamDesc.setText("[" + category + " - Bobot: " + weight + "%]\n" + desc + "\n\nNilai Anda: " + scoreStr);
+                } catch (Exception e) {
+                    holder.tvExamDesc.setText("[" + category + " - Bobot: " + weight + "%]\n" + desc + "\n\nSudah Dikerjakan");
+                }
+            } else {
+                holder.tvExamDesc.setText("[" + category + " - Bobot: " + weight + "%]\n" + desc);
+            }
+
             holder.tvDuration.setText(examObj.getString("durationMinutes") + " Menit");
             
             String startTime = examObj.optString("startTime", "Manual / Belum Diset").replace("T", " ").replace("Z", "");
@@ -100,18 +115,27 @@ public class ExamListAdapter extends RecyclerView.Adapter<ExamListAdapter.ViewHo
             } else {
                 holder.btnOptions.setVisibility(View.GONE);
                 holder.btnStatus.setVisibility(View.VISIBLE);
-                String status = examObj.optString("status", "PUBLISHED");
-                if ("PUBLISHED".equals(status)) {
-                    holder.btnStatus.setText("Belum Mulai");
-                    holder.btnStatus.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#f1c40f")));
-                } else if ("ONGOING".equals(status)) {
-                    holder.btnStatus.setText("Sedang Berlangsung");
-                    holder.btnStatus.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#2ecc71")));
+                if (hasAttempt) {
+                    holder.btnStatus.setText("Lihat Hasil");
+                    holder.btnStatus.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#3498db"))); // Blue
+                    holder.btnStatus.setEnabled(true);
+                    holder.btnStatus.setOnClickListener(v -> {
+                        if (listener != null) listener.onItemClick(examObj);
+                    });
                 } else {
-                    holder.btnStatus.setText("Selesai");
-                    holder.btnStatus.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#95a5a6")));
+                    String status = examObj.optString("status", "PUBLISHED");
+                    if ("PUBLISHED".equals(status)) {
+                        holder.btnStatus.setText("Belum Mulai");
+                        holder.btnStatus.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#f1c40f"))); // Yellow
+                    } else if ("ONGOING".equals(status)) {
+                        holder.btnStatus.setText("Sedang Berlangsung");
+                        holder.btnStatus.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#2ecc71"))); // Green
+                    } else {
+                        holder.btnStatus.setText("Selesai");
+                        holder.btnStatus.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#95a5a6"))); // Grey
+                    }
+                    holder.btnStatus.setEnabled(false);
                 }
-                holder.btnStatus.setEnabled(false);
             }
 
             holder.itemView.setOnClickListener(v -> {

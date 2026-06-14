@@ -162,6 +162,7 @@ async function getExamResults(req, res) {
 
 async function getAttemptDetail(req, res) {
   const attemptId = parseInt(req.params.id);
+  const { role, profileId } = req.user;
   
   try {
     const attempt = await prisma.examAttempt.findUnique({
@@ -183,6 +184,11 @@ async function getAttemptDetail(req, res) {
     });
 
     if (!attempt) return res.status(404).json({ success: false, message: 'Data attempt tidak ditemukan' });
+
+    // Enforce authorization for MAHASISWA: can only view their own attempt
+    if (role === 'MAHASISWA' && attempt.mahasiswaId !== profileId) {
+      return res.status(403).json({ success: false, message: 'Akses ditolak. Anda hanya dapat melihat hasil ujian Anda sendiri.' });
+    }
 
     return res.status(200).json({ success: true, data: attempt });
   } catch (error) {

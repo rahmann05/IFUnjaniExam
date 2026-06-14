@@ -1,14 +1,32 @@
 package com.rahman.ifunjaniexam;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.android.volley.Request;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MahasiswaDashboardActivity extends AppCompatActivity {
 
-    private TextView tvNimHeader, tvWelcome;
+    private TextView tvNimHeader, tvWelcome, tvEmptyClasses;
+    private RecyclerView rvKelas;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,31 +35,89 @@ public class MahasiswaDashboardActivity extends AppCompatActivity {
 
         tvNimHeader = findViewById(R.id.tvNimHeader);
         tvWelcome = findViewById(R.id.tvWelcome);
-        View cardDaftarUjian = findViewById(R.id.cardDaftarUjian);
-        android.widget.ImageView ivPerson = findViewById(R.id.ivPerson);
+        tvEmptyClasses = findViewById(R.id.tvEmptyClasses);
+        rvKelas = findViewById(R.id.rvKelas);
+        progressBar = findViewById(R.id.progressBar);
+
+        rvKelas.setLayoutManager(new LinearLayoutManager(this));
 
         // Fetch name/nim from SharedPreferences
         SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
-        String username = prefs.getString("username", "Mahasiswa");
+        String username = prefs.getString("username", "");
+        String name = prefs.getString("name", "Mahasiswa");
         
         tvNimHeader.setText(username);
-        tvWelcome.setText("Selamat Datang,\n" + username);
+        tvWelcome.setText("Selamat Datang,\n" + name);
 
+        android.widget.ImageView ivPerson = findViewById(R.id.ivPerson);
         ivPerson.setOnClickListener(v -> showProfileMenu(v));
 
-        cardDaftarUjian.setOnClickListener(v -> {
-            android.content.Intent intent = new android.content.Intent(MahasiswaDashboardActivity.this, ClassSelectionActivity.class);
-            startActivity(intent);
-        });
+        findViewById(R.id.btnGabungKelas).setOnClickListener(v -> showJoinClassDialog());
+    }
 
-        View cardGabungKelas = findViewById(R.id.cardGabungKelas);
-        cardGabungKelas.setOnClickListener(v -> showJoinClassDialog());
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadClasses();
+    }
+
+    private void loadClasses() {
+        progressBar.setVisibility(View.VISIBLE);
+        tvEmptyClasses.setVisibility(View.GONE);
+        String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/kelas";
+
+        SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
+        String token = prefs.getString("jwt_token", "");
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    progressBar.setVisibility(View.GONE);
+                    try {
+                        if (response.getBoolean("success")) {
+                            JSONArray data = response.getJSONArray("data");
+                            if (data.length() == 0) {
+                                tvEmptyClasses.setVisibility(View.VISIBLE);
+                                rvKelas.setVisibility(View.GONE);
+                            } else {
+                                tvEmptyClasses.setVisibility(View.GONE);
+                                rvKelas.setVisibility(View.VISIBLE);
+
+                                KelasAdapter adapter = new KelasAdapter(data, kelasObj -> {
+                                    try {
+                                        Intent intent = new Intent(MahasiswaDashboardActivity.this, MahasiswaClassDetailActivity.class);
+                                        intent.putExtra("classId", kelasObj.getInt("id"));
+                                        startActivity(intent);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                });
+                                rvKelas.setAdapter(adapter);
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "Format data salah", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(this, "Gagal memuat daftar kelas", Toast.LENGTH_SHORT).show();
+                }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+        };
+
+        Volley.newRequestQueue(this).add(request);
     }
 
     private void showJoinClassDialog() {
         android.widget.EditText input = new android.widget.EditText(this);
-        input.setHint("Masukkan ID Kelas (angka)");
-        input.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+        input.setHint("Masukkan ID Kelas (e.g. IF-331)");
+        input.setInputType(android.text.InputType.TYPE_CLASS_TEXT);
 
         new android.app.AlertDialog.Builder(this)
             .setTitle("Gabung Kelas")
@@ -55,29 +131,43 @@ public class MahasiswaDashboardActivity extends AppCompatActivity {
             .show();
     }
 
-    private void joinClass(String classId) {
+    private void joinClass(String classCode) {
         String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/kelas/join";
         SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
         String token = prefs.getString("jwt_token", "");
 
         try {
             org.json.JSONObject body = new org.json.JSONObject();
-            body.put("classId", Integer.parseInt(classId));
+            body.put("classCode", classCode);
 
             com.android.volley.toolbox.JsonObjectRequest request = new com.android.volley.toolbox.JsonObjectRequest(
                     com.android.volley.Request.Method.POST, url, body,
                     response -> {
                         try {
                             if (response.getBoolean("success")) {
-                                android.widget.Toast.makeText(this, "Berhasil bergabung ke kelas", android.widget.Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, "Berhasil bergabung ke kelas", Toast.LENGTH_SHORT).show();
+                                loadClasses(); // Reload classes
                             } else {
-                                android.widget.Toast.makeText(this, response.getString("message"), android.widget.Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, response.getString("message"), Toast.LENGTH_SHORT).show();
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     },
-                    error -> android.widget.Toast.makeText(this, "Gagal bergabung (ID Kelas salah / sudah bergabung)", android.widget.Toast.LENGTH_SHORT).show()
+                    error -> {
+                        if (error.networkResponse != null && error.networkResponse.data != null) {
+                            try {
+                                String res = new String(error.networkResponse.data, "utf-8");
+                                org.json.JSONObject json = new org.json.JSONObject(res);
+                                String msg = json.optString("message", "Gagal bergabung ke kelas");
+                                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+                            } catch (Exception e) {
+                                Toast.makeText(this, "Gagal bergabung ke kelas", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(this, "Gagal bergabung (ID Kelas salah / sudah bergabung)", Toast.LENGTH_SHORT).show();
+                        }
+                    }
             ) {
                 @Override
                 public java.util.Map<String, String> getHeaders() {
@@ -153,8 +243,8 @@ public class MahasiswaDashboardActivity extends AppCompatActivity {
 
             com.android.volley.toolbox.JsonObjectRequest request = new com.android.volley.toolbox.JsonObjectRequest(
                     com.android.volley.Request.Method.PUT, url, body,
-                    response -> android.widget.Toast.makeText(this, "Password berhasil diubah", android.widget.Toast.LENGTH_SHORT).show(),
-                    error -> android.widget.Toast.makeText(this, "Gagal mengubah password", android.widget.Toast.LENGTH_SHORT).show()
+                    response -> Toast.makeText(this, "Password berhasil diubah", Toast.LENGTH_SHORT).show(),
+                    error -> Toast.makeText(this, "Gagal mengubah password", Toast.LENGTH_SHORT).show()
             ) {
                 @Override
                 public java.util.Map<String, String> getHeaders() {

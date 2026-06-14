@@ -51,9 +51,17 @@ public class StudentAnswerSheetActivity extends AppCompatActivity {
 
         rvAnswers.setLayoutManager(new LinearLayoutManager(this));
 
-        findViewById(R.id.fabEditScore).setOnClickListener(v -> {
-            if (currentScore >= 0) showEditScoreDialog(currentScore);
-        });
+        SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
+        String role = prefs.getString("role", "MAHASISWA");
+        View fabEditScore = findViewById(R.id.fabEditScore);
+        if ("DOSEN".equals(role)) {
+            fabEditScore.setVisibility(View.VISIBLE);
+            fabEditScore.setOnClickListener(v -> {
+                if (currentScore >= 0) showEditScoreDialog(currentScore);
+            });
+        } else {
+            fabEditScore.setVisibility(View.GONE);
+        }
 
         loadAttemptDetail();
     }

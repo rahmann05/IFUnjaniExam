@@ -124,14 +124,10 @@ async function main() {
     console.log(`📖 Mata Kuliah dibuat: ${c.name} (${c.code})`);
   }
 
-  // 6. Buat 3 Kelas
-  // Kelas 1: IF-A (Pemrograman Mobile, Dosen 1)
-  // Kelas 2: IF-B (Pemrograman Web, Dosen 2)
-  // Kelas 3: IF-C (Basis Data, Dosen 1)
   const classData = [
-    { name: 'IF-A', courseId: dbCourses[0].id, dosenId: dbDosens[0].id },
-    { name: 'IF-B', courseId: dbCourses[1].id, dosenId: dbDosens[1].id },
-    { name: 'IF-C', courseId: dbCourses[2].id, dosenId: dbDosens[0].id }
+    { name: 'IF-A', code: 'IF-331', courseId: dbCourses[0].id, dosenId: dbDosens[0].id },
+    { name: 'IF-B', code: 'IF-332', courseId: dbCourses[1].id, dosenId: dbDosens[1].id },
+    { name: 'IF-C', code: 'IF-333', courseId: dbCourses[2].id, dosenId: dbDosens[0].id }
   ];
 
   const dbKelas = [];
@@ -139,13 +135,14 @@ async function main() {
     const kelas = await prisma.kelas.create({
       data: {
         name: c.name,
+        code: c.code,
         courseId: c.courseId,
         semesterId: semester.id,
         dosenId: c.dosenId,
       }
     });
     dbKelas.push(kelas);
-    console.log(`Kelas dibuat: ${kelas.name}`);
+    console.log(`Kelas dibuat: ${kelas.name} (${kelas.code})`);
   }
 
   // 7. Enrolling 20 Mahasiswa ke 3 Kelas

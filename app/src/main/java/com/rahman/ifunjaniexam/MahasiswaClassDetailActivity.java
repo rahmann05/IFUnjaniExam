@@ -90,6 +90,20 @@ public class MahasiswaClassDetailActivity extends AppCompatActivity {
                                 
                                 ExamListAdapter adapter = new ExamListAdapter(exams, false, examObj -> {
                                     try {
+                                        JSONArray attempts = examObj.optJSONArray("attempts");
+                                        if (attempts != null && attempts.length() > 0) {
+                                            JSONObject attempt = attempts.getJSONObject(0);
+                                            int attemptId = attempt.getInt("id");
+                                            
+                                            String username = getSharedPreferences("AUTH_PREF", MODE_PRIVATE).getString("username", "Mahasiswa");
+                                            
+                                            Intent intent = new Intent(MahasiswaClassDetailActivity.this, StudentAnswerSheetActivity.class);
+                                            intent.putExtra("attemptId", attemptId);
+                                            intent.putExtra("studentName", username);
+                                            startActivity(intent);
+                                            return;
+                                        }
+
                                         String status = examObj.optString("status", "PUBLISHED");
                                         if ("PUBLISHED".equals(status)) {
                                             String startStr = examObj.optString("startTime", "null");

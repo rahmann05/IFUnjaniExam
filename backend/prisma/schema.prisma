@@ -82,6 +82,7 @@ model Semester {
 model Kelas {
   id          Int      @id @default(autoincrement())
   name        String   // e.g., "IF-A"
+  code        String   @unique
   
   courseId    Int
   course      MataKuliah @relation(fields: [courseId], references: [id])

@@ -37,19 +37,39 @@ exports.getMyClasses = async (req, res, next) => {
 exports.getClassDetail = async (req, res, next) => {
   try {
     const classId = parseInt(req.params.id);
-    const kelas = await prisma.kelas.findUnique({
-      where: { id: classId },
-      include: {
-        course: true,
-        semester: true,
-        dosen: true,
-        exams: true,
-        mahasiswa: {
-          include: {
-            mahasiswa: true
-          }
+    const { userId, role } = req.user;
+
+    let includeClause = {
+      course: true,
+      semester: true,
+      dosen: true,
+      mahasiswa: {
+        include: {
+          mahasiswa: true
         }
       }
+    };
+
+    if (role === 'MAHASISWA') {
+      const student = await prisma.mahasiswa.findUnique({ where: { userId } });
+      if (student) {
+        includeClause.exams = {
+          include: {
+            attempts: {
+              where: { mahasiswaId: student.id }
+            }
+          }
+        };
+      } else {
+        includeClause.exams = true;
+      }
+    } else {
+      includeClause.exams = true;
+    }
+
+    const kelas = await prisma.kelas.findUnique({
+      where: { id: classId },
+      include: includeClause
     });
 
     if (!kelas) {
@@ -64,7 +84,7 @@ exports.getClassDetail = async (req, res, next) => {
 
 exports.joinClass = async (req, res, next) => {
   try {
-    const { classId } = req.body;
+    const { classId, classCode } = req.body;
     const { userId, role } = req.user;
 
     if (role !== 'MAHASISWA') {
@@ -76,23 +96,37 @@ exports.joinClass = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Data mahasiswa tidak ditemukan.' });
     }
 
-    const kelas = await prisma.kelas.findUnique({ where: { id: parseInt(classId) } });
-    if (!kelas) {
-      return res.status(404).json({ success: false, message: 'Kelas tidak ditemukan.' });
+    let kelas;
+    if (classCode) {
+      kelas = await prisma.kelas.findUnique({ where: { code: classCode } });
+    } else if (classId) {
+      kelas = await prisma.kelas.findUnique({ where: { id: parseInt(classId) } });
     }
 
-    await prisma.kelasMahasiswa.create({
-      data: {
-        classId: parseInt(classId),
+    if (!kelas) {
+      return res.status(404).json({ success: false, message: 'ID Kelas salah / kelas tidak ditemukan.' });
+    }
+
+    const existingEnrollment = await prisma.kelasMahasiswa.findFirst({
+      where: {
+        classId: kelas.id,
         mahasiswaId: mahasiswa.id
       }
     });
 
-    res.json({ success: true, message: 'Berhasil bergabung dengan kelas.' });
-  } catch (error) {
-    if (error.code === 'P2002') {
+    if (existingEnrollment) {
       return res.status(400).json({ success: false, message: 'Anda sudah terdaftar di kelas ini.' });
     }
+
+    await prisma.kelasMahasiswa.create({
+      data: {
+        classId: kelas.id,
+        mahasiswaId: mahasiswa.id
+      }
+    });
+
+    res.json({ success: true, message: 'Berhasil bergabung ke kelas.' });
+  } catch (error) {
     next(error);
   }
 };
