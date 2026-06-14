@@ -10,6 +10,11 @@ app.use(express.json());
 // Load all modular routes
 app.use('/api', routes);
 
+// Health check untuk memastikan server jalan
+app.get('/', (req, res) => {
+  res.status(200).json({ success: true, message: 'IF Unjani Exam API is Running!' });
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
