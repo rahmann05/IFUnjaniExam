@@ -10,9 +10,48 @@ app.use(express.json());
 // Load all modular routes
 app.use('/api', routes);
 
-// Health check untuk memastikan server jalan
+// Halaman Utama (Root) agar tidak 404
 app.get('/', (req, res) => {
-  res.status(200).json({ success: true, message: 'IF Unjani Exam API is Running!' });
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="id">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>IF Unjani Exam API</title>
+      <style>
+        body {
+          background-color: #ffffff;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          height: 100vh;
+          margin: 0;
+          font-family: Arial, sans-serif;
+        }
+        img {
+          width: 200px;
+          height: auto;
+          margin-bottom: 20px;
+        }
+        h1 {
+          color: #2c3e50;
+          margin-bottom: 5px;
+        }
+        p {
+          color: #27ae60;
+          font-weight: bold;
+        }
+      </style>
+    </head>
+    <body>
+      <img src="https://upload.wikimedia.org/wikipedia/id/5/5f/Logo_Unjani.png" alt="Logo Universitas Jenderal Achmad Yani" onerror="this.src='https://unjani.ac.id/wp-content/uploads/2023/04/Logo-UNJANI.png';">
+      <h1>IF Unjani Exam API Server</h1>
+      <p>Server Aktif & Berjalan</p>
+    </body>
+    </html>
+  `);
 });
 
 // Error handling middleware
