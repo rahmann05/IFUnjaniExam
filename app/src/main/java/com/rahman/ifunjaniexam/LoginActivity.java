@@ -41,78 +41,65 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loginUser(String username, String password) {
-        // Menggunakan Endpoint API dari Vercel
-        String url = "https://if-unjani-exam-api.vercel.app/api/auth/login";
+        com.rahman.ifunjaniexam.network.AuthApiService.login(this, username, password, new com.rahman.ifunjaniexam.network.AuthApiService.AuthCallback() {
+            @Override
+            public void onSuccess(org.json.JSONObject response) {
+                try {
+                    boolean success = response.getBoolean("success");
+                    if (success) {
+                        String token = response.getString("token");
+                        org.json.JSONObject data = response.getJSONObject("data");
+                        String role = data.getString("role");
+                        int profileId = data.optInt("profileId", -1);
 
-        org.json.JSONObject postData = new org.json.JSONObject();
-        try {
-            postData.put("username", username);
-            postData.put("password", password);
-        } catch (org.json.JSONException e) {
-            e.printStackTrace();
-        }
+                        // Simpan token, role, dan username ke SharedPreferences
+                        getSharedPreferences("AUTH_PREF", MODE_PRIVATE)
+                                .edit()
+                                .putString("jwt_token", token)
+                                .putString("role", role)
+                                .putString("username", username)
+                                .putInt("profileId", profileId)
+                                .apply();
 
-        com.android.volley.toolbox.JsonObjectRequest request = new com.android.volley.toolbox.JsonObjectRequest(
-                com.android.volley.Request.Method.POST,
-                url,
-                postData,
-                response -> {
-                    try {
-                        boolean success = response.getBoolean("success");
-                        if (success) {
-                            String token = response.getString("token");
-                            org.json.JSONObject data = response.getJSONObject("data");
-                            String role = data.getString("role");
-                            int profileId = data.optInt("profileId", -1);
+                        com.rahman.ifunjaniexam.utils.FeedbackUtils.showToast(LoginActivity.this, "Login Berhasil");
 
-                            // Simpan token, role, dan username ke SharedPreferences
-                            getSharedPreferences("AUTH_PREF", MODE_PRIVATE)
-                                    .edit()
-                                    .putString("jwt_token", token)
-                                    .putString("role", role)
-                                    .putString("username", username)
-                                    .putInt("profileId", profileId)
-                                    .apply();
-
-                            com.rahman.ifunjaniexam.utils.FeedbackUtils.showToast(this, "Login Berhasil");
-
-                            // Pindah ke Dashboard Sesuai Role
-                            Intent intent;
-                            if ("DOSEN".equals(role)) {
-                                intent = new Intent(LoginActivity.this, DosenDashboardActivity.class);
-                            } else if ("ADMIN".equals(role)) {
-                                intent = new Intent(LoginActivity.this, AdminDashboardActivity.class);
-                            } else {
-                                intent = new Intent(LoginActivity.this, MahasiswaDashboardActivity.class);
-                            }
-                            startActivity(intent);
-                            finish();
+                        // Pindah ke Dashboard Sesuai Role
+                        Intent intent;
+                        if ("DOSEN".equals(role)) {
+                            intent = new Intent(LoginActivity.this, DosenDashboardActivity.class);
+                        } else if ("ADMIN".equals(role)) {
+                            intent = new Intent(LoginActivity.this, AdminDashboardActivity.class);
                         } else {
-                            String message = response.optString("message", "Login Gagal");
-                            com.rahman.ifunjaniexam.utils.FeedbackUtils.shakeView(btnLogin);
-                            com.rahman.ifunjaniexam.utils.FeedbackUtils.showSnackbar(btnLogin, message);
+                            intent = new Intent(LoginActivity.this, MahasiswaDashboardActivity.class);
                         }
-                    } catch (org.json.JSONException e) {
-                        e.printStackTrace();
-                        com.rahman.ifunjaniexam.utils.FeedbackUtils.showSnackbar(btnLogin, "Format respon server tidak valid");
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        String message = response.optString("message", "Login Gagal");
+                        com.rahman.ifunjaniexam.utils.FeedbackUtils.shakeView(btnLogin);
+                        com.rahman.ifunjaniexam.utils.FeedbackUtils.showSnackbar(btnLogin, message);
                     }
-                },
-                error -> {
-                    String errorMsg = "Gagal terhubung ke server";
-                    if (error.networkResponse != null && error.networkResponse.data != null) {
-                        try {
-                            String res = new String(error.networkResponse.data, "UTF-8");
-                            org.json.JSONObject errObj = new org.json.JSONObject(res);
-                            errorMsg = errObj.optString("message", errorMsg);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    com.rahman.ifunjaniexam.utils.FeedbackUtils.shakeView(btnLogin);
-                    com.rahman.ifunjaniexam.utils.FeedbackUtils.showSnackbar(btnLogin, errorMsg);
+                } catch (org.json.JSONException e) {
+                    e.printStackTrace();
+                    com.rahman.ifunjaniexam.utils.FeedbackUtils.showSnackbar(btnLogin, "Format respon server tidak valid");
                 }
-        );
+            }
 
-        com.android.volley.toolbox.Volley.newRequestQueue(this).add(request);
+            @Override
+            public void onError(Exception error, com.android.volley.VolleyError volleyError) {
+                String errorMsg = "Gagal terhubung ke server";
+                if (volleyError != null && volleyError.networkResponse != null && volleyError.networkResponse.data != null) {
+                    try {
+                        String res = new String(volleyError.networkResponse.data, "UTF-8");
+                        org.json.JSONObject errObj = new org.json.JSONObject(res);
+                        errorMsg = errObj.optString("message", errorMsg);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                com.rahman.ifunjaniexam.utils.FeedbackUtils.shakeView(btnLogin);
+                com.rahman.ifunjaniexam.utils.FeedbackUtils.showSnackbar(btnLogin, errorMsg);
+            }
+        });
     }
 }
