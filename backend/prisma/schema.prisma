@@ -131,11 +131,18 @@ model Exam {
   updatedAt       DateTime @updatedAt
 }
 
+enum QuestionType {
+  MULTIPLE_CHOICE
+  ESSAY
+}
+
 model Question {
   id        Int      @id @default(autoincrement())
   text      String
   imageUrl  String?  // Gambar soal dari Uploadcare
   marks     Int      @default(1)
+  type      QuestionType @default(MULTIPLE_CHOICE)
+  correctEssayAnswer String?  // Jawaban benar untuk essay (akan dicek lowercase)
   
   examId    Int
   exam      Exam     @relation(fields: [examId], references: [id])
@@ -193,6 +200,8 @@ model AttemptAnswer {
 
   selectedOptionId Int?
   selectedOption   AnswerOption? @relation(fields: [selectedOptionId], references: [id])
+
+  essayAnswer      String?  // Untuk jawaban text essay
 
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt

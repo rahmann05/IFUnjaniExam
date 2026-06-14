@@ -32,9 +32,7 @@ async function getExamQuestions(req, res) {
       include: {
         questions: {
           include: {
-            options: {
-              select: { id: true, text: true }
-            }
+            options: true
           }
         }
       }
@@ -54,46 +52,25 @@ async function getExamQuestions(req, res) {
 
 async function submitExam(req, res) {
   const examId = parseInt(req.params.id);
-  const { answers } = req.body; 
+  const { answers, score } = req.body; 
   const mahasiswaId = req.user.profileId;
 
-  if (!answers || !Array.isArray(answers)) {
-    return res.status(400).json({ success: false, message: 'Format jawaban tidak valid' });
+  if (!answers || !Array.isArray(answers) || score === undefined) {
+    return res.status(400).json({ success: false, message: 'Format jawaban atau score tidak valid' });
   }
 
   try {
-    const questions = await prisma.question.findMany({
-      where: { examId },
-      include: { options: true }
-    });
-
-    let score = 0;
-    let totalMarks = 0;
-    const attemptAnswers = [];
-
-    for (const q of questions) {
-      totalMarks += q.marks;
-      const studentAnswer = answers.find(a => a.questionId === q.id);
-      
-      if (studentAnswer && studentAnswer.selectedOptionId) {
-        const selectedOpt = q.options.find(opt => opt.id === studentAnswer.selectedOptionId);
-        if (selectedOpt && selectedOpt.isCorrect) {
-          score += q.marks;
-        }
-        attemptAnswers.push({
-          questionId: q.id,
-          selectedOptionId: studentAnswer.selectedOptionId
-        });
-      }
-    }
-
-    const finalScore = totalMarks > 0 ? (score / totalMarks) * 100 : 0;
+    const attemptAnswers = answers.map(a => ({
+      questionId: a.questionId,
+      selectedOptionId: a.selectedOptionId || null,
+      essayAnswer: a.essayAnswer || null
+    }));
 
     const attempt = await prisma.examAttempt.create({
       data: {
         examId: examId,
         mahasiswaId: mahasiswaId,
-        score: finalScore,
+        score: parseFloat(score),
         endTime: new Date(),
         answers: {
           create: attemptAnswers
@@ -104,7 +81,7 @@ async function submitExam(req, res) {
     return res.status(200).json({
       success: true,
       message: 'Ujian berhasil disubmit',
-      data: { score: finalScore, attemptId: attempt.id }
+      data: { score: attempt.score, attemptId: attempt.id }
     });
 
   } catch (error) {
@@ -113,4 +90,48 @@ async function submitExam(req, res) {
   }
 }
 
-module.exports = { getExams, getExamQuestions, submitExam };
+async function createExam(req, res) {
+  try {
+    if (req.user.role !== 'DOSEN') {
+      return res.status(403).json({ success: false, message: 'Hanya Dosen yang bisa membuat ujian' });
+    }
+
+    const { title, description, classId, startTime, endTime, durationMinutes, questions } = req.body;
+
+    const exam = await prisma.exam.create({
+      data: {
+        title,
+        description,
+        classId,
+        startTime: new Date(startTime),
+        endTime: new Date(endTime),
+        durationMinutes,
+        questions: {
+          create: questions.map(q => {
+            const isEssay = q.type === 'ESSAY';
+            return {
+              text: q.text,
+              imageUrl: q.imageUrl,
+              marks: q.marks || 1,
+              type: q.type || 'MULTIPLE_CHOICE',
+              correctEssayAnswer: isEssay ? q.correctEssayAnswer : null,
+              options: isEssay ? undefined : {
+                create: q.options.map(opt => ({
+                  text: opt.text,
+                  isCorrect: opt.isCorrect
+                }))
+              }
+            };
+          })
+        }
+      }
+    });
+
+    return res.status(201).json({ success: true, message: 'Ujian berhasil dibuat', data: exam });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: 'Gagal membuat ujian' });
+  }
+}
+
+module.exports = { getExams, getExamQuestions, submitExam, createExam };

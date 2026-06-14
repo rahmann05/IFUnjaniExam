@@ -24,6 +24,18 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".CreateExamActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ClassSelectionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MahasiswaDashboardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DosenDashboardActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="false" />
     </application>

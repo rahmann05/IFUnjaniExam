@@ -25,11 +25,6 @@ public class LoginActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
 
-        // Load Logo Unjani dari Uploadcare menggunakan Glide
-        com.bumptech.glide.Glide.with(this)
-                .load("https://ucarecdn.com/ada08a9e-b241-4f5c-87f3-f0e6bbf4c272/Logo_Unjani.png")
-                .into(ivLogo);
-
         btnLogin.setOnClickListener(v -> {
             String username = etUsername.getText() != null ? etUsername.getText().toString() : "";
             String password = etPassword.getText() != null ? etPassword.getText().toString() : "";
@@ -67,17 +62,23 @@ public class LoginActivity extends AppCompatActivity {
                             org.json.JSONObject data = response.getJSONObject("data");
                             String role = data.getString("role");
 
-                            // Simpan token & role ke SharedPreferences
+                            // Simpan token, role, dan username ke SharedPreferences
                             getSharedPreferences("AUTH_PREF", MODE_PRIVATE)
                                     .edit()
                                     .putString("jwt_token", token)
                                     .putString("role", role)
+                                    .putString("username", username)
                                     .apply();
 
-                            Toast.makeText(this, "Login Berhasil sebagai " + role, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Login Berhasil", Toast.LENGTH_SHORT).show();
 
-                            // Pindah ke MainActivity
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            // Pindah ke Dashboard Sesuai Role
+                            Intent intent;
+                            if ("DOSEN".equals(role)) {
+                                intent = new Intent(LoginActivity.this, DosenDashboardActivity.class);
+                            } else {
+                                intent = new Intent(LoginActivity.this, MahasiswaDashboardActivity.class);
+                            }
                             startActivity(intent);
                             finish();
                         } else {

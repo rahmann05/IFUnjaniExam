@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    app:cardBackgroundColor="@android:color/white"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <EditText
+                android:id="@+id/etQuestionText"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:hint="Pertanyaan Soal"
+                android:background="@android:color/transparent"
+                android:textSize="16sp"
+                android:padding="8dp" />
+
+            <Spinner
+                android:id="@+id/spinnerType"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e2e6e9"
+            android:layout_marginVertical="8dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAttachImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sisipkan Gambar"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            app:icon="@drawable/ic_menu" 
+            android:textColor="#7f8c8d" />
+
+        <ImageView
+            android:id="@+id/ivPreview"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:scaleType="centerInside"
+            android:visibility="gone"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Container for Option Multiple Choice -->
+        <LinearLayout
+            android:id="@+id/llOptionsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Opsi Jawaban (Tandai yang benar):"
+                android:textSize="12sp"
+                android:textColor="#7f8c8d" />
+
+            <!-- Options A, B, C, D will be inflated or statically defined here. Let's make it static 4 options for simplicity -->
+            <RadioGroup
+                android:id="@+id/rgCorrectOption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+                    <RadioButton android:id="@+id/rbA" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                    <EditText android:id="@+id/etOptA" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Opsi A" />
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+                    <RadioButton android:id="@+id/rbB" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                    <EditText android:id="@+id/etOptB" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Opsi B" />
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+                    <RadioButton android:id="@+id/rbC" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                    <EditText android:id="@+id/etOptC" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Opsi C" />
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+                    <RadioButton android:id="@+id/rbD" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                    <EditText android:id="@+id/etOptD" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Opsi D" />
+                </LinearLayout>
+            </RadioGroup>
+        </LinearLayout>
+
+        <!-- Container for Essay -->
+        <LinearLayout
+            android:id="@+id/llEssayContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/etCorrectEssay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Jawaban Benar (Kunci Jawaban Essay)"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRemoveQuestion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hapus Soal"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:textColor="#e74c3c"
+            android:layout_marginTop="8dp" />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>
