@@ -37,9 +37,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loginUser(String username, String password) {
-        // Jika menggunakan Emulator, localhost komputer diakses melalui IP 10.0.2.2
-        // Jika menggunakan HP Fisik, ubah IP di bawah ke IP komputer Anda (misal: 192.168.1.X)
-        String url = "http://10.0.2.2:3000/api/auth/login";
+        // Menggunakan Endpoint API dari Vercel
+        String url = "https://if-unjani-exam-api.vercel.app/api/auth/login";
 
         org.json.JSONObject postData = new org.json.JSONObject();
         try {
