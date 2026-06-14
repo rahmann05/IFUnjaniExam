@@ -49,4 +49,100 @@ async function handleApproval(req, res) {
   }
 }
 
-module.exports = { getDashboardStats, getApprovalRequests, handleApproval };
+// ================= USER MANAGEMENT (DOSEN & MAHASISWA) =================
+async function getUsers(req, res) {
+  try {
+    const { role } = req.query; // DOSEN or MAHASISWA
+    const users = await prisma.user.findMany({
+      where: role ? { role } : {},
+      include: { dosen: true, mahasiswa: true },
+      orderBy: { id: 'desc' }
+    });
+    res.json({ success: true, data: users });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Gagal memuat pengguna' });
+  }
+}
+
+const bcrypt = require('bcrypt');
+
+async function createUser(req, res) {
+  try {
+    const { username, password, role, name, nip, nim } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    
+    const user = await prisma.user.create({
+      data: {
+        username,
+        password: hashedPassword,
+        role,
+        ...(role === 'DOSEN' ? { dosen: { create: { name, nip } } } : {}),
+        ...(role === 'MAHASISWA' ? { mahasiswa: { create: { name, nim } } } : {})
+      },
+      include: { dosen: true, mahasiswa: true }
+    });
+    res.status(201).json({ success: true, message: 'Pengguna berhasil ditambahkan', data: user });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Gagal menambah pengguna (mungkin username/NIP/NIM duplikat)' });
+  }
+}
+
+async function deleteUser(req, res) {
+  try {
+    const { id } = req.params;
+    const userId = parseInt(id);
+    
+    const user = await prisma.user.findUnique({ where: { id: userId }, include: { dosen: true, mahasiswa: true } });
+    if (!user) return res.status(404).json({ success: false, message: 'Pengguna tidak ditemukan' });
+
+    if (user.role === 'DOSEN' && user.dosen) await prisma.dosen.delete({ where: { id: user.dosen.id } });
+    if (user.role === 'MAHASISWA' && user.mahasiswa) await prisma.mahasiswa.delete({ where: { id: user.mahasiswa.id } });
+    
+    await prisma.user.delete({ where: { id: userId } });
+    
+    res.json({ success: true, message: 'Pengguna berhasil dihapus' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Gagal menghapus pengguna (masih terikat dengan data kelas/ujian)' });
+  }
+}
+
+// ================= CLASS MANAGEMENT =================
+async function getClasses(req, res) {
+  try {
+    const classes = await prisma.kelas.findMany({
+      include: { course: true, semester: true, dosen: true },
+      orderBy: { id: 'desc' }
+    });
+    res.json({ success: true, data: classes });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Gagal memuat kelas' });
+  }
+}
+
+async function createClass(req, res) {
+  try {
+    const { name, courseId, semesterId, dosenId } = req.body;
+    const kelas = await prisma.kelas.create({
+      data: { name, courseId, semesterId, dosenId },
+      include: { course: true, semester: true, dosen: true }
+    });
+    res.status(201).json({ success: true, message: 'Kelas berhasil dibuat', data: kelas });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Gagal membuat kelas' });
+  }
+}
+
+async function deleteClass(req, res) {
+  try {
+    await prisma.kelas.delete({ where: { id: parseInt(req.params.id) } });
+    res.json({ success: true, message: 'Kelas berhasil dihapus' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Gagal menghapus kelas' });
+  }
+}
+
+module.exports = { 
+  getDashboardStats, getApprovalRequests, handleApproval,
+  getUsers, createUser, deleteUser,
+  getClasses, createClass, deleteClass
+};
