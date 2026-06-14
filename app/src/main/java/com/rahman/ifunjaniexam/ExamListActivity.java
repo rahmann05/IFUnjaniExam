@@ -1,9 +1,11 @@
 package com.rahman.ifunjaniexam;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,28 +21,39 @@ import org.json.JSONArray;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ClassSelectionActivity extends AppCompatActivity {
+public class ExamListActivity extends AppCompatActivity {
 
-    private RecyclerView rvKelas;
+    private RecyclerView rvExams;
     private ProgressBar progressBar;
+    private TextView tvEmptyState;
+    private int classId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_class_selection);
+        setContentView(R.layout.activity_exam_list);
 
-        rvKelas = findViewById(R.id.rvKelas);
+        classId = getIntent().getIntExtra("classId", -1);
+        if (classId == -1) {
+            Toast.makeText(this, "Kelas tidak valid", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        rvExams = findViewById(R.id.rvExams);
         progressBar = findViewById(R.id.progressBar);
+        tvEmptyState = findViewById(R.id.tvEmptyState);
 
-        rvKelas.setLayoutManager(new LinearLayoutManager(this));
-        
-        loadClasses();
+        rvExams.setLayoutManager(new LinearLayoutManager(this));
+
+        loadExams();
     }
 
-    private void loadClasses() {
+    private void loadExams() {
         progressBar.setVisibility(View.VISIBLE);
-        String url = "https://if-unjani-exam-api.vercel.app/api/kelas";
+        tvEmptyState.setVisibility(View.GONE);
 
+        String url = "https://if-unjani-exam-api.vercel.app/api/exams?classId=" + classId;
         SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
         String token = prefs.getString("jwt_token", "");
 
@@ -50,26 +63,21 @@ public class ClassSelectionActivity extends AppCompatActivity {
                     try {
                         if (response.getBoolean("success")) {
                             JSONArray data = response.getJSONArray("data");
-                            String role = prefs.getString("role", "MAHASISWA");
-
-                            KelasAdapter adapter = new KelasAdapter(data, kelasObj -> {
-                                try {
-                                    Toast.makeText(this, "Memilih kelas: " + kelasObj.getString("name"), Toast.LENGTH_SHORT).show();
-                                    
-                                    android.content.Intent intent;
-                                    if ("DOSEN".equals(role)) {
-                                        intent = new android.content.Intent(this, CreateExamActivity.class);
-                                    } else {
-                                        intent = new android.content.Intent(this, ExamListActivity.class);
+                            if (data.length() == 0) {
+                                tvEmptyState.setVisibility(View.VISIBLE);
+                            } else {
+                                ExamListAdapter adapter = new ExamListAdapter(data, examObj -> {
+                                    try {
+                                        Intent intent = new Intent(this, TakeExamActivity.class);
+                                        intent.putExtra("examId", examObj.getInt("id"));
+                                        intent.putExtra("examTitle", examObj.getString("title"));
+                                        startActivity(intent);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
-                                    intent.putExtra("classId", kelasObj.getInt("id"));
-                                    startActivity(intent);
-                                    
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            });
-                            rvKelas.setAdapter(adapter);
+                                });
+                                rvExams.setAdapter(adapter);
+                            }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -78,7 +86,7 @@ public class ClassSelectionActivity extends AppCompatActivity {
                 },
                 error -> {
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(this, "Gagal memuat daftar kelas", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Gagal memuat daftar ujian", Toast.LENGTH_SHORT).show();
                 }) {
             @Override
             public Map<String, String> getHeaders() {

@@ -24,6 +24,12 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".ExamListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TakeExamActivity"
+            android:exported="false" />
+        <activity
             android:name=".CreateExamActivity"
             android:exported="false" />
         <activity
