@@ -1,0 +1,19 @@
+const express = require('express');
+const cors = require('cors');
+const routes = require('./routes');
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+// Load all modular routes
+app.use('/api', routes);
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ success: false, message: 'Terjadi kesalahan internal server' });
+});
+
+module.exports = app;

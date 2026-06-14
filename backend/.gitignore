@@ -1,0 +1,17 @@
+# Dependency directories
+node_modules/
+
+# Local env files (MUST be ignored to avoid leaking Database credentials)
+.env
+.env.*
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# System Files
+.DS_Store
+Thumbs.db

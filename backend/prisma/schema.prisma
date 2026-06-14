@@ -1,0 +1,200 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  role      Role     @default(MAHASISWA)
+  
+  mahasiswa Mahasiswa?
+  dosen     Dosen?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  DOSEN
+  MAHASISWA
+}
+
+model Dosen {
+  id        Int      @id @default(autoincrement())
+  nip       String   @unique
+  name      String
+  
+  userId    Int      @unique
+  user      User     @relation(fields: [userId], references: [id])
+  
+  kelas     Kelas[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Mahasiswa {
+  id        Int      @id @default(autoincrement())
+  nim       String   @unique
+  name      String
+  
+  userId    Int      @unique
+  user      User     @relation(fields: [userId], references: [id])
+  
+  enrollments KelasMahasiswa[]
+  attempts    ExamAttempt[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MataKuliah {
+  id        Int      @id @default(autoincrement())
+  code      String   @unique
+  name      String
+  sks       Int
+
+  kelas     Kelas[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Semester {
+  id        Int      @id @default(autoincrement())
+  name      String   // e.g., "Ganjil 2023/2024"
+  isActive  Boolean  @default(false)
+
+  kelas     Kelas[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Kelas {
+  id          Int      @id @default(autoincrement())
+  name        String   // e.g., "IF-A"
+  
+  courseId    Int
+  course      MataKuliah @relation(fields: [courseId], references: [id])
+  
+  semesterId  Int
+  semester    Semester @relation(fields: [semesterId], references: [id])
+  
+  dosenId     Int
+  dosen       Dosen @relation(fields: [dosenId], references: [id])
+
+  mahasiswa   KelasMahasiswa[]
+  exams       Exam[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model KelasMahasiswa {
+  id          Int      @id @default(autoincrement())
+  
+  classId     Int
+  kelas       Kelas    @relation(fields: [classId], references: [id])
+  
+  mahasiswaId Int
+  mahasiswa   Mahasiswa @relation(fields: [mahasiswaId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([classId, mahasiswaId])
+}
+
+model Exam {
+  id              Int      @id @default(autoincrement())
+  title           String
+  description     String?
+  
+  classId         Int
+  kelas           Kelas    @relation(fields: [classId], references: [id])
+
+  startTime       DateTime
+  endTime         DateTime
+  durationMinutes Int
+
+  questions       Question[]
+  attempts        ExamAttempt[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Question {
+  id        Int      @id @default(autoincrement())
+  text      String
+  marks     Int      @default(1)
+  
+  examId    Int
+  exam      Exam     @relation(fields: [examId], references: [id])
+
+  options   AnswerOption[]
+  answers   AttemptAnswer[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AnswerOption {
+  id          Int      @id @default(autoincrement())
+  text        String
+  isCorrect   Boolean  @default(false)
+
+  questionId  Int
+  question    Question @relation(fields: [questionId], references: [id])
+  
+  answers     AttemptAnswer[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ExamAttempt {
+  id          Int      @id @default(autoincrement())
+  
+  examId      Int
+  exam        Exam     @relation(fields: [examId], references: [id])
+  
+  mahasiswaId Int
+  mahasiswa   Mahasiswa @relation(fields: [mahasiswaId], references: [id])
+
+  startTime   DateTime @default(now())
+  endTime     DateTime?
+  score       Float?
+
+  answers     AttemptAnswer[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([examId, mahasiswaId])
+}
+
+model AttemptAnswer {
+  id               Int      @id @default(autoincrement())
+  
+  attemptId        Int
+  attempt          ExamAttempt @relation(fields: [attemptId], references: [id])
+  
+  questionId       Int
+  question         Question @relation(fields: [questionId], references: [id])
+
+  selectedOptionId Int?
+  selectedOption   AnswerOption? @relation(fields: [selectedOptionId], references: [id])
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@unique([attemptId, questionId])
+}
