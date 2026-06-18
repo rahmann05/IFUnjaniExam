@@ -1,5 +1,7 @@
 package com.rahman.ifunjaniexam.activity.auth;
 
+import com.rahman.ifunjaniexam.R;
+
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;

@@ -1,5 +1,7 @@
 package com.rahman.ifunjaniexam.adapters;
 
+import com.rahman.ifunjaniexam.R;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

@@ -1,5 +1,7 @@
 package com.rahman.ifunjaniexam.activity.mahasiswa;
 
+import com.rahman.ifunjaniexam.R;
+
 import com.rahman.ifunjaniexam.network.ClassApiService;
 import com.rahman.ifunjaniexam.adapters.KelasAdapter;
 import com.rahman.ifunjaniexam.activity.auth.LoginActivity;

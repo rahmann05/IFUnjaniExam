@@ -1,5 +1,7 @@
 package com.rahman.ifunjaniexam.activity.admin;
 
+import com.rahman.ifunjaniexam.R;
+
 import com.rahman.ifunjaniexam.activity.auth.LoginActivity;
 
 import android.content.Intent;
