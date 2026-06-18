@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:elevation="0dp"
-        app:backgroundTint="#10B981"
+        android:background="#10B981"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -48,11 +48,13 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
         
         <LinearLayout
+            android:id="@+id/headerContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingHorizontal="16dp"
             android:paddingBottom="24dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
             <TextView
                 android:id="@+id/tvClassName"
                 android:layout_width="match_parent"

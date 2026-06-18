@@ -32,6 +32,7 @@ public class DosenClassDetailActivity extends AppCompatActivity {
     private TextView tvClassName, tvCourseName, tvSemester, tvStudentCount, tvEmptyExams, tvEmptyStudents;
     private RecyclerView rvExams, rvStudents;
     private ProgressBar progressBar;
+    private View scrollContent, headerContent;
     private int classId;
 
     @Override
@@ -55,6 +56,8 @@ public class DosenClassDetailActivity extends AppCompatActivity {
         rvExams = findViewById(R.id.rvExams);
         rvStudents = findViewById(R.id.rvStudents);
         progressBar = findViewById(R.id.progressBar);
+        scrollContent = findViewById(R.id.scrollContent);
+        headerContent = findViewById(R.id.headerContent);
 
         rvExams.setLayoutManager(new LinearLayoutManager(this));
         rvStudents.setLayoutManager(new LinearLayoutManager(this));
@@ -79,6 +82,8 @@ public class DosenClassDetailActivity extends AppCompatActivity {
 
     private void loadClassDetails() {
         progressBar.setVisibility(View.VISIBLE);
+        scrollContent.setVisibility(View.GONE);
+        headerContent.setVisibility(View.GONE);
         String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/kelas/" + classId;
 
         SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
@@ -87,6 +92,8 @@ public class DosenClassDetailActivity extends AppCompatActivity {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
                     progressBar.setVisibility(View.GONE);
+                    scrollContent.setVisibility(View.VISIBLE);
+                    headerContent.setVisibility(View.VISIBLE);
                     try {
                         if (response.getBoolean("success")) {
                             JSONObject kelas = response.getJSONObject("data");

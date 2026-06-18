@@ -36,7 +36,7 @@ public class MahasiswaClassDetailActivity extends AppCompatActivity {
     private TextView tvEmptyExams, tvEmptyHistory, tvEmptyStudents;
     private RecyclerView rvExams, rvExamHistory, rvStudents;
     private ProgressBar progressBar;
-    private View scrollContent;
+    private View scrollContent, headerContent;
     private int classId;
 
     @Override
@@ -63,6 +63,7 @@ public class MahasiswaClassDetailActivity extends AppCompatActivity {
         rvStudents      = findViewById(R.id.rvStudents);
         progressBar     = findViewById(R.id.progressBar);
         scrollContent   = findViewById(R.id.scrollContent);
+        headerContent   = findViewById(R.id.headerContent);
 
         rvExams.setLayoutManager(new LinearLayoutManager(this));
         rvExamHistory.setLayoutManager(new LinearLayoutManager(this));
@@ -82,6 +83,7 @@ public class MahasiswaClassDetailActivity extends AppCompatActivity {
     private void loadClassDetails() {
         progressBar.setVisibility(View.VISIBLE);
         scrollContent.setVisibility(View.GONE);
+        headerContent.setVisibility(View.GONE);
         String url = com.rahman.ifunjaniexam.network.Config.BASE_URL + "/kelas/" + classId;
 
         SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
@@ -91,6 +93,7 @@ public class MahasiswaClassDetailActivity extends AppCompatActivity {
                 response -> {
                     progressBar.setVisibility(View.GONE);
                     scrollContent.setVisibility(View.VISIBLE);
+                    headerContent.setVisibility(View.VISIBLE);
                     try {
                         if (response.getBoolean("success")) {
                             JSONObject kelas    = response.getJSONObject("data");
