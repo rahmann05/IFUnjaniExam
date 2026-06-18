@@ -181,18 +181,19 @@ async function main() {
     });
   }
 
-  // 8. Buat Ujian dari Tiap Kategori untuk Kelas IF-A (dbKelas[0])
-  console.log('Membuat ujian dari tiap kategori...');
+  // 8. Create exams
+  console.log('Creating exams...');
   const examCategories = [
-    { title: 'Kuis 1 Pemrograman Mobile', category: 'QUIZ', status: 'PUBLISHED' },
+    { title: 'Kuis 1 Pemrograman Mobile', category: 'QUIZ', status: 'ONGOING' }, // ONGOING agar bisa langsung diklik mulai
     { title: 'Post-Test Pertemuan 3', category: 'POST_TEST', status: 'PUBLISHED' },
-    { title: 'UTS Pemrograman Mobile', category: 'UTS', status: 'FINISHED' },
+    { title: 'UTS Pemrograman Mobile', category: 'UTS', status: 'FINISHED' }, // FINISHED dengan attempt
     { title: 'UAS Pemrograman Mobile', category: 'UAS', status: 'DRAFT' },
     { title: 'Tugas Proyek', category: 'OTHER', status: 'PUBLISHED' }
   ];
 
+  const dbExams = [];
   for (const cat of examCategories) {
-    await prisma.exam.create({
+    const exam = await prisma.exam.create({
       data: {
         title: cat.title,
         description: `Deskripsi pengerjaan untuk ${cat.title} - Diharapkan mahasiswa mengerjakan dengan jujur.`,
@@ -201,6 +202,7 @@ async function main() {
         status: cat.status,
         category: cat.category,
         weight: 100.0,
+        startTime: cat.status === 'ONGOING' ? new Date(Date.now() - 3600000) : null, // Set start time 1 jam lalu untuk ONGOING
         questions: {
           create: [
             {
@@ -224,9 +226,49 @@ async function main() {
             }
           ]
         }
+      },
+      include: {
+        questions: {
+          include: { options: true }
+        }
       }
     });
-    console.log(` Ujian dibuat: ${cat.title} [Kategori: ${cat.category}]`);
+    dbExams.push(exam);
+    console.log(`Exam created: ${cat.title} [${cat.category}]`);
+  }
+
+  // 9. Create Exam Attempt for Mahasiswa 1
+  console.log('Creating exam attempt...');
+  const utsExam = dbExams.find(e => e.category === 'UTS');
+  if (utsExam && utsExam.questions.length > 0) {
+    const q1 = utsExam.questions[0]; // Pilgan
+    const q2 = utsExam.questions[1]; // Essay
+    
+    // Cari opsi jawaban yang benar untuk disimulasikan
+    const correctOption = q1.options.find(o => o.isCorrect);
+
+    await prisma.examAttempt.create({
+      data: {
+        examId: utsExam.id,
+        mahasiswaId: dbMahasiswas[0].id, // 20230001
+        startTime: new Date(Date.now() - 7200000), // 2 jam lalu
+        endTime: new Date(Date.now() - 3600000), // 1 jam lalu
+        score: 100, // Nilai sempurna
+        answers: {
+          create: [
+            {
+              questionId: q1.id,
+              selectedOptionId: correctOption ? correctOption.id : null
+            },
+            {
+              questionId: q2.id,
+              essayAnswer: 'linearlayout' // Jawaban benar
+            }
+          ]
+        }
+      }
+    });
+    console.log('Attempt created for UTS.');
   }
 
   console.log('Seeding database selesai dengan sukses!');
