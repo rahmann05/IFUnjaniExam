@@ -4,33 +4,37 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="16dp"
-    app:cardBackgroundColor="@android:color/white"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="2dp">
+    app:cardBackgroundColor="#FFFFFF"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:strokeColor="#E2E8F0"
+    app:strokeWidth="1.5dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="20dp">
 
         <TextView
             android:id="@+id/tvQuestionNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Soal -"
-            android:textColor="#27ae60"
+            android:text="SOAL 1"
+            android:textColor="#10B981"
             android:textSize="12sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:letterSpacing="0.05" />
 
         <TextView
             android:id="@+id/tvQuestionText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             android:text="Pertanyaan Soal..."
-            android:textColor="#2c3e50"
-            android:textSize="16sp" />
+            android:textColor="#0F172A"
+            android:textSize="18sp"
+            android:lineSpacingExtra="4dp" />
 
         <ImageView
             android:id="@+id/ivQuestionImage"
@@ -38,14 +42,13 @@
             android:layout_height="180dp"
             android:scaleType="centerInside"
             android:visibility="gone"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginTop="16dp" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#e2e6e9"
-            android:layout_marginVertical="12dp"/>
+            android:background="#F1F5F9"
+            android:layout_marginVertical="20dp"/>
 
         <!-- Container for Option Multiple Choice -->
         <RadioGroup
@@ -54,10 +57,41 @@
             android:layout_height="wrap_content"
             android:visibility="visible">
             
-            <RadioButton android:id="@+id/rbOptA" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Opsi A" android:textColor="#2c3e50" />
-            <RadioButton android:id="@+id/rbOptB" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Opsi B" android:textColor="#2c3e50" />
-            <RadioButton android:id="@+id/rbOptC" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Opsi C" android:textColor="#2c3e50" />
-            <RadioButton android:id="@+id/rbOptD" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Opsi D" android:textColor="#2c3e50" />
+            <RadioButton 
+                android:id="@+id/rbOptA" 
+                android:layout_width="match_parent" 
+                android:layout_height="wrap_content" 
+                android:text="Opsi A" 
+                android:textColor="#334155" 
+                android:paddingVertical="8dp"
+                android:buttonTint="#10B981" />
+            
+            <RadioButton 
+                android:id="@+id/rbOptB" 
+                android:layout_width="match_parent" 
+                android:layout_height="wrap_content" 
+                android:text="Opsi B" 
+                android:textColor="#334155" 
+                android:paddingVertical="8dp"
+                android:buttonTint="#10B981" />
+                
+            <RadioButton 
+                android:id="@+id/rbOptC" 
+                android:layout_width="match_parent" 
+                android:layout_height="wrap_content" 
+                android:text="Opsi C" 
+                android:textColor="#334155" 
+                android:paddingVertical="8dp"
+                android:buttonTint="#10B981" />
+                
+            <RadioButton 
+                android:id="@+id/rbOptD" 
+                android:layout_width="match_parent" 
+                android:layout_height="wrap_content" 
+                android:text="Opsi D" 
+                android:textColor="#334155" 
+                android:paddingVertical="8dp"
+                android:buttonTint="#10B981" />
         </RadioGroup>
 
         <!-- Container for Essay -->
@@ -68,12 +102,26 @@
             android:orientation="vertical"
             android:visibility="gone">
 
-            <EditText
-                android:id="@+id/etEssayAnswer"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Ketik jawaban Anda di sini..."
-                android:textSize="14sp" />
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:boxStrokeColor="#10B981"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp">
+                
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etEssayAnswer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Ketik jawaban Anda di sini..."
+                    android:minLines="3"
+                    android:gravity="top|start"
+                    android:inputType="textMultiLine"
+                    android:textColor="#0F172A" />
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

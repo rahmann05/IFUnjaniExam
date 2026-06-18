@@ -1,4 +1,6 @@
-package com.rahman.ifunjaniexam;
+package com.rahman.ifunjaniexam.ui.admin;
+
+import com.rahman.ifunjaniexam.ui.auth.LoginActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;

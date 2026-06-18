@@ -1,4 +1,10 @@
-package com.rahman.ifunjaniexam;
+package com.rahman.ifunjaniexam.activity.auth;
+
+import com.rahman.ifunjaniexam.activity.admin.AdminDashboardActivity;
+import com.rahman.ifunjaniexam.network.AuthApiService;
+import com.rahman.ifunjaniexam.utils.FeedbackUtils;
+import com.rahman.ifunjaniexam.activity.dosen.DosenDashboardActivity;
+import com.rahman.ifunjaniexam.activity.mahasiswa.MahasiswaDashboardActivity;
 
 import android.content.Intent;
 import android.os.Bundle;

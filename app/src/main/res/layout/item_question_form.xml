@@ -4,15 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="16dp"
-    app:cardBackgroundColor="@android:color/white"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="2dp">
+    app:cardBackgroundColor="#FFFFFF"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:strokeColor="#E2E8F0"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="20dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,6 +28,8 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:hint="Pertanyaan Soal"
+                android:textColor="#0F172A"
+                android:textColorHint="#94A3B8"
                 android:background="@android:color/transparent"
                 android:textSize="16sp"
                 android:padding="8dp" />
@@ -39,7 +43,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#e2e6e9"
+            android:background="#E2E8F0"
             android:layout_marginVertical="8dp"/>
 
         <EditText
@@ -49,6 +53,8 @@
             android:hint="Bobot Soal (Contoh: 10)"
             android:inputType="number"
             android:text="10"
+            android:textColor="#0F172A"
+            android:textColorHint="#94A3B8"
             android:textSize="14sp" />
 
         <com.google.android.material.button.MaterialButton
@@ -58,7 +64,8 @@
             android:text="Sisipkan Gambar"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             app:icon="@drawable/ic_menu" 
-            android:textColor="#7f8c8d" />
+            android:textColor="#64748B"
+            app:iconTint="#64748B" />
 
         <ImageView
             android:id="@+id/ivPreview"
@@ -81,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:text="Opsi Jawaban (Tandai yang benar):"
                 android:textSize="12sp"
-                android:textColor="#7f8c8d" />
+                android:textColor="#64748B" />
 
             <!-- Options A, B, C, D will be inflated or statically defined here. Let's make it static 4 options for simplicity -->
             <RadioGroup
@@ -90,23 +97,23 @@
                 android:layout_height="wrap_content">
                 
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
-                    <RadioButton android:id="@+id/rbA" android:layout_width="wrap_content" android:layout_height="wrap_content" />
-                    <EditText android:id="@+id/etOptA" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Opsi A" />
+                    <RadioButton android:id="@+id/rbA" android:layout_width="wrap_content" android:layout_height="wrap_content" android:buttonTint="#10B981" />
+                    <EditText android:id="@+id/etOptA" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Opsi A" android:textColor="#0F172A" android:textColorHint="#94A3B8" />
                 </LinearLayout>
 
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
-                    <RadioButton android:id="@+id/rbB" android:layout_width="wrap_content" android:layout_height="wrap_content" />
-                    <EditText android:id="@+id/etOptB" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Opsi B" />
+                    <RadioButton android:id="@+id/rbB" android:layout_width="wrap_content" android:layout_height="wrap_content" android:buttonTint="#10B981" />
+                    <EditText android:id="@+id/etOptB" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Opsi B" android:textColor="#0F172A" android:textColorHint="#94A3B8" />
                 </LinearLayout>
 
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
-                    <RadioButton android:id="@+id/rbC" android:layout_width="wrap_content" android:layout_height="wrap_content" />
-                    <EditText android:id="@+id/etOptC" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Opsi C" />
+                    <RadioButton android:id="@+id/rbC" android:layout_width="wrap_content" android:layout_height="wrap_content" android:buttonTint="#10B981" />
+                    <EditText android:id="@+id/etOptC" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Opsi C" android:textColor="#0F172A" android:textColorHint="#94A3B8" />
                 </LinearLayout>
 
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
-                    <RadioButton android:id="@+id/rbD" android:layout_width="wrap_content" android:layout_height="wrap_content" />
-                    <EditText android:id="@+id/etOptD" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Opsi D" />
+                    <RadioButton android:id="@+id/rbD" android:layout_width="wrap_content" android:layout_height="wrap_content" android:buttonTint="#10B981" />
+                    <EditText android:id="@+id/etOptD" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Opsi D" android:textColor="#0F172A" android:textColorHint="#94A3B8" />
                 </LinearLayout>
             </RadioGroup>
         </LinearLayout>
@@ -124,6 +131,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Jawaban Benar (Kunci Jawaban Essay)"
+                android:textColor="#0F172A"
+                android:textColorHint="#94A3B8"
                 android:textSize="14sp" />
         </LinearLayout>
 
@@ -133,7 +142,7 @@
             android:layout_height="wrap_content"
             android:text="Hapus Soal"
             style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:textColor="#e74c3c"
+            android:textColor="#EF4444"
             android:layout_marginTop="8dp" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

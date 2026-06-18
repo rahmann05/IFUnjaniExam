@@ -1,4 +1,4 @@
-package com.rahman.ifunjaniexam;
+package com.rahman.ifunjaniexam.activity.auth;
 
 import android.os.Bundle;
 

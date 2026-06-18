@@ -1,4 +1,7 @@
-package com.rahman.ifunjaniexam;
+package com.rahman.ifunjaniexam.activity.admin;
+
+import com.rahman.ifunjaniexam.network.AdminApiService;
+import com.rahman.ifunjaniexam.adapters.AdminApprovalAdapter;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;

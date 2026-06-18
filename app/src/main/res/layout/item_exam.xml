@@ -7,10 +7,10 @@
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
-    app:cardBackgroundColor="#ffffff"
+    app:cardBackgroundColor="#FFFFFF"
     app:cardCornerRadius="14dp"
-    app:cardElevation="2dp"
-    app:strokeColor="#e0f2f1"
+    app:cardElevation="0dp"
+    app:strokeColor="#E2E8F0"
     app:strokeWidth="1dp">
 
     <LinearLayout
@@ -18,11 +18,11 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <!-- Left accent strip (teal for variety) -->
+        <!-- Left accent strip -->
         <View
             android:layout_width="5dp"
             android:layout_height="match_parent"
-            android:background="#1abc9c" />
+            android:background="#10B981" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -43,7 +43,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Ujian Tengah Semester"
-                    android:textColor="#1a2e1a"
+                    android:textColor="#0F172A"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -52,10 +52,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/badge_green"
+                    android:backgroundTint="#059669"
                     android:paddingHorizontal="10dp"
                     android:paddingVertical="3dp"
                     android:text="Aktif"
-                    android:textColor="#ffffff"
+                    android:textColor="#FFFFFF"
                     android:textSize="11sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -66,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="Deskripsi singkat mengenai ujian ini."
-                android:textColor="#718096"
+                android:textColor="#64748B"
                 android:textSize="13sp" />
 
             <!-- Meta row: duration + time -->
@@ -81,7 +82,7 @@
                     android:layout_width="14dp"
                     android:layout_height="14dp"
                     android:src="@drawable/ic_assignment"
-                    app:tint="#27ae60" />
+                    app:tint="#10B981" />
 
                 <TextView
                     android:id="@+id/tvDuration"
@@ -89,7 +90,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
                     android:text="90 Menit"
-                    android:textColor="#27ae60"
+                    android:textColor="#10B981"
                     android:textSize="13sp"
                     android:textStyle="bold" />
 
@@ -101,7 +102,7 @@
                     android:layout_width="14dp"
                     android:layout_height="14dp"
                     android:src="@drawable/ic_history"
-                    app:tint="#1abc9c" />
+                    app:tint="#10B981" />
 
                 <TextView
                     android:id="@+id/tvTime"
@@ -110,7 +111,7 @@
                     android:layout_weight="1"
                     android:layout_marginStart="4dp"
                     android:text="2026-06-14 10:00"
-                    android:textColor="#1abc9c"
+                    android:textColor="#10B981"
                     android:textSize="12sp" />
 
                 <!-- Options button (dosen only) -->
@@ -121,7 +122,7 @@
                     android:padding="4dp"
                     android:src="@android:drawable/ic_menu_more"
                     android:visibility="gone"
-                    app:tint="#718096" />
+                    app:tint="#94A3B8" />
             </LinearLayout>
 
             <!-- Action button (mulai/lihat hasil) -->
@@ -130,9 +131,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="34dp"
                 android:layout_marginTop="10dp"
-                android:backgroundTint="#27ae60"
+                android:backgroundTint="#10B981"
                 android:text="Mulai Ujian"
-                android:textColor="#ffffff"
+                android:textColor="#FFFFFF"
                 android:textSize="12sp"
                 android:textStyle="bold"
                 android:visibility="gone"

@@ -3,15 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="2dp">
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="8dp"
+    app:cardBackgroundColor="#FFFFFF"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:strokeColor="#E2E8F0"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="20dp">
 
         <TextView
             android:id="@+id/tvExamTitle"
@@ -20,7 +24,7 @@
             android:text="Judul Ujian"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="#2c3e50" />
+            android:textColor="#0F172A" />
 
         <TextView
             android:id="@+id/tvDosenName"
@@ -28,7 +32,7 @@
             android:layout_height="wrap_content"
             android:text="Pemohon: Nama Dosen"
             android:textSize="14sp"
-            android:textColor="#7f8c8d"
+            android:textColor="#64748B"
             android:layout_marginTop="4dp" />
 
         <TextView
@@ -37,7 +41,7 @@
             android:layout_height="wrap_content"
             android:text="Tipe: DELETE"
             android:textSize="14sp"
-            android:textColor="#e74c3c"
+            android:textColor="#EF4444"
             android:textStyle="bold"
             android:layout_marginTop="8dp" />
 
@@ -47,7 +51,7 @@
             android:layout_height="wrap_content"
             android:text="Alasan: Salah soal"
             android:textSize="14sp"
-            android:textColor="#34495e"
+            android:textColor="#0F172A"
             android:layout_marginTop="4dp" />
 
         <LinearLayout
@@ -63,9 +67,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Tolak"
-                android:textColor="#e74c3c"
+                android:textColor="#EF4444"
                 android:layout_marginEnd="4dp"
-                app:strokeColor="#e74c3c"
+                app:strokeColor="#EF4444"
                 app:strokeWidth="1dp"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 app:cornerRadius="8dp" />
@@ -76,7 +80,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Setujui"
-                android:backgroundTint="#27ae60"
+                android:backgroundTint="#10B981"
                 app:cornerRadius="8dp"
                 android:layout_marginStart="4dp" />
         </LinearLayout>

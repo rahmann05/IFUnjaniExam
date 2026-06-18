@@ -1,4 +1,9 @@
-package com.rahman.ifunjaniexam;
+package com.rahman.ifunjaniexam.activity.mahasiswa;
+
+import com.rahman.ifunjaniexam.network.ClassApiService;
+import com.rahman.ifunjaniexam.adapters.KelasAdapter;
+import com.rahman.ifunjaniexam.activity.auth.LoginActivity;
+import com.rahman.ifunjaniexam.network.AuthApiService;
 
 import android.content.Intent;
 import android.content.SharedPreferences;

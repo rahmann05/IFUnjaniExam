@@ -1,4 +1,8 @@
-package com.rahman.ifunjaniexam;
+package com.rahman.ifunjaniexam.activity.mahasiswa;
+
+import com.rahman.ifunjaniexam.network.Config;
+import com.rahman.ifunjaniexam.adapters.KelasAdapter;
+import com.rahman.ifunjaniexam.activity.dosen.DosenClassDetailActivity;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;

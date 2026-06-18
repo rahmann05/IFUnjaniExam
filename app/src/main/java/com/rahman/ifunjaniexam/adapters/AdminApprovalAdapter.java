@@ -1,4 +1,4 @@
-package com.rahman.ifunjaniexam;
+package com.rahman.ifunjaniexam.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;

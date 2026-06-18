@@ -3,10 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="6dp"
-    app:cardBackgroundColor="@android:color/white"
-    app:cardCornerRadius="10dp"
-    app:cardElevation="1dp">
+    android:layout_marginBottom="8dp"
+    app:cardBackgroundColor="#FFFFFF"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="0dp"
+    app:strokeColor="#E2E8F0"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,10 +18,13 @@
         android:padding="12dp">
 
         <ImageView
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="8dp"
+            android:background="@drawable/circle_background"
+            android:backgroundTint="#D1FAE5"
             android:src="@drawable/ic_person"
-            app:tint="#27ae60" />
+            app:tint="#10B981" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -33,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Nama Mahasiswa"
-                android:textColor="#2c3e50"
+                android:textColor="#0F172A"
                 android:textSize="15sp"
                 android:textStyle="bold" />
 
@@ -43,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:text="NIM"
-                android:textColor="#7f8c8d"
+                android:textColor="#64748B"
                 android:textSize="13sp" />
         </LinearLayout>
     </LinearLayout>

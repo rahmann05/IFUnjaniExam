@@ -15,7 +15,7 @@
         android:theme="@style/Theme.IFUnjaniExam"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".LoginActivity"
+            android:name=".activity.auth.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,49 +24,49 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DosenClassDetailActivity"
+            android:name=".activity.dosen.DosenClassDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".AdminDashboardActivity"
+            android:name=".activity.admin.AdminDashboardActivity"
             android:exported="false" />
         <activity
-            android:name=".AdminApprovalActivity"
+            android:name=".activity.admin.AdminApprovalActivity"
             android:exported="false" />
         <activity
-            android:name=".AdminManageUserActivity"
+            android:name=".activity.admin.AdminManageUserActivity"
             android:exported="false" />
         <activity
-            android:name=".AdminManageClassActivity"
+            android:name=".activity.admin.AdminManageClassActivity"
             android:exported="false" />
         <activity
-            android:name=".MahasiswaClassDetailActivity"
+            android:name=".activity.mahasiswa.MahasiswaClassDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".ExamResultsActivity"
+            android:name=".activity.dosen.ExamResultsActivity"
             android:exported="false" />
         <activity
-            android:name=".StudentAnswerSheetActivity"
+            android:name=".activity.dosen.StudentAnswerSheetActivity"
             android:exported="false" />
         <activity
-            android:name=".ExamListActivity"
+            android:name=".activity.mahasiswa.ExamListActivity"
             android:exported="false" />
         <activity
-            android:name=".TakeExamActivity"
+            android:name=".activity.mahasiswa.TakeExamActivity"
             android:exported="false" />
         <activity
-            android:name=".CreateExamActivity"
+            android:name=".activity.dosen.CreateExamActivity"
             android:exported="false" />
         <activity
-            android:name=".ClassSelectionActivity"
+            android:name=".activity.mahasiswa.ClassSelectionActivity"
             android:exported="false" />
         <activity
-            android:name=".MahasiswaDashboardActivity"
+            android:name=".activity.mahasiswa.MahasiswaDashboardActivity"
             android:exported="false" />
         <activity
-            android:name=".DosenDashboardActivity"
+            android:name=".activity.dosen.DosenDashboardActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.auth.MainActivity"
             android:exported="false" />
     </application>
 
