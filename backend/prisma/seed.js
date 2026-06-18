@@ -12,9 +12,8 @@ const studentNames = [
 ];
 
 async function main() {
-  console.log('🌱 Memulai pembersihan database...');
+  console.log(' Memulai pembersihan database...');
 
-  // Hapus data lama agar bersih dan tidak melanggar constraint unique/foreign key
   await prisma.attemptAnswer.deleteMany({});
   await prisma.examAttempt.deleteMany({});
   await prisma.answerOption.deleteMany({});
@@ -29,7 +28,7 @@ async function main() {
   await prisma.mahasiswa.deleteMany({});
   await prisma.user.deleteMany({});
 
-  console.log('🧹 Database dibersihkan. Memulai proses seeding...');
+  console.log('Database dibersihkan. Memulai proses seeding...');
 
   // Hash password standar untuk semua user
   const hashedPassword = await bcrypt.hash('password123', 10);
@@ -42,7 +41,7 @@ async function main() {
       role: 'ADMIN',
     },
   });
-  console.log(`👤 Admin dibuat: ${adminUser.username}`);
+  console.log(`Admin dibuat: ${adminUser.username}`);
 
   // 2. Buat 2 Dosen
   const dosenData = [
@@ -69,7 +68,7 @@ async function main() {
       }
     });
     dbDosens.push(userDosen.dosen);
-    console.log(`👨‍🏫 Dosen dibuat: ${d.name} (${d.nip})`);
+    console.log(`Dosen dibuat: ${d.name} (${d.nip})`);
   }
 
   // 3. Buat 20 Mahasiswa
@@ -96,7 +95,7 @@ async function main() {
       }
     });
     dbMahasiswas.push(userMahasiswa.mahasiswa);
-    console.log(`🎓 Mahasiswa dibuat: ${name} (${nimString})`);
+    console.log(`Mahasiswa dibuat: ${name} (${nimString})`);
   }
 
   // 4. Buat Semester Aktif
@@ -121,7 +120,7 @@ async function main() {
       data: c
     });
     dbCourses.push(course);
-    console.log(`📖 Mata Kuliah dibuat: ${c.name} (${c.code})`);
+    console.log(`Mata Kuliah dibuat: ${c.name} (${c.code})`);
   }
 
   const classData = [
@@ -180,6 +179,54 @@ async function main() {
         mahasiswaId: dbMahasiswas[idx].id,
       }
     });
+  }
+
+  // 8. Buat Ujian dari Tiap Kategori untuk Kelas IF-A (dbKelas[0])
+  console.log('Membuat ujian dari tiap kategori...');
+  const examCategories = [
+    { title: 'Kuis 1 Pemrograman Mobile', category: 'QUIZ', status: 'PUBLISHED' },
+    { title: 'Post-Test Pertemuan 3', category: 'POST_TEST', status: 'PUBLISHED' },
+    { title: 'UTS Pemrograman Mobile', category: 'UTS', status: 'FINISHED' },
+    { title: 'UAS Pemrograman Mobile', category: 'UAS', status: 'DRAFT' },
+    { title: 'Tugas Proyek', category: 'OTHER', status: 'PUBLISHED' }
+  ];
+
+  for (const cat of examCategories) {
+    await prisma.exam.create({
+      data: {
+        title: cat.title,
+        description: `Deskripsi pengerjaan untuk ${cat.title} - Diharapkan mahasiswa mengerjakan dengan jujur.`,
+        classId: dbKelas[0].id,
+        durationMinutes: 90,
+        status: cat.status,
+        category: cat.category,
+        weight: 100.0,
+        questions: {
+          create: [
+            {
+              text: 'Apa nama bahasa pemrograman utama yang awalnya digunakan untuk Android sebelum Kotlin?',
+              type: 'MULTIPLE_CHOICE',
+              marks: 10,
+              options: {
+                create: [
+                  { text: 'Java', isCorrect: true },
+                  { text: 'Python', isCorrect: false },
+                  { text: 'C++', isCorrect: false },
+                  { text: 'Swift', isCorrect: false }
+                ]
+              }
+            },
+            {
+              text: 'Sebutkan layout manager dasar di Android yang menempatkan elemen secara linear (mendatar/menurun)!',
+              type: 'ESSAY',
+              marks: 20,
+              correctEssayAnswer: 'linearlayout'
+            }
+          ]
+        }
+      }
+    });
+    console.log(` Ujian dibuat: ${cat.title} [Kategori: ${cat.category}]`);
   }
 
   console.log('Seeding database selesai dengan sukses!');
