@@ -65,6 +65,11 @@ public class MahasiswaDashboardActivity extends AppCompatActivity {
         android.widget.ImageView ivPerson = findViewById(R.id.ivPerson);
         ivPerson.setOnClickListener(v -> showProfileMenu(v));
 
+        android.widget.ImageView btnLogout = findViewById(R.id.btnLogout);
+        if (btnLogout != null) {
+            btnLogout.setOnClickListener(v -> logout());
+        }
+
         findViewById(R.id.btnGabungKelas).setOnClickListener(v -> showJoinClassDialog());
     }
 
@@ -217,6 +222,20 @@ public class MahasiswaDashboardActivity extends AppCompatActivity {
             return false;
         });
         popup.show();
+    }
+
+    private void logout() {
+        new android.app.AlertDialog.Builder(this)
+            .setTitle("Konfirmasi Logout")
+            .setMessage("Apakah Anda yakin ingin keluar dari aplikasi?")
+            .setPositiveButton("Ya, Keluar", (dialog, which) -> {
+                getSharedPreferences("AUTH_PREF", MODE_PRIVATE).edit().clear().apply();
+                android.content.Intent intent = new android.content.Intent(this, LoginActivity.class);
+                intent.setFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            })
+            .setNegativeButton("Batal", null)
+            .show();
     }
 
     private void showChangePasswordDialog() {

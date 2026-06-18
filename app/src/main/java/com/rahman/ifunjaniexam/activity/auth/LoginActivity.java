@@ -46,6 +46,14 @@ public class LoginActivity extends AppCompatActivity {
                 loginUser(username, password);
             }
         });
+
+        etPassword.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_DONE) {
+                btnLogin.performClick();
+                return true;
+            }
+            return false;
+        });
     }
 
     private void loginUser(String username, String password) {

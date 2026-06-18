@@ -30,6 +30,7 @@ public class DosenDashboardActivity extends AppCompatActivity {
     private TextView tvNipHeader, tvWelcome, tvEmptyClasses;
     private RecyclerView rvKelas;
     private ProgressBar progressBar;
+    private androidx.swiperefreshlayout.widget.SwipeRefreshLayout swipeRefresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +42,13 @@ public class DosenDashboardActivity extends AppCompatActivity {
         tvEmptyClasses = findViewById(R.id.tvEmptyClasses);
         rvKelas = findViewById(R.id.rvKelas);
         progressBar = findViewById(R.id.progressBar);
+        swipeRefresh = findViewById(R.id.swipeRefresh);
 
         rvKelas.setLayoutManager(new LinearLayoutManager(this));
+        
+        if (swipeRefresh != null) {
+            swipeRefresh.setOnRefreshListener(this::loadClasses);
+        }
 
         // Fetch name/nip from SharedPreferences
         SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
@@ -55,7 +61,10 @@ public class DosenDashboardActivity extends AppCompatActivity {
         android.widget.ImageView ivPerson = findViewById(R.id.ivPerson);
         ivPerson.setOnClickListener(v -> showProfileMenu(v));
 
-        loadClasses();
+        android.widget.ImageView btnLogout = findViewById(R.id.btnLogout);
+        if (btnLogout != null) {
+            btnLogout.setOnClickListener(v -> logout());
+        }
     }
 
     @Override
@@ -65,13 +74,16 @@ public class DosenDashboardActivity extends AppCompatActivity {
     }
 
     private void loadClasses() {
-        progressBar.setVisibility(View.VISIBLE);
+        if (swipeRefresh == null || !swipeRefresh.isRefreshing()) {
+            progressBar.setVisibility(View.VISIBLE);
+        }
         tvEmptyClasses.setVisibility(View.GONE);
 
         com.rahman.ifunjaniexam.network.ClassApiService.getClasses(this, new com.rahman.ifunjaniexam.network.ClassApiService.ApiCallback() {
             @Override
             public void onSuccess(JSONObject response) {
                 progressBar.setVisibility(View.GONE);
+                if (swipeRefresh != null) swipeRefresh.setRefreshing(false);
                 try {
                     if (response.getBoolean("success")) {
                         JSONArray data = response.getJSONArray("data");
@@ -102,6 +114,7 @@ public class DosenDashboardActivity extends AppCompatActivity {
             @Override
             public void onError(Exception error, com.android.volley.VolleyError volleyError) {
                 progressBar.setVisibility(View.GONE);
+                if (swipeRefresh != null) swipeRefresh.setRefreshing(false);
                 Toast.makeText(DosenDashboardActivity.this, "Gagal memuat daftar kelas", Toast.LENGTH_SHORT).show();
             }
         });
@@ -125,6 +138,20 @@ public class DosenDashboardActivity extends AppCompatActivity {
             return false;
         });
         popup.show();
+    }
+
+    private void logout() {
+        new android.app.AlertDialog.Builder(this)
+            .setTitle("Konfirmasi Logout")
+            .setMessage("Apakah Anda yakin ingin keluar dari aplikasi?")
+            .setPositiveButton("Ya, Keluar", (dialog, which) -> {
+                getSharedPreferences("AUTH_PREF", MODE_PRIVATE).edit().clear().apply();
+                Intent intent = new Intent(this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            })
+            .setNegativeButton("Batal", null)
+            .show();
     }
 
     private void showChangePasswordDialog() {
