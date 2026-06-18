@@ -99,7 +99,13 @@ public class StudentAnswerAdapter extends RecyclerView.Adapter<StudentAnswerAdap
                 holder.tvStatus.setTextColor(Color.parseColor("#e74c3c")); // Red
                 holder.tvCorrectAnswerLabel.setVisibility(View.VISIBLE);
                 holder.tvCorrectAnswer.setVisibility(View.VISIBLE);
-                holder.tvCorrectAnswer.setText(correctAnswerText);
+                
+                if (correctAnswerText == null || correctAnswerText.trim().isEmpty() || correctAnswerText.equals("null")) {
+                    holder.tvCorrectAnswerLabel.setVisibility(View.GONE);
+                    holder.tvCorrectAnswer.setVisibility(View.GONE);
+                } else {
+                    holder.tvCorrectAnswer.setText(correctAnswerText);
+                }
             }
 
         } catch (Exception e) {

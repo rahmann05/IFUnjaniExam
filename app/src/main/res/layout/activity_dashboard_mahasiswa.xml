@@ -84,7 +84,7 @@
                                     android:layout_width="24dp"
                                     android:layout_height="24dp"
                                     android:layout_gravity="center"
-                                    android:src="@android:drawable/ic_menu_myplaces"
+                                    android:src="@drawable/ic_person"
                                     app:tint="#D1FAE5"
                                     android:contentDescription="Profile" />
                             </com.google.android.material.card.MaterialCardView>

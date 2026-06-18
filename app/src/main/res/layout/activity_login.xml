@@ -42,7 +42,6 @@
                     android:layout_height="48dp"
                     android:layout_gravity="center"
                     android:src="@drawable/logo_unjani"
-                    app:tint="#10B981"
                     android:contentDescription="Logo Unjani" />
             </com.google.android.material.card.MaterialCardView>
 

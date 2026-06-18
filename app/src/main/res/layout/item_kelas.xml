@@ -83,15 +83,5 @@
                 android:textSize="13sp" />
         </LinearLayout>
 
-        <!-- Right arrow -->
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="14dp"
-            android:src="@android:drawable/arrow_up_float"
-            android:rotation="90"
-            android:contentDescription="Buka"
-            app:tint="#10B981" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

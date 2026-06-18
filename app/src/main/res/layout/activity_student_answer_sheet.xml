@@ -21,11 +21,7 @@
             android:gravity="center_vertical"
             android:paddingHorizontal="16dp">
 
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:src="@android:drawable/ic_menu_agenda"
-                app:tint="#10B981" />
+
 
             <TextView
                 android:layout_width="wrap_content"
@@ -67,7 +63,7 @@
             <ImageView
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:src="@android:drawable/ic_menu_myplaces"
+                android:src="@drawable/ic_person"
                 android:background="@drawable/bg_circle"
                 android:padding="12dp"
                 app:tint="#64748B" />
