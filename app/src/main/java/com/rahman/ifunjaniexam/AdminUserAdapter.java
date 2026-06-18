@@ -44,13 +44,16 @@ public class AdminUserAdapter extends RecyclerView.Adapter<AdminUserAdapter.View
                 JSONObject dosen = user.getJSONObject("dosen");
                 holder.tvName.setText(dosen.getString("name"));
                 holder.tvIdentifier.setText("NIP: " + dosen.getString("nip"));
+                holder.tvUsername.setTextColor(android.graphics.Color.parseColor("#27ae60")); // Hijau Dosen
             } else if ("MAHASISWA".equals(role) && !user.isNull("mahasiswa")) {
                 JSONObject mhs = user.getJSONObject("mahasiswa");
                 holder.tvName.setText(mhs.getString("name"));
                 holder.tvIdentifier.setText("NIM: " + mhs.getString("nim"));
+                holder.tvUsername.setTextColor(android.graphics.Color.parseColor("#2980b9")); // Biru Mahasiswa
             } else {
                 holder.tvName.setText("Admin / Tidak diketahui");
                 holder.tvIdentifier.setText("");
+                holder.tvUsername.setTextColor(android.graphics.Color.parseColor("#7f8c8d")); // Abu-abu
             }
 
             holder.btnDelete.setOnClickListener(v -> {

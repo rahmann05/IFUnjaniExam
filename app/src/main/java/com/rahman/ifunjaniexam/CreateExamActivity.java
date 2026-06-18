@@ -16,6 +16,10 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
+import java.util.Calendar;
+import java.util.Locale;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -90,7 +94,21 @@ public class CreateExamActivity extends AppCompatActivity {
                 }
         );
 
+        findViewById(R.id.etStartTime).setOnClickListener(v -> showDateTimePicker((EditText) v));
+        findViewById(R.id.etEndTime).setOnClickListener(v -> showDateTimePicker((EditText) v));
+
         addQuestionView();
+    }
+
+    private void showDateTimePicker(EditText editText) {
+        Calendar calendar = Calendar.getInstance();
+        new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
+            new TimePickerDialog(this, (timeView, hourOfDay, minute) -> {
+                calendar.set(year, month, dayOfMonth, hourOfDay, minute);
+                String formatted = String.format(Locale.getDefault(), "%04d-%02d-%02d %02d:%02d", year, month + 1, dayOfMonth, hourOfDay, minute);
+                editText.setText(formatted);
+            }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show();
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
     }
 
     private void addQuestionView() {

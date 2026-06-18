@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -24,9 +25,11 @@ import java.util.Map;
 
 public class MahasiswaDashboardActivity extends AppCompatActivity {
 
-    private TextView tvNimHeader, tvWelcome, tvEmptyClasses;
+    private TextView tvNimHeader, tvWelcome;
+    private View tvEmptyClasses;
     private RecyclerView rvKelas;
     private ProgressBar progressBar;
+    private SwipeRefreshLayout swipeRefresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +41,11 @@ public class MahasiswaDashboardActivity extends AppCompatActivity {
         tvEmptyClasses = findViewById(R.id.tvEmptyClasses);
         rvKelas = findViewById(R.id.rvKelas);
         progressBar = findViewById(R.id.progressBar);
+        swipeRefresh = findViewById(R.id.swipeRefresh);
 
         rvKelas.setLayoutManager(new LinearLayoutManager(this));
+
+        swipeRefresh.setOnRefreshListener(this::loadClasses);
 
         // Fetch name/nim from SharedPreferences
         SharedPreferences prefs = getSharedPreferences("AUTH_PREF", MODE_PRIVATE);
@@ -62,13 +68,14 @@ public class MahasiswaDashboardActivity extends AppCompatActivity {
     }
 
     private void loadClasses() {
-        progressBar.setVisibility(View.VISIBLE);
+        if (!swipeRefresh.isRefreshing()) progressBar.setVisibility(View.VISIBLE);
         tvEmptyClasses.setVisibility(View.GONE);
 
         com.rahman.ifunjaniexam.network.ClassApiService.getClasses(this, new com.rahman.ifunjaniexam.network.ClassApiService.ApiCallback() {
             @Override
             public void onSuccess(JSONObject response) {
                 progressBar.setVisibility(View.GONE);
+                swipeRefresh.setRefreshing(false);
                 try {
                     if (response.getBoolean("success")) {
                         JSONArray data = response.getJSONArray("data");
@@ -100,6 +107,7 @@ public class MahasiswaDashboardActivity extends AppCompatActivity {
             @Override
             public void onError(Exception error, com.android.volley.VolleyError volleyError) {
                 progressBar.setVisibility(View.GONE);
+                swipeRefresh.setRefreshing(false);
                 Toast.makeText(MahasiswaDashboardActivity.this, "Gagal memuat daftar kelas", Toast.LENGTH_SHORT).show();
             }
         });
@@ -110,19 +118,31 @@ public class MahasiswaDashboardActivity extends AppCompatActivity {
         input.setHint("Masukkan Kode Kelas (e.g. IF-331)");
         input.setInputType(android.text.InputType.TYPE_CLASS_TEXT);
 
-        new android.app.AlertDialog.Builder(this)
+        android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(this)
             .setTitle("Gabung Kelas")
             .setMessage("Silakan masukkan kode kelas untuk bergabung.")
             .setView(input)
-            .setPositiveButton("Gabung", (dialog, which) -> {
-                String val = input.getText().toString();
-                if (!val.isEmpty()) joinClass(val);
-            })
+            .setPositiveButton("Gabung", null) // Set null temporarily to override default closing behavior
             .setNegativeButton("Batal", null)
-            .show();
+            .create();
+
+        dialog.setOnShowListener(d -> {
+            android.widget.Button button = ((android.app.AlertDialog) dialog).getButton(android.app.AlertDialog.BUTTON_POSITIVE);
+            button.setOnClickListener(v -> {
+                String val = input.getText().toString();
+                if (val.isEmpty()) {
+                    input.setError("Kode kelas tidak boleh kosong");
+                    return;
+                }
+                button.setEnabled(false);
+                button.setText("Loading...");
+                joinClass(val, dialog, button);
+            });
+        });
+        dialog.show();
     }
 
-    private void joinClass(String classCode) {
+    private void joinClass(String classCode, android.app.AlertDialog dialog, android.widget.Button button) {
         try {
             org.json.JSONObject payload = new org.json.JSONObject();
             payload.put("classCode", classCode);
@@ -133,17 +153,24 @@ public class MahasiswaDashboardActivity extends AppCompatActivity {
                     try {
                         if (response.getBoolean("success")) {
                             Toast.makeText(MahasiswaDashboardActivity.this, "Berhasil bergabung ke kelas", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
                             loadClasses(); // Reload classes
                         } else {
                             Toast.makeText(MahasiswaDashboardActivity.this, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            button.setEnabled(true);
+                            button.setText("Gabung");
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
+                        button.setEnabled(true);
+                        button.setText("Gabung");
                     }
                 }
 
                 @Override
                 public void onError(Exception error, com.android.volley.VolleyError volleyError) {
+                    button.setEnabled(true);
+                    button.setText("Gabung");
                     if (volleyError != null && volleyError.networkResponse != null && volleyError.networkResponse.data != null) {
                         try {
                             String res = new String(volleyError.networkResponse.data, "utf-8");
@@ -160,6 +187,8 @@ public class MahasiswaDashboardActivity extends AppCompatActivity {
             });
         } catch (Exception e) {
             e.printStackTrace();
+            button.setEnabled(true);
+            button.setText("Gabung");
         }
     }
 

@@ -7,10 +7,16 @@
     android:background="#ffffff"
     tools:context=".MahasiswaDashboardActivity">
 
-    <!-- Scrollable content -->
-    <androidx.core.widget.NestedScrollView
+    <!-- Swipe to refresh -->
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <!-- Scrollable content -->
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -124,17 +130,41 @@
                     android:nestedScrollingEnabled="false" />
 
                 <!-- Empty state -->
-                <TextView
+                <LinearLayout
                     android:id="@+id/tvEmptyClasses"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:orientation="vertical"
                     android:gravity="center"
                     android:paddingVertical="48dp"
-                    android:text="Belum ada kelas yang diikuti.\nTekan tombol + Gabung Kelas."
-                    android:textColor="#718096"
-                    android:textSize="15sp"
-                    android:textAlignment="center"
-                    android:visibility="gone" />
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:src="@drawable/ic_assignment"
+                        android:layout_marginBottom="12dp"
+                        android:contentDescription="Empty"
+                        app:tint="#94a3b8" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Belum ada kelas yang diikuti"
+                        android:textColor="#2c3e50"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textAlignment="center" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Tekan tombol + Gabung Kelas di atas untuk memulai"
+                        android:textColor="#718096"
+                        android:textSize="14sp"
+                        android:layout_marginTop="4dp"
+                        android:textAlignment="center" />
+                </LinearLayout>
 
                 <!-- Loading -->
                 <ProgressBar
@@ -147,5 +177,7 @@
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

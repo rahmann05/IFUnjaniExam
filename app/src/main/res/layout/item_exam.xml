@@ -125,7 +125,7 @@
             </LinearLayout>
 
             <!-- Action button (mulai/lihat hasil) -->
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="34dp"

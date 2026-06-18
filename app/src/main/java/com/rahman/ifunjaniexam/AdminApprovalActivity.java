@@ -89,23 +89,30 @@ public class AdminApprovalActivity extends AppCompatActivity {
     }
 
     private void processApproval(int reqId, String action) {
-        com.rahman.ifunjaniexam.network.AdminApiService.processApproval(this, reqId, action, new com.rahman.ifunjaniexam.network.AdminApiService.ApiCallback() {
-            @Override
-            public void onSuccess(JSONObject response) {
-                try {
-                    if (response.getBoolean("success")) {
-                        Toast.makeText(AdminApprovalActivity.this, "Aksi berhasil", Toast.LENGTH_SHORT).show();
-                        loadRequests();
+        new android.app.AlertDialog.Builder(this)
+            .setTitle("Konfirmasi")
+            .setMessage("Anda yakin ingin " + (action.equals("APPROVE") ? "menyetujui" : "menolak") + " permintaan ini?")
+            .setPositiveButton("Ya", (dialog, which) -> {
+                com.rahman.ifunjaniexam.network.AdminApiService.processApproval(this, reqId, action, new com.rahman.ifunjaniexam.network.AdminApiService.ApiCallback() {
+                    @Override
+                    public void onSuccess(JSONObject response) {
+                        try {
+                            if (response.getBoolean("success")) {
+                                Toast.makeText(AdminApprovalActivity.this, "Aksi berhasil", Toast.LENGTH_SHORT).show();
+                                loadRequests();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
 
-            @Override
-            public void onError(Exception error, com.android.volley.VolleyError volleyError) {
-                Toast.makeText(AdminApprovalActivity.this, "Gagal memproses aksi", Toast.LENGTH_SHORT).show();
-            }
-        });
+                    @Override
+                    public void onError(Exception error, com.android.volley.VolleyError volleyError) {
+                        Toast.makeText(AdminApprovalActivity.this, "Gagal memproses aksi", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            })
+            .setNegativeButton("Batal", null)
+            .show();
     }
 }

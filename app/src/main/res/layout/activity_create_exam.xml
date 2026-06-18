@@ -104,6 +104,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:hint="Start: YYYY-MM-DD HH:MM"
+                            android:focusable="false"
                             android:textSize="14sp" />
 
                         <EditText
@@ -112,6 +113,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:hint="End: YYYY-MM-DD HH:MM"
+                            android:focusable="false"
                             android:textSize="14sp" />
                     </LinearLayout>
 

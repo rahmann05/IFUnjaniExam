@@ -104,14 +104,16 @@ public class TakeExamActivity extends AppCompatActivity {
             showSubmitDialog();
         });
 
+        getOnBackPressedDispatcher().addCallback(this, new androidx.activity.OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Toast.makeText(TakeExamActivity.this, "Tidak diperbolehkan kembali selama ujian berlangsung!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         loadQuestions();
     }
 
-    @Override
-    public void onBackPressed() {
-        Toast.makeText(this, "Tidak diperbolehkan kembali selama ujian berlangsung!", Toast.LENGTH_SHORT).show();
-        // Do not call super.onBackPressed()
-    }
 
     @Override
     protected void onStop() {
@@ -471,12 +473,18 @@ public class TakeExamActivity extends AppCompatActivity {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload,
                 response -> {
                     progressBar.setVisibility(View.GONE);
-                    com.rahman.ifunjaniexam.utils.FeedbackUtils.showToast(this, "Ujian selesai! Skor Anda: " + String.format("%.2f", score));
+                    double actualScore = score;
+                    try {
+                        if (response.has("data") && !response.isNull("data")) {
+                            actualScore = response.getJSONObject("data").optDouble("score", score);
+                        }
+                    } catch (Exception e) {}
+                    com.rahman.ifunjaniexam.utils.FeedbackUtils.showToast(this, "Ujian selesai! Skor Anda: " + String.format("%.2f", actualScore));
                     finish();
                 },
                 error -> {
                     progressBar.setVisibility(View.GONE);
-                    // HTTP 409 = already submitted sebelumnya → tetap anggap sukses
+                    // Tangani 409: Sudah dikumpulkan
                     if (error.networkResponse != null && error.networkResponse.statusCode == 409) {
                         try {
                             String body = new String(error.networkResponse.data, "utf-8");

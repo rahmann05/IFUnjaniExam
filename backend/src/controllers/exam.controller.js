@@ -34,8 +34,24 @@ async function getExamQuestions(req, res) {
       where: { id: examId },
       include: {
         questions: {
-          include: {
-            options: true
+          select: {
+            id: true,
+            text: true,
+            imageUrl: true,
+            marks: true,
+            type: true,
+            examId: true,
+            createdAt: true,
+            updatedAt: true,
+            options: {
+              select: {
+                id: true,
+                text: true,
+                questionId: true,
+                createdAt: true,
+                updatedAt: true
+              }
+            }
           }
         }
       }
@@ -67,7 +83,7 @@ async function submitExam(req, res) {
   }
 
   try {
-    // Cek apakah mahasiswa sudah pernah submit ujian ini (anti-duplicate)
+    // Cek duplikasi pengumpulan ujian
     const existingAttempt = await prisma.examAttempt.findUnique({
       where: { examId_mahasiswaId: { examId, mahasiswaId } }
     });
@@ -79,17 +95,44 @@ async function submitExam(req, res) {
       });
     }
 
-    const attemptAnswers = answers.map(a => ({
-      questionId: a.questionId,
-      selectedOptionId: a.selectedOptionId || null,
-      essayAnswer: a.essayAnswer || null
-    }));
+    const examQuestions = await prisma.question.findMany({
+      where: { examId },
+      include: { options: true }
+    });
+
+    let computedScore = 0;
+    let totalMarks = 0;
+
+    const attemptAnswers = answers.map(a => {
+      const q = examQuestions.find(eq => eq.id === a.questionId);
+      if (q) {
+        totalMarks += q.marks;
+        if (q.type === 'MULTIPLE_CHOICE' && a.selectedOptionId) {
+          const selectedOpt = q.options.find(opt => opt.id === a.selectedOptionId);
+          if (selectedOpt && selectedOpt.isCorrect) {
+            computedScore += q.marks;
+          }
+        } else if (q.type === 'ESSAY' && a.essayAnswer) {
+          if (q.correctEssayAnswer && a.essayAnswer.trim().toLowerCase() === q.correctEssayAnswer.trim().toLowerCase()) {
+            computedScore += q.marks;
+          }
+        }
+      }
+
+      return {
+        questionId: a.questionId,
+        selectedOptionId: a.selectedOptionId || null,
+        essayAnswer: a.essayAnswer || null
+      };
+    });
+
+    const finalScore = totalMarks > 0 ? (computedScore / totalMarks) * 100 : 0;
 
     const attempt = await prisma.examAttempt.create({
       data: {
         examId: examId,
         mahasiswaId: mahasiswaId,
-        score: parseFloat(score),
+        score: finalScore,
         endTime: new Date(),
         answers: {
           create: attemptAnswers
@@ -105,7 +148,7 @@ async function submitExam(req, res) {
 
   } catch (error) {
     console.error(error);
-    // Tangani error constraint unique secara spesifik
+    // Tangani error duplicate
     if (error.code === 'P2002') {
       return res.status(409).json({ success: false, message: 'Ujian sudah pernah dikumpulkan.' });
     }
@@ -186,7 +229,7 @@ async function getExamResults(req, res) {
 
     if (!exam) return res.status(404).json({ success: false, message: 'Ujian tidak ditemukan' });
 
-    // Pastikan dosen yang request adalah pemilik kelas ujian ini
+    // Validasi otorisasi dosen
     if (exam.kelas.dosenId !== dosenId) {
       return res.status(403).json({ success: false, message: 'Akses ditolak. Anda bukan pengampu kelas ini.' });
     }
@@ -249,7 +292,7 @@ async function getAttemptDetail(req, res) {
 
     if (!attempt) return res.status(404).json({ success: false, message: 'Data attempt tidak ditemukan' });
 
-    // Enforce authorization for MAHASISWA: can only view their own attempt
+    // Validasi otorisasi mahasiswa
     if (role === 'MAHASISWA' && attempt.mahasiswaId !== profileId) {
       return res.status(403).json({ success: false, message: 'Akses ditolak. Anda hanya dapat melihat hasil ujian Anda sendiri.' });
     }
@@ -273,7 +316,7 @@ async function deleteExam(req, res) {
     if (!exam) return res.status(404).json({ success: false, message: 'Ujian tidak ditemukan' });
 
     if (exam.attempts.length > 0) {
-      // Check if there is an approved delete request
+      // Verifikasi persetujuan admin
       const approvedRequest = await prisma.examApprovalRequest.findFirst({
         where: { examId, requestType: 'DELETE', status: 'APPROVED' }
       });
@@ -283,9 +326,7 @@ async function deleteExam(req, res) {
       }
     }
 
-    // Delete questions, options, etc. Cascade handles most if configured, but let's do it manually if needed, or rely on prisma onDelete: Cascade. 
-    // Wait, prisma schema doesn't have onDelete Cascade for questions -> exam. 
-    // We should delete manually.
+    // Hapus data terkait ujian (Cascade manual)
     await prisma.answerOption.deleteMany({
       where: { question: { examId } }
     });

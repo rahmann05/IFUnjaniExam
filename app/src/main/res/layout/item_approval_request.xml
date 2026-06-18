@@ -57,7 +57,7 @@
             android:layout_marginTop="16dp"
             android:weightSum="2">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnReject"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -65,15 +65,19 @@
                 android:text="Tolak"
                 android:textColor="#e74c3c"
                 android:layout_marginEnd="4dp"
-                style="?android:attr/borderlessButtonStyle" />
+                app:strokeColor="#e74c3c"
+                app:strokeWidth="1dp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                app:cornerRadius="8dp" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnApprove"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Setujui"
                 android:backgroundTint="#27ae60"
+                app:cornerRadius="8dp"
                 android:layout_marginStart="4dp" />
         </LinearLayout>
 
