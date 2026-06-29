@@ -6,7 +6,7 @@
     android:layout_marginHorizontal="16dp"
     android:layout_marginVertical="8dp"
     app:cardBackgroundColor="#FFFFFF"
-    app:cardCornerRadius="16dp"
+    app:cardCornerRadius="20dp"
     app:cardElevation="0dp"
     app:strokeColor="#E2E8F0"
     app:strokeWidth="1dp">
@@ -17,72 +17,132 @@
         android:orientation="vertical"
         android:padding="20dp">
 
-        <TextView
-            android:id="@+id/tvExamTitle"
-            android:layout_width="wrap_content"
+        <!-- Exam title + request type pill -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Judul Ujian"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="#0F172A" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:id="@+id/tvExamTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Judul Ujian"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:textColor="#0F172A"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:layout_marginEnd="8dp" />
+
+            <!-- Request type pill -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="#FEF2F2">
+
+                <TextView
+                    android:id="@+id/tvRequestType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="5dp"
+                    android:text="DELETE"
+                    android:textColor="#EF4444"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tvDosenName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Pemohon: Nama Dosen"
-            android:textSize="14sp"
+            android:textSize="13sp"
             android:textColor="#64748B"
-            android:layout_marginTop="4dp" />
+            android:layout_marginBottom="6dp" />
 
-        <TextView
-            android:id="@+id/tvRequestType"
-            android:layout_width="wrap_content"
+        <!-- Reason card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tipe: DELETE"
-            android:textSize="14sp"
-            android:textColor="#EF4444"
-            android:textStyle="bold"
-            android:layout_marginTop="8dp" />
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#F8FAFC"
+            app:strokeColor="#F1F5F9"
+            app:strokeWidth="1dp">
 
-        <TextView
-            android:id="@+id/tvReason"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Alasan: Salah soal"
-            android:textSize="14sp"
-            android:textColor="#0F172A"
-            android:layout_marginTop="4dp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="14dp">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ALASAN"
+                    android:textColor="#94A3B8"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.05"
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:id="@+id/tvReason"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Alasan permohonan"
+                    android:textSize="14sp"
+                    android:textColor="#0F172A" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#F1F5F9"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Action buttons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="16dp"
             android:weightSum="2">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnReject"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_weight="1"
                 android:text="Tolak"
                 android:textColor="#EF4444"
-                android:layout_marginEnd="4dp"
-                app:strokeColor="#EF4444"
-                app:strokeWidth="1dp"
+                android:textStyle="bold"
+                android:layout_marginEnd="6dp"
+                app:strokeColor="#FCA5A5"
+                app:strokeWidth="1.5dp"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                app:cornerRadius="8dp" />
+                app:cornerRadius="14dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnApprove"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_weight="1"
-                android:text="Setujui"
+                android:text="Setujui ✓"
                 android:backgroundTint="#10B981"
-                app:cornerRadius="8dp"
-                android:layout_marginStart="4dp" />
+                android:textStyle="bold"
+                app:cornerRadius="14dp"
+                android:layout_marginStart="6dp" />
         </LinearLayout>
 
     </LinearLayout>

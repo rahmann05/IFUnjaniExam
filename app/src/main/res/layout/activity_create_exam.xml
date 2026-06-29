@@ -3,8 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8FAFC">
+    android:background="#F0FDF4">
 
+    <!-- White AppBar -->
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
@@ -18,16 +19,26 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize">
 
-            <ImageView
-                android:id="@+id/ivIcon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/iconBox"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
                 android:layout_marginStart="16dp"
-                android:src="@android:drawable/ic_menu_edit"
-                app:tint="#10B981"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="#ECFDF5"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/ivIcon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:src="@android:drawable/ic_menu_edit"
+                    app:tint="#10B981" />
+            </com.google.android.material.card.MaterialCardView>
 
             <TextView
                 android:id="@+id/tvHeaderTitle"
@@ -36,20 +47,21 @@
                 android:layout_marginStart="12dp"
                 android:text="Buat Ujian Baru"
                 android:textColor="#0F172A"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 android:letterSpacing="-0.02"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/ivIcon"
+                app:layout_constraintStart_toEndOf="@id/iconBox"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#E2E8F0" />
+            android:background="#F1F5F9" />
     </com.google.android.material.appbar.AppBarLayout>
 
+    <!-- Scroll content -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -64,12 +76,13 @@
             android:orientation="vertical"
             android:padding="16dp">
 
+            <!-- Exam info card -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 app:cardBackgroundColor="#FFFFFF"
-                app:cardCornerRadius="16dp"
+                app:cardCornerRadius="20dp"
                 app:cardElevation="0dp"
                 app:strokeColor="#E2E8F0"
                 app:strokeWidth="1dp">
@@ -80,14 +93,44 @@
                     android:orientation="vertical"
                     android:padding="20dp">
 
+                    <!-- Section label -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="16dp">
+
+                        <View
+                            android:layout_width="4dp"
+                            android:layout_height="18dp"
+                            android:background="#10B981"
+                            android:layout_marginEnd="10dp"
+                            app:cornerRadius="4dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Informasi Ujian"
+                            android:textColor="#0F172A"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <!-- Judul -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         app:boxStrokeColor="#10B981"
+                        app:boxStrokeWidth="1.5dp"
                         app:hintTextColor="#10B981"
-                        android:layout_marginBottom="12dp">
-                        
+                        app:boxCornerRadiusTopStart="14dp"
+                        app:boxCornerRadiusTopEnd="14dp"
+                        app:boxCornerRadiusBottomStart="14dp"
+                        app:boxCornerRadiusBottomEnd="14dp"
+                        android:layout_marginBottom="14dp">
+
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etExamTitle"
                             android:layout_width="match_parent"
@@ -97,14 +140,20 @@
                             android:textStyle="bold" />
                     </com.google.android.material.textfield.TextInputLayout>
 
+                    <!-- Deskripsi -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         app:boxStrokeColor="#10B981"
+                        app:boxStrokeWidth="1.5dp"
                         app:hintTextColor="#10B981"
+                        app:boxCornerRadiusTopStart="14dp"
+                        app:boxCornerRadiusTopEnd="14dp"
+                        app:boxCornerRadiusBottomStart="14dp"
+                        app:boxCornerRadiusBottomEnd="14dp"
                         android:layout_marginBottom="16dp">
-                        
+
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etExamDesc"
                             android:layout_width="match_parent"
@@ -113,22 +162,37 @@
                             android:textColor="#0F172A" />
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.checkbox.MaterialCheckBox
-                        android:id="@+id/cbManualStart"
+                    <!-- Manual start toggle -->
+                    <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Mulai Ujian Secara Manual"
-                        android:textColor="#0F172A"
-                        app:buttonTint="#10B981"
-                        android:checked="true"
-                        android:layout_marginBottom="12dp" />
+                        android:layout_marginBottom="14dp"
+                        app:cardCornerRadius="14dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="#F0FDF4"
+                        app:strokeColor="#D1FAE5"
+                        app:strokeWidth="1dp">
 
+                        <com.google.android.material.checkbox.MaterialCheckBox
+                            android:id="@+id/cbManualStart"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Mulai Ujian Secara Manual"
+                            android:textColor="#0F172A"
+                            android:textSize="14sp"
+                            app:buttonTint="#10B981"
+                            android:checked="true"
+                            android:paddingHorizontal="16dp"
+                            android:paddingVertical="12dp" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Time pickers (hidden by default) -->
                     <LinearLayout
                         android:id="@+id/llTimePicker"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginBottom="12dp"
+                        android:layout_marginBottom="14dp"
                         android:visibility="gone">
 
                         <com.google.android.material.textfield.TextInputLayout
@@ -137,7 +201,13 @@
                             android:layout_weight="1"
                             android:layout_marginEnd="8dp"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                            app:boxStrokeColor="#10B981">
+                            app:boxStrokeColor="#10B981"
+                            app:boxStrokeWidth="1.5dp"
+                            app:boxCornerRadiusTopStart="14dp"
+                            app:boxCornerRadiusTopEnd="14dp"
+                            app:boxCornerRadiusBottomStart="14dp"
+                            app:boxCornerRadiusBottomEnd="14dp">
+
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/etStartTime"
                                 android:layout_width="match_parent"
@@ -153,7 +223,13 @@
                             android:layout_weight="1"
                             android:layout_marginStart="8dp"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                            app:boxStrokeColor="#10B981">
+                            app:boxStrokeColor="#10B981"
+                            app:boxStrokeWidth="1.5dp"
+                            app:boxCornerRadiusTopStart="14dp"
+                            app:boxCornerRadiusTopEnd="14dp"
+                            app:boxCornerRadiusBottomStart="14dp"
+                            app:boxCornerRadiusBottomEnd="14dp">
+
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/etEndTime"
                                 android:layout_width="match_parent"
@@ -164,13 +240,20 @@
                         </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
 
+                    <!-- Durasi -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         app:boxStrokeColor="#10B981"
+                        app:boxStrokeWidth="1.5dp"
                         app:hintTextColor="#10B981"
+                        app:boxCornerRadiusTopStart="14dp"
+                        app:boxCornerRadiusTopEnd="14dp"
+                        app:boxCornerRadiusBottomStart="14dp"
+                        app:boxCornerRadiusBottomEnd="14dp"
                         android:layout_marginBottom="16dp">
+
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etDuration"
                             android:layout_width="match_parent"
@@ -180,6 +263,7 @@
                             android:inputType="number" />
                     </com.google.android.material.textfield.TextInputLayout>
 
+                    <!-- Category + Weight row -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -187,14 +271,25 @@
                         android:gravity="center_vertical"
                         android:weightSum="2">
 
-                        <Spinner
-                            android:id="@+id/spCategory"
+                        <com.google.android.material.card.MaterialCardView
                             android:layout_width="0dp"
                             android:layout_weight="1"
-                            android:layout_height="48dp"
+                            android:layout_height="52dp"
                             android:layout_marginEnd="8dp"
-                            android:backgroundTint="#10B981"
-                            android:entries="@array/exam_categories" />
+                            app:cardCornerRadius="14dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="#F8FAFC"
+                            app:strokeColor="#E2E8F0"
+                            app:strokeWidth="1dp">
+
+                            <Spinner
+                                android:id="@+id/spCategory"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:paddingHorizontal="12dp"
+                                android:backgroundTint="#10B981"
+                                android:entries="@array/exam_categories" />
+                        </com.google.android.material.card.MaterialCardView>
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="0dp"
@@ -203,45 +298,54 @@
                             android:layout_marginStart="8dp"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                             app:boxStrokeColor="#10B981"
-                            app:hintTextColor="#10B981">
+                            app:boxStrokeWidth="1.5dp"
+                            app:hintTextColor="#10B981"
+                            app:boxCornerRadiusTopStart="14dp"
+                            app:boxCornerRadiusTopEnd="14dp"
+                            app:boxCornerRadiusBottomStart="14dp"
+                            app:boxCornerRadiusBottomEnd="14dp">
+
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/etExamWeight"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="Bobot Ujian (%)"
+                                android:hint="Bobot (%)"
                                 android:textColor="#0F172A"
                                 android:inputType="numberDecimal"
                                 android:text="100.0" />
                         </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
+
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Container for dynamic questions -->
+            <!-- Dynamic question container -->
             <LinearLayout
                 android:id="@+id/llQuestionsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" />
 
+            <!-- Add question button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnAddQuestion"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="52dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="32dp"
-                android:text="Tambah Soal Baru"
+                android:text="＋  Tambah Soal Baru"
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 app:strokeColor="#10B981"
+                app:strokeWidth="1.5dp"
                 android:textColor="#10B981"
-                app:icon="@android:drawable/ic_input_add"
-                app:iconTint="#10B981"
-                app:iconGravity="textStart"
+                android:textSize="14sp"
+                android:textStyle="bold"
                 app:cornerRadius="16dp" />
 
         </LinearLayout>
     </ScrollView>
 
+    <!-- Bottom save bar -->
     <LinearLayout
         android:id="@+id/bottomBar"
         android:layout_width="match_parent"

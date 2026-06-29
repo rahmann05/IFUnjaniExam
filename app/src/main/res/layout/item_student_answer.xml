@@ -6,7 +6,7 @@
     android:layout_marginHorizontal="16dp"
     android:layout_marginVertical="8dp"
     app:cardBackgroundColor="#FFFFFF"
-    app:cardCornerRadius="16dp"
+    app:cardCornerRadius="18dp"
     app:cardElevation="0dp"
     app:strokeColor="#E2E8F0"
     app:strokeWidth="1.5dp">
@@ -17,6 +17,28 @@
         android:orientation="vertical"
         android:padding="20dp">
 
+        <!-- Question number label -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#F1F5F9">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="5dp"
+                android:text="SOAL"
+                android:textColor="#64748B"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.05" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Question text -->
         <TextView
             android:id="@+id/tvQuestionText"
             android:layout_width="wrap_content"
@@ -25,24 +47,36 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:lineSpacingExtra="4dp"
-            android:textColor="#1E293B" />
+            android:textColor="#1E293B"
+            android:layout_marginBottom="12dp" />
 
-        <ImageView
-            android:id="@+id/ivQuestionImage"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginTop="12dp"
-            android:scaleType="centerInside"
-            android:visibility="gone" />
-
+        <!-- Question image -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:cardBackgroundColor="#F8FAFC"
+            android:layout_marginBottom="14dp"
+            android:visibility="gone"
             app:cardCornerRadius="12dp"
             app:cardElevation="0dp"
-            app:strokeColor="#E2E8F0"
+            app:strokeColor="#F1F5F9"
+            app:strokeWidth="1dp">
+
+            <ImageView
+                android:id="@+id/ivQuestionImage"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scaleType="centerInside" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Answer section card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            app:cardBackgroundColor="#F0FDF4"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="0dp"
+            app:strokeColor="#D1FAE5"
             app:strokeWidth="1dp">
 
             <LinearLayout
@@ -59,7 +93,8 @@
                     android:textSize="11sp"
                     android:textStyle="bold"
                     android:textColor="#64748B"
-                    android:letterSpacing="0.05" />
+                    android:letterSpacing="0.05"
+                    android:layout_marginBottom="4dp" />
 
                 <TextView
                     android:id="@+id/tvStudentAnswer"
@@ -67,21 +102,38 @@
                     android:layout_height="wrap_content"
                     android:text="Jawaban"
                     android:textSize="15sp"
-                    android:layout_marginTop="4dp"
-                    android:textColor="#0F172A"
-                    android:textStyle="normal" />
-                    
+                    android:textColor="#0F172A" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Wrong answer section (if incorrect) -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:visibility="gone"
+            app:cardBackgroundColor="#FEF2F2"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="0dp"
+            app:strokeColor="#FCA5A5"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
                 <TextView
                     android:id="@+id/tvCorrectAnswerLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="SEHARUSNYA"
+                    android:text="JAWABAN BENAR"
                     android:textSize="11sp"
                     android:textStyle="bold"
                     android:textColor="#EF4444"
                     android:letterSpacing="0.05"
-                    android:layout_marginTop="16dp"
-                    android:visibility="gone" />
+                    android:layout_marginBottom="4dp" />
 
                 <TextView
                     android:id="@+id/tvCorrectAnswer"
@@ -90,22 +142,30 @@
                     android:text="Jawaban Benar"
                     android:textSize="15sp"
                     android:textColor="#DC2626"
-                    android:textStyle="bold"
-                    android:layout_marginTop="4dp"
-                    android:visibility="gone" />
+                    android:textStyle="bold" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <TextView
-            android:id="@+id/tvStatus"
-            android:layout_width="match_parent"
+        <!-- Status pill -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="BENAR (+10 Poin)"
-            android:textAlignment="viewEnd"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:textColor="#10B981" />
+            android:layout_gravity="end"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#ECFDF5">
+
+            <TextView
+                android:id="@+id/tvStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="6dp"
+                android:text="BENAR ✓"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="#059669" />
+        </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

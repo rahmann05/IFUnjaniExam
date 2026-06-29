@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp"
+    android:layout_marginBottom="12dp"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
     app:cardBackgroundColor="#FFFFFF"
-    app:cardCornerRadius="14dp"
+    app:cardCornerRadius="18dp"
     app:cardElevation="0dp"
     app:strokeColor="#E2E8F0"
     app:strokeWidth="1dp">
@@ -16,129 +16,140 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical"
+        android:padding="18dp">
 
-        <!-- Left accent strip -->
-        <View
-            android:layout_width="5dp"
-            android:layout_height="match_parent"
-            android:background="#10B981" />
-
+        <!-- Title row + status badge -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="14dp">
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
 
-            <!-- Title row + status badge -->
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tvExamTitle"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_weight="1"
+                android:text="Ujian Tengah Semester"
+                android:textColor="#0F172A"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:layout_marginEnd="10dp" />
 
-                <TextView
-                    android:id="@+id/tvExamTitle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Ujian Tengah Semester"
-                    android:textColor="#0F172A"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+            <!-- Status pill -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="#ECFDF5">
 
                 <TextView
                     android:id="@+id/tvStatusBadge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/badge_green"
-                    android:backgroundTint="#059669"
-                    android:paddingHorizontal="10dp"
-                    android:paddingVertical="3dp"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="5dp"
                     android:text="Aktif"
-                    android:textColor="#FFFFFF"
+                    android:textColor="#059669"
                     android:textSize="11sp"
                     android:textStyle="bold" />
-            </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+
+        <!-- Description -->
+        <TextView
+            android:id="@+id/tvExamDesc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Deskripsi singkat mengenai ujian ini."
+            android:textColor="#64748B"
+            android:textSize="13sp"
+            android:layout_marginBottom="12dp"
+            android:maxLines="2"
+            android:ellipsize="end" />
+
+        <!-- Separator -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#F1F5F9"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Meta row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:src="@drawable/ic_history"
+                app:tint="#10B981" />
 
             <TextView
-                android:id="@+id/tvExamDesc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Deskripsi singkat mengenai ujian ini."
-                android:textColor="#64748B"
-                android:textSize="13sp" />
-
-            <!-- Meta row: duration + time -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"
-                    android:src="@drawable/ic_assignment"
-                    app:tint="#10B981" />
-
-                <TextView
-                    android:id="@+id/tvDuration"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:text="90 Menit"
-                    android:textColor="#10B981"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
-
-                <View
-                    android:layout_width="16dp"
-                    android:layout_height="1dp" />
-
-                <ImageView
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"
-                    android:src="@drawable/ic_history"
-                    app:tint="#10B981" />
-
-                <TextView
-                    android:id="@+id/tvTime"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="4dp"
-                    android:text="2026-06-14 10:00"
-                    android:textColor="#10B981"
-                    android:textSize="12sp" />
-
-                <!-- Options button (dosen only) -->
-                <ImageView
-                    android:id="@+id/btnOptions"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:padding="4dp"
-                    android:src="@android:drawable/ic_menu_more"
-                    android:visibility="gone"
-                    app:tint="#94A3B8" />
-            </LinearLayout>
-
-            <!-- Action button (mulai/lihat hasil) -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnStatus"
+                android:id="@+id/tvDuration"
                 android:layout_width="wrap_content"
-                android:layout_height="34dp"
-                android:layout_marginTop="10dp"
-                android:backgroundTint="#10B981"
-                android:text="Mulai Ujian"
-                android:textColor="#FFFFFF"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="90 Menit"
+                android:textColor="#10B981"
                 android:textSize="12sp"
-                android:textStyle="bold"
-                android:visibility="gone"
-                app:cornerRadius="8dp" />
+                android:textStyle="bold" />
 
+            <View
+                android:layout_width="1dp"
+                android:layout_height="14dp"
+                android:background="#E2E8F0"
+                android:layout_marginHorizontal="10dp" />
+
+            <ImageView
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:src="@drawable/ic_assignment"
+                app:tint="#64748B" />
+
+            <TextView
+                android:id="@+id/tvTime"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="5dp"
+                android:text="Segera Mulai"
+                android:textColor="#64748B"
+                android:textSize="12sp" />
+
+            <!-- Options button (dosen only) -->
+            <ImageView
+                android:id="@+id/btnOptions"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:padding="4dp"
+                android:src="@android:drawable/ic_menu_more"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:visibility="gone"
+                app:tint="#94A3B8" />
         </LinearLayout>
+
+        <!-- CTA button (Mulai/Lihat Hasil) -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnStatus"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_marginTop="14dp"
+            android:backgroundTint="#10B981"
+            android:text="Mulai Ujian"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:cornerRadius="12dp" />
+
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -166,7 +166,13 @@ public class TakeExamActivity extends AppCompatActivity {
                         if (response.getBoolean("success")) {
                             JSONObject examObj = response.getJSONObject("data");
                             JSONArray questions = examObj.getJSONArray("questions");
-                            
+                            // Clear lists to prevent duplicate questions bug
+                            flQuestionContainer.removeAllViews();
+                            llGridNav.removeAllViews();
+                            questionViews.clear();
+                            questionDataList.clear();
+                            gridButtons.clear();
+
                             String endTimeStr = examObj.getString("endTime");
                             int durationMin = examObj.getInt("durationMinutes");
                             setupTimer(endTimeStr, durationMin);
@@ -310,7 +316,6 @@ public class TakeExamActivity extends AppCompatActivity {
         } else {
             rgOptions.setVisibility(View.VISIBLE);
             llEssay.setVisibility(View.GONE);
-            rgOptions.setOnCheckedChangeListener((group, checkedId) -> updateGridColor(index));
 
             JSONArray options = qObj.getJSONArray("options");
             RadioButton[] rbs = {
@@ -325,8 +330,32 @@ public class TakeExamActivity extends AppCompatActivity {
                     JSONObject optObj = options.getJSONObject(j);
                     rbs[j].setText(optObj.getString("text"));
                     rbs[j].setTag(optObj.getInt("id"));
+                    rbs[j].setChecked(false); // Default unchecked
                 } else {
-                    rbs[j].setVisibility(View.GONE);
+                    View parentCard = (View) rbs[j].getParent();
+                    if (parentCard != null) parentCard.setVisibility(View.GONE);
+                }
+            }
+
+            // Manual exclusivity and event trigger since they are inside MaterialCardViews
+            for (RadioButton rb : rbs) {
+                rb.setOnClickListener(v -> {
+                    for (RadioButton other : rbs) {
+                        if (other != rb) other.setChecked(false);
+                    }
+                    updateGridColor(index);
+                });
+                
+                // Allow clicking the card itself
+                View parentCard = (View) rb.getParent();
+                if (parentCard != null) {
+                    parentCard.setOnClickListener(v -> {
+                        rb.setChecked(true);
+                        for (RadioButton other : rbs) {
+                            if (other != rb) other.setChecked(false);
+                        }
+                        updateGridColor(index);
+                    });
                 }
             }
         }
@@ -363,8 +392,18 @@ public class TakeExamActivity extends AppCompatActivity {
             EditText etEssay = qView.findViewById(R.id.etEssayAnswer);
             answered = !etEssay.getText().toString().trim().isEmpty();
         } else {
-            RadioGroup rg = qView.findViewById(R.id.rgOptions);
-            answered = rg.getCheckedRadioButtonId() != -1;
+            RadioButton[] rbs = {
+                    qView.findViewById(R.id.rbOptA),
+                    qView.findViewById(R.id.rbOptB),
+                    qView.findViewById(R.id.rbOptC),
+                    qView.findViewById(R.id.rbOptD)
+            };
+            for (RadioButton rb : rbs) {
+                if (rb.isChecked()) {
+                    answered = true;
+                    break;
+                }
+            }
         }
 
         if (index == currentQuestionIndex) {
@@ -429,12 +468,23 @@ public class TakeExamActivity extends AppCompatActivity {
                         score += marks;
                     }
                 } else {
-                    RadioGroup rg = qView.findViewById(R.id.rgOptions);
-                    int checkedId = rg.getCheckedRadioButtonId();
+                    RadioButton[] rbs = {
+                            qView.findViewById(R.id.rbOptA),
+                            qView.findViewById(R.id.rbOptB),
+                            qView.findViewById(R.id.rbOptC),
+                            qView.findViewById(R.id.rbOptD)
+                    };
                     
-                    if (checkedId != -1) {
-                        RadioButton rb = qView.findViewById(checkedId);
-                        int selectedOptionId = (int) rb.getTag();
+                    RadioButton checkedRb = null;
+                    for (RadioButton rb : rbs) {
+                        if (rb.isChecked()) {
+                            checkedRb = rb;
+                            break;
+                        }
+                    }
+                    
+                    if (checkedRb != null) {
+                        int selectedOptionId = (int) checkedRb.getTag();
                         answerObj.put("selectedOptionId", selectedOptionId);
 
                         JSONArray options = qData.getJSONArray("options");

@@ -3,67 +3,63 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8FAFC">
+    android:background="#F0FDF4">
 
+    <!-- Green Hero AppBar -->
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:elevation="0dp"
-        android:background="#10B981"
-        app:layout_constraintTop_toTopOf="parent">
+        android:background="#10B981">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/topBar"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize">
+            android:layout_height="?attr/actionBarSize"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="8dp">
 
             <ImageView
                 android:id="@+id/btnBack"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="8dp"
                 android:padding="8dp"
                 android:src="@android:drawable/ic_menu_revert"
                 app:tint="#FFFFFF"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
-                android:focusable="true"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:focusable="true" />
 
             <TextView
                 android:id="@+id/tvHeaderTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="4dp"
                 android:text="Persetujuan Ujian"
                 android:textColor="#FFFFFF"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
-                android:letterSpacing="-0.02"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/btnBack"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-        
+                android:letterSpacing="-0.02" />
+        </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="16dp"
-            android:paddingBottom="16dp"
+            android:paddingHorizontal="20dp"
+            android:paddingBottom="20dp"
             android:orientation="vertical">
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Review permintaan pembuatan ujian dosen"
+                android:text="Review permintaan perubahan ujian oleh dosen"
                 android:textColor="#D1FAE5"
-                android:textSize="14sp" />
+                android:textSize="13sp" />
         </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- Content Area -->
+    <!-- Content -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -73,26 +69,37 @@
             android:id="@+id/rvApprovals"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="16dp"
+            android:paddingTop="12dp"
+            android:paddingHorizontal="0dp"
+            android:paddingBottom="24dp"
             android:clipToPadding="false" />
 
+        <!-- Empty state -->
         <LinearLayout
             android:id="@+id/tvEmptyApprovals"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
-            android:padding="32dp"
+            android:padding="40dp"
             android:layout_gravity="center"
             android:visibility="gone">
 
-            <ImageView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:src="@android:drawable/ic_menu_info_details"
-                android:layout_marginBottom="16dp"
-                android:contentDescription="Empty"
-                app:tint="#CBD5E1" />
+                app:cardCornerRadius="24dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="#F1F5F9"
+                android:layout_marginBottom="16dp">
+
+                <ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_gravity="center"
+                    android:src="@android:drawable/ic_menu_info_details"
+                    app:tint="#CBD5E1" />
+            </com.google.android.material.card.MaterialCardView>
 
             <TextView
                 android:layout_width="match_parent"
@@ -108,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:text="Belum ada permintaan persetujuan saat ini"
                 android:textColor="#64748B"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 android:layout_marginTop="8dp"
                 android:textAlignment="center" />
         </LinearLayout>

@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="16dp"
     app:cardBackgroundColor="#FFFFFF"
-    app:cardCornerRadius="16dp"
+    app:cardCornerRadius="20dp"
     app:cardElevation="0dp"
     app:strokeColor="#E2E8F0"
     app:strokeWidth="1.5dp">
@@ -16,85 +16,176 @@
         android:orientation="vertical"
         android:padding="20dp">
 
-        <TextView
-            android:id="@+id/tvQuestionNumber"
+        <!-- Question number label -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="SOAL 1"
-            android:textColor="#10B981"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:letterSpacing="0.05" />
+            android:layout_marginBottom="12dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#ECFDF5">
 
+            <TextView
+                android:id="@+id/tvQuestionNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="6dp"
+                android:text="SOAL 1"
+                android:textColor="#059669"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.05" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Question text -->
         <TextView
             android:id="@+id/tvQuestionText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:text="Pertanyaan Soal..."
             android:textColor="#0F172A"
-            android:textSize="18sp"
-            android:lineSpacingExtra="4dp" />
+            android:textSize="17sp"
+            android:lineSpacingExtra="4dp"
+            android:layout_marginBottom="16dp" />
 
-        <ImageView
-            android:id="@+id/ivQuestionImage"
+        <!-- Question image -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:scaleType="centerInside"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:visibility="gone"
-            android:layout_marginTop="16dp" />
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeColor="#F1F5F9"
+            app:strokeWidth="1dp">
 
+            <ImageView
+                android:id="@+id/ivQuestionImage"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:scaleType="centerInside" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Divider -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#F1F5F9"
-            android:layout_marginVertical="20dp"/>
+            android:layout_marginBottom="16dp" />
 
-        <!-- Container for Option Multiple Choice -->
+        <!-- Multiple choice options -->
         <RadioGroup
             android:id="@+id/rgOptions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible">
-            
-            <RadioButton 
-                android:id="@+id/rbOptA" 
-                android:layout_width="match_parent" 
-                android:layout_height="wrap_content" 
-                android:text="Opsi A" 
-                android:textColor="#334155" 
-                android:paddingVertical="8dp"
-                android:buttonTint="#10B981" />
-            
-            <RadioButton 
-                android:id="@+id/rbOptB" 
-                android:layout_width="match_parent" 
-                android:layout_height="wrap_content" 
-                android:text="Opsi B" 
-                android:textColor="#334155" 
-                android:paddingVertical="8dp"
-                android:buttonTint="#10B981" />
-                
-            <RadioButton 
-                android:id="@+id/rbOptC" 
-                android:layout_width="match_parent" 
-                android:layout_height="wrap_content" 
-                android:text="Opsi C" 
-                android:textColor="#334155" 
-                android:paddingVertical="8dp"
-                android:buttonTint="#10B981" />
-                
-            <RadioButton 
-                android:id="@+id/rbOptD" 
-                android:layout_width="match_parent" 
-                android:layout_height="wrap_content" 
-                android:text="Opsi D" 
-                android:textColor="#334155" 
-                android:paddingVertical="8dp"
-                android:buttonTint="#10B981" />
+            android:orientation="vertical">
+
+            <!-- Option A -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardBackgroundColor="#F8FAFC"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeColor="#E2E8F0"
+                app:strokeWidth="1dp">
+
+                <RadioButton
+                    android:id="@+id/rbOptA"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Opsi A"
+                    android:textColor="#334155"
+                    android:textSize="15sp"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="14dp"
+                    android:buttonTint="#10B981" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Option B -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardBackgroundColor="#F8FAFC"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeColor="#E2E8F0"
+                app:strokeWidth="1dp">
+
+                <RadioButton
+                    android:id="@+id/rbOptB"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Opsi B"
+                    android:textColor="#334155"
+                    android:textSize="15sp"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="14dp"
+                    android:buttonTint="#10B981" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Option C -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardBackgroundColor="#F8FAFC"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeColor="#E2E8F0"
+                app:strokeWidth="1dp">
+
+                <RadioButton
+                    android:id="@+id/rbOptC"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Opsi C"
+                    android:textColor="#334155"
+                    android:textSize="15sp"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="14dp"
+                    android:buttonTint="#10B981" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Option D -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardBackgroundColor="#F8FAFC"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeColor="#E2E8F0"
+                app:strokeWidth="1dp">
+
+                <RadioButton
+                    android:id="@+id/rbOptD"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Opsi D"
+                    android:textColor="#334155"
+                    android:textSize="15sp"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="14dp"
+                    android:buttonTint="#10B981" />
+            </com.google.android.material.card.MaterialCardView>
         </RadioGroup>
 
-        <!-- Container for Essay -->
+        <!-- Essay answer area -->
         <LinearLayout
             android:id="@+id/llEssay"
             android:layout_width="match_parent"
@@ -107,21 +198,25 @@
                 android:layout_height="wrap_content"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 app:boxStrokeColor="#10B981"
-                app:boxCornerRadiusTopStart="12dp"
-                app:boxCornerRadiusTopEnd="12dp"
-                app:boxCornerRadiusBottomStart="12dp"
-                app:boxCornerRadiusBottomEnd="12dp">
-                
+                app:boxStrokeWidth="1.5dp"
+                app:boxCornerRadiusTopStart="14dp"
+                app:boxCornerRadiusTopEnd="14dp"
+                app:boxCornerRadiusBottomStart="14dp"
+                app:boxCornerRadiusBottomEnd="14dp"
+                app:hintTextColor="#10B981">
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etEssayAnswer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Ketik jawaban Anda di sini..."
-                    android:minLines="3"
+                    android:minLines="4"
                     android:gravity="top|start"
                     android:inputType="textMultiLine"
-                    android:textColor="#0F172A" />
+                    android:textColor="#0F172A"
+                    android:textSize="15sp" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
+
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

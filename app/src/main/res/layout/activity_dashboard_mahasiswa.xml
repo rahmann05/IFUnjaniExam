@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8FAFC"
+    android:background="#F0FDF4"
     tools:context=".MahasiswaDashboardActivity">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -16,135 +16,240 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:paddingBottom="80dp">
+            android:paddingBottom="32dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- Modern Hero Header -->
-                <com.google.android.material.card.MaterialCardView
+                <!-- ── Hero Header ── -->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
-                    app:cardBackgroundColor="#10B981"
-                    app:cardCornerRadius="24dp"
-                    app:cardElevation="0dp">
+                    android:background="#10B981"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="20dp"
+                    android:paddingTop="48dp"
+                    android:paddingBottom="36dp">
 
+                    <!-- Greeting row -->
                     <LinearLayout
-                        android:id="@+id/heroHeader"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="24dp">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
                         <LinearLayout
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
+                            android:layout_weight="1"
+                            android:orientation="vertical">
 
-                            <LinearLayout
-                                android:layout_width="0dp"
+                            <TextView
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
+                                android:text="Selamat Datang 👋"
+                                android:textColor="#D1FAE5"
+                                android:textSize="13sp" />
 
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Selamat Datang,"
-                                    android:textColor="#D1FAE5"
-                                    android:textSize="14sp"
-                                    android:letterSpacing="0.02" />
-
-                                <TextView
-                                    android:id="@+id/tvWelcome"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="4dp"
-                                    android:text="Mahasiswa"
-                                    android:textColor="#FFFFFF"
-                                    android:textSize="24sp"
-                                    android:textStyle="bold"
-                                    android:letterSpacing="-0.02" />
-                            </LinearLayout>
-
-                            <!-- Avatar -->
-                            <com.google.android.material.card.MaterialCardView
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
-                                app:cardCornerRadius="24dp"
-                                app:cardElevation="0dp"
-                                app:cardBackgroundColor="#059669">
-                                
-                                <ImageView
-                                    android:id="@+id/ivPerson"
-                                    android:layout_width="24dp"
-                                    android:layout_height="24dp"
-                                    android:layout_gravity="center"
-                                    android:src="@drawable/ic_person"
-                                    app:tint="#D1FAE5"
-                                    android:contentDescription="Profile" />
-                            </com.google.android.material.card.MaterialCardView>
+                            <TextView
+                                android:id="@+id/tvWelcome"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="Mahasiswa"
+                                android:textColor="#FFFFFF"
+                                android:textSize="24sp"
+                                android:textStyle="bold"
+                                android:letterSpacing="-0.02" />
                         </LinearLayout>
 
+                        <!-- Avatar bubble -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="52dp"
+                            android:layout_height="52dp"
+                            app:cardCornerRadius="26dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="#059669">
+
+                            <ImageView
+                                android:id="@+id/ivPerson"
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_person"
+                                app:tint="#D1FAE5"
+                                android:contentDescription="Profil" />
+                        </com.google.android.material.card.MaterialCardView>
+                    </LinearLayout>
+
+                    <!-- NIM + Logout row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <!-- NIM pill badge -->
                         <LinearLayout
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
+                            android:background="@drawable/bg_circle"
+                            android:backgroundTint="#059669"
                             android:gravity="center_vertical"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="14dp"
+                            android:paddingVertical="7dp">
 
                             <TextView
                                 android:id="@+id/tvNimHeader"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:background="@drawable/bg_circle"
-                                android:backgroundTint="#059669"
-                                android:paddingHorizontal="12dp"
-                                android:paddingVertical="6dp"
                                 android:text="NIM: -"
                                 android:textColor="#FFFFFF"
                                 android:textSize="12sp"
                                 android:textStyle="bold" />
+                        </LinearLayout>
 
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_height="1dp"
-                                android:layout_weight="1" />
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="1dp"
+                            android:layout_weight="1" />
+
+                        <!-- Logout button -->
+                        <LinearLayout
+                            android:id="@+id/btnLogout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_circle"
+                            android:backgroundTint="#059669"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="14dp"
+                            android:paddingVertical="7dp">
 
                             <ImageView
-                                android:id="@+id/btnLogout"
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:padding="4dp"
-                                android:background="?attr/selectableItemBackgroundBorderless"
-                                android:clickable="true"
-                                android:focusable="true"
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
                                 android:src="@drawable/ic_logout"
-                                app:tint="#D1FAE5"
-                                android:contentDescription="Logout" />
+                                app:tint="#D1FAE5" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="6dp"
+                                android:text="Keluar"
+                                android:textColor="#D1FAE5"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
                         </LinearLayout>
                     </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
 
-                <!-- Content area -->
+                <!-- ── Content Card Section ── -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
+                    android:layout_marginTop="-20dp"
                     android:paddingHorizontal="16dp"
-                    android:paddingTop="8dp">
+                    android:paddingTop="0dp">
 
-                    <!-- Section header -->
+                    <!-- Stats summary card -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="24dp"
+                        app:cardBackgroundColor="#FFFFFF"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="4dp"
+                        app:strokeWidth="0dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:padding="20dp"
+                            android:gravity="center_vertical">
+
+                            <!-- Icon -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                app:cardCornerRadius="14dp"
+                                app:cardElevation="0dp"
+                                app:cardBackgroundColor="#ECFDF5">
+
+                                <ImageView
+                                    android:layout_width="26dp"
+                                    android:layout_height="26dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_assignment"
+                                    app:tint="#10B981" />
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginStart="16dp"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Status Akademik"
+                                    android:textColor="#64748B"
+                                    android:textSize="12sp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Aktif — Semester Ini"
+                                    android:textColor="#0F172A"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:cardCornerRadius="20dp"
+                                app:cardElevation="0dp"
+                                app:cardBackgroundColor="#ECFDF5">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:paddingHorizontal="12dp"
+                                    android:paddingVertical="6dp"
+                                    android:text="Mahasiswa"
+                                    android:textColor="#059669"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+                            </com.google.android.material.card.MaterialCardView>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Section header: Kelas Saya -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:layout_marginBottom="16dp">
+                        android:layout_marginBottom="14dp">
+
+                        <!-- Green accent bar -->
+                        <View
+                            android:layout_width="4dp"
+                            android:layout_height="22dp"
+                            android:background="#10B981"
+                            android:layout_marginEnd="10dp"
+                            app:cornerRadius="4dp" />
 
                         <TextView
                             android:layout_width="0dp"
@@ -160,15 +265,14 @@
                             android:id="@+id/btnGabungKelas"
                             style="@style/Widget.Material3.Button.TonalButton"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="40dp"
                             android:backgroundTint="#ECFDF5"
-                            android:text="Gabung Kelas"
+                            android:text="+ Gabung Kelas"
                             android:textColor="#10B981"
-                            android:textSize="13sp"
+                            android:textSize="12sp"
                             android:textStyle="bold"
-                            app:icon="@android:drawable/ic_input_add"
-                            app:iconTint="#10B981"
-                            app:cornerRadius="12dp" />
+                            app:cornerRadius="20dp"
+                            app:iconTint="#10B981" />
                     </LinearLayout>
 
                     <!-- Class list -->
@@ -188,13 +292,21 @@
                         android:paddingVertical="48dp"
                         android:visibility="gone">
 
-                        <ImageView
+                        <com.google.android.material.card.MaterialCardView
                             android:layout_width="80dp"
                             android:layout_height="80dp"
-                            android:src="@drawable/ic_assignment"
-                            android:layout_marginBottom="16dp"
-                            android:contentDescription="Empty"
-                            app:tint="#CBD5E1" />
+                            app:cardCornerRadius="24dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="#F1F5F9"
+                            android:layout_marginBottom="16dp">
+
+                            <ImageView
+                                android:layout_width="44dp"
+                                android:layout_height="44dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_assignment"
+                                app:tint="#CBD5E1" />
+                        </com.google.android.material.card.MaterialCardView>
 
                         <TextView
                             android:layout_width="match_parent"
@@ -210,7 +322,7 @@
                             android:layout_height="wrap_content"
                             android:text="Tekan tombol Gabung Kelas untuk memulai"
                             android:textColor="#64748B"
-                            android:textSize="14sp"
+                            android:textSize="13sp"
                             android:layout_marginTop="8dp"
                             android:textAlignment="center" />
                     </LinearLayout>
